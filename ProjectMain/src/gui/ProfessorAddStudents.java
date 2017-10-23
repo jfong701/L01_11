@@ -1,5 +1,6 @@
 package gui;
 
+import student.Student;
 import com.sun.org.apache.xpath.internal.SourceTree;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -15,9 +16,10 @@ import javafx.stage.Stage;
 
 import javax.xml.bind.SchemaOutputResolver;
 import java.awt.*;
+import java.util.ArrayList;
 
 public class ProfessorAddStudents {
-
+	
     public static void addStudents(Stage primaryStage, String user, String pass) {
         // Create layout
         GridPane grid = new GridPane();
@@ -58,12 +60,18 @@ public class ProfessorAddStudents {
         Button backButton = new Button("Back");
         backButton.setOnAction(e -> Professor.login(primaryStage, user, pass));
         grid.add(backButton, 0, 10, 1, 1);
+        
+        
 
         // TO-DO: ADD LOGIC TO SUBMIT BUTTON
         Button submitButton = new Button("Submit");
         submitButton.setOnAction(e -> {
+        	
+        	Student student = new Student(studentNumField.getText(), firstNameField.getText(), lastNameField.getText());
 
             // .getText() from firstNameField, lastNameField, studentNumField
+        	MessageBox.show("New Student Added",
+        			student.getStudentNo() + ": " + student.getStudentFirstName() + " " + student.getStudentLastName());
 
         });
         grid.add(submitButton, 2, 10, 1, 1);

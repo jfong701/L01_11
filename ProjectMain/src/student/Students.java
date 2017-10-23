@@ -1,3 +1,4 @@
+package student;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -90,11 +91,11 @@ public class Students {
 		}
 		return format;
 	}
-
+	/*
 	public static void main(String [] args) {
-		Students a = new Students();
 		a.readStudentsFile("src/student");
 		System.out.println(a);
 		System.out.println(a.findStudent("124"));
-	}
+
+	}*/
 }
