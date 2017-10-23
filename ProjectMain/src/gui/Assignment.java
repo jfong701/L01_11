@@ -6,14 +6,14 @@ public class Assignment {
 	Question question[];
 	int qCount;
 	public Question(int qCount) {
-		question = new Question [qCount];
-		qCount = qCount;
+		this.question = new Question [qCount];
+		this.qCount = qCount;
 	}
 	/*
 	 * initialize a question at index
 	*/
 	public void addQuestion(int index, String q, String ans) {
-		question[i] = Question(q, ans);
+		question[i] = new Question(q, ans);
 	}
 	/*
 	 * FileWrite (FileWriter outFile)

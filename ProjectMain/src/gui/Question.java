@@ -5,8 +5,8 @@ public class Question {
 	String question;
 	String answer;
 	public Question(String q, String ans) {
-		question = q;
-		answer = ans;
+		this.question = q;
+		this.answer = ans;
 	}
 	/*
 	 * boolean isCorrect
