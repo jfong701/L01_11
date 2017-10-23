@@ -2,10 +2,15 @@
 
 ## Repository Contents
 deliverables
-* Not Fast Just Furious Team Agreement (Project Delivarable 1).pdf
-* Personas and User Stories v0 (Project Deliverable 2).pdf
-* Personas and User Stories v0.1 (Project Deliverable 2).pdf
-* Personas and User Stories v1 (Project Deliverable 2).pdf
+* deliverable 1
+  * Not Fast Just Furious Team Agreement.pdf
+* delivarable 2
+  * Product Backlog v0.pdf
+  * Product Backlog v0.1.pdf
+* deliverable 3
+  * Product Backlog v1.pdf
+  * Product Backlog v1.1.pdf
+  * Sprint 1 Backlog.pdf
 
 ProjectMain/src/
 * gui
