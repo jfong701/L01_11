@@ -27,8 +27,7 @@ public class Professor {
 
 		Button addStudents = new Button("Add Students");
 		Button addAssignments = new Button("Add Assginments");
-		addAssignments.setOnAction(e -> ProfessorAddAssignments.addAssignments(primaryStage, user, pass));
-
+		
 		VBox centerBorder = new VBox(50);
 		centerBorder.setAlignment(Pos.CENTER);
 		centerBorder.getChildren().addAll(addStudents, addAssignments);
