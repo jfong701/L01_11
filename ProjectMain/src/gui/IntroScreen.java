@@ -49,6 +49,8 @@ public class IntroScreen extends Application {
 		loginButton.setOnAction(e -> {
 			if (userInput.getText().equals("Professor")) {
 			Professor.login(primaryStage, userInput.getText(), passInput.getText());
+			} else if (userInput.getText().equals("Student")) {
+			  Student.login(primaryStage, userInput.getText(), passInput.getText());
 			}
 		});
 		GridPane.setConstraints(loginButton, 5, 6);
