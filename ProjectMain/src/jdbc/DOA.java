@@ -4,8 +4,10 @@ import java.sql.SQLException;
 import java.util.Date;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 import jdbc.MySQLAccess;
+import student.Student;
 
 public class DOA {
 
@@ -162,6 +164,20 @@ public class DOA {
 			e.printStackTrace();
 		}	
 	}
+	
+	public Student rsToStudent(ResultSet rs) {
+		Student std = null;
+		while (rs.next()) {
+			// colums in order: student_id,first_name,last_name,utorid
+		    String studentNo = rs.getString("student_id");
+		    String first_name = rs.getString("first_name");
+		    String last_name = rs.getString("last_name");
+		    std = new Student(studentNo, first_name, last_name);
+		}
+		return std;
+	}
+	
+	
 }
 
 //a = new MySQLAccess();
