@@ -22,6 +22,17 @@ ProjectMain/src/
   * Student.java
   * Students.java
 
+* Product Backlog
+  * Product Backlog v0.pdf
+  * Product Backlog v0.1.pdf
+  * Product Backlog v1.pdf
+  * Product Backlog v1.1.pdf
+  * Product Backlog v2.pdf
+  
+* Sprint Backlog
+  * Sprint 1 Backlog.pdf
+  * Sprint 2 Backlog.pdf
+  
 ## Build Instructions
 1. Download directory ProjectMain/src/ and all subdirectories and files
 2. From a Java IDE (eg. Eclipse, IntelliJ) navigate to ProjectMain/src/gui and run IntroScreen.java
