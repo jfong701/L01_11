@@ -165,7 +165,7 @@ public class DOA {
 		}	
 	}
 	
-	public Student rsToStudent(ResultSet rs) {
+	public Student rsToStudent(ResultSet rs) throws SQLException {
 		Student std = null;
 		while (rs.next()) {
 			// colums in order: student_id,first_name,last_name,utorid
