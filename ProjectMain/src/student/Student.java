@@ -1,4 +1,6 @@
 package student;
+
+import java.sql.*;
 /**
  * 
  */
@@ -70,7 +72,50 @@ public class Student {
 	public void setStudentLastName(String studentLastName) {
 		this.studentLastName = studentLastName;
 	}
+	
+	/**
+	 * @param studentNo the stundentNo to insert to SQL student table
+	 * @param studentFirstName the studentFirstName to insert to SQL student table
+	 * @param studentLastName the studentLastName to insert to SQL student table
+	 * @param studentUTROID the studentUTROID to insert to SQL student table
+	 */
+	public void insertSQL() {
+		String studentUTROID = " ";
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			//Connection conn = DriverManager.getConnection("jdbc:mysql://mathlab.utoronto.ca:3306/cscc43f17_manogar7_sakila?useSSL=False", "manogar7", "manogar7");
+			Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/CSCC01?useSSL=False", "root", "MySQL");
+			
+			Statement stmt = conn.createStatement();
+			stmt.executeUpdate("insert into student (sid, fname, lname, utroid) values ('" + studentNo + "','" + studentFirstName + "','" + studentLastName + "','" + studentUTROID +"')");
+			
+			conn.close();
+			} catch(SQLException ex) {
+				ex.printStackTrace();
+			} catch (ClassNotFoundException ex) {
+				ex.printStackTrace();
+			}
+	}
 
+	/**
+	 * @param studentNo the stundentNo to delete from SQL student table
+	 */
+	public void deleteSQL() {
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			//Connection conn = DriverManager.getConnection("jdbc:mysql://mathlab.utoronto.ca:3306/cscc43f17_manogar7_sakila?useSSL=False", "manogar7", "manogar7");
+			Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/CSCC01?useSSL=False", "root", "MySQL");
+
+			Statement stmt = conn.createStatement();
+			stmt.executeUpdate("delete from student where sid =" + studentNo);
+			
+			conn.close();
+			} catch(SQLException ex) {
+				ex.printStackTrace();
+			} catch (ClassNotFoundException ex) {
+				ex.printStackTrace();
+			}
+	}
 
 	/**
 	 * @return string format of this object
