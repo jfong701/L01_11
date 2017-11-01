@@ -4,6 +4,7 @@ create table if not exists student (sid varchar(10),
 									fname varchar(20), 
 									lname varchar(20), 
                                     utroid varchar(8), 
+                                    student_password varchar(12),
                                     primary key (sid));
 create table if not exists class (cid varchar(9),
 								  class varchar(10),
@@ -27,3 +28,8 @@ create table if not exists student_assignment (sid varchar(10),
                                                primary key (sid, cid, aid),
                                                foreign key (sid) references student (sid),
                                                foreign key (cid, aid) references assignment (cid, aid));
+create table if not exists professor (pid varchar(10),
+								      fname varchar(20),
+                                      lname varchar(20),
+                                      professor_password varchar(12),
+                                      primary key (pid));

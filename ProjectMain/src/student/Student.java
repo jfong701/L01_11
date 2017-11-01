@@ -26,6 +26,13 @@ public class Student {
 	}
 
 	
+	public Student(String studentNo) {
+		this.studentNo = studentNo;
+		
+		this.selectSQL();
+	}
+	
+	
 	/**
 	 * @return the studentNo
 	 */
@@ -73,6 +80,7 @@ public class Student {
 		this.studentLastName = studentLastName;
 	}
 	
+	
 	/**
 	 * @param studentNo the stundentNo to insert to SQL student table
 	 * @param studentFirstName the studentFirstName to insert to SQL student table
@@ -81,13 +89,15 @@ public class Student {
 	 */
 	public void insertSQL() {
 		String studentUTROID = " ";
+		String studentPassword = " ";
+		
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 			//Connection conn = DriverManager.getConnection("jdbc:mysql://mathlab.utoronto.ca:3306/cscc43f17_manogar7_sakila?useSSL=False", "manogar7", "manogar7");
 			Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/CSCC01?useSSL=False", "root", "MySQL");
 			
 			Statement stmt = conn.createStatement();
-			stmt.executeUpdate("insert into student (sid, fname, lname, utroid) values ('" + studentNo + "','" + studentFirstName + "','" + studentLastName + "','" + studentUTROID +"')");
+			stmt.executeUpdate("insert into student (sid, fname, lname, utroid, student_password) values ('" + studentNo + "','" + studentFirstName + "','" + studentLastName + "','" + studentUTROID +"','" + studentPassword +"')");
 			
 			conn.close();
 			} catch(SQLException ex) {
@@ -97,6 +107,7 @@ public class Student {
 			}
 	}
 
+	
 	/**
 	 * @param studentNo the stundentNo to delete from SQL student table
 	 */
@@ -117,6 +128,34 @@ public class Student {
 			}
 	}
 
+	
+	/**
+	 * Select student information based on input studentNo
+	 */
+	public void selectSQL() {
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+		
+			Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/CSCC01?useSSL=False", "root", "MySQL");
+	
+			Statement stmt = conn.createStatement();
+			ResultSet rs = stmt.executeQuery("select * from student where sid = '" + studentNo + "'");
+			
+			if (rs.next() ) {
+				this.studentFirstName = rs.getString(2);
+				this.studentLastName = rs.getString(3);
+			}
+	
+			conn.close();
+		
+		} catch(SQLException ex) {
+		ex.printStackTrace();
+		} catch (ClassNotFoundException ex) {
+			ex.printStackTrace();
+		}
+	}
+
+	
 	/**
 	 * @return string format of this object
 	 */
