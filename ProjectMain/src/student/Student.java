@@ -81,12 +81,6 @@ public class Student {
 	}
 	
 	
-	/**
-	 * @param studentNo the stundentNo to insert to SQL student table
-	 * @param studentFirstName the studentFirstName to insert to SQL student table
-	 * @param studentLastName the studentLastName to insert to SQL student table
-	 * @param studentUTROID the studentUTROID to insert to SQL student table
-	 */
 	public void insertSQL() {
 		String studentUTROID = " ";
 		String studentPassword = " ";
@@ -97,7 +91,12 @@ public class Student {
 			Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/CSCC01?useSSL=False", "root", "MySQL");
 			
 			Statement stmt = conn.createStatement();
-			stmt.executeUpdate("insert into student (sid, fname, lname, utroid, student_password) values ('" + studentNo + "','" + studentFirstName + "','" + studentLastName + "','" + studentUTROID +"','" + studentPassword +"')");
+			stmt.executeUpdate("insert into student (sid, fname, lname, utroid, student_password)"
+										 + "values ('" + studentNo + "','"
+										 			   + studentFirstName + "','" 
+													   + studentLastName + "','" 
+													   + studentUTROID +"','" 
+													   + studentPassword +"')");
 			
 			conn.close();
 			} catch(SQLException ex) {
@@ -108,9 +107,6 @@ public class Student {
 	}
 
 	
-	/**
-	 * @param studentNo the stundentNo to delete from SQL student table
-	 */
 	public void deleteSQL() {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
@@ -129,9 +125,6 @@ public class Student {
 	}
 
 	
-	/**
-	 * Select student information based on input studentNo
-	 */
 	public void selectSQL() {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
@@ -145,6 +138,27 @@ public class Student {
 				this.studentFirstName = rs.getString(2);
 				this.studentLastName = rs.getString(3);
 			}
+	
+			conn.close();
+		
+		} catch(SQLException ex) {
+		ex.printStackTrace();
+		} catch (ClassNotFoundException ex) {
+			ex.printStackTrace();
+		}
+	}
+	
+	
+	public void updateSQL() {
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+		
+			Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/CSCC01?useSSL=False", "root", "MySQL");
+	
+			Statement stmt = conn.createStatement();
+			stmt.executeUpdate("update student set fname = '" + this.studentFirstName + "',"
+											    + "lname = '" + this.studentLastName + "'"
+											    + "where sid =" + this.studentNo);
 	
 			conn.close();
 		
