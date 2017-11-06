@@ -1,7 +1,6 @@
 package gui;
 
-import student.Student;
-import com.sun.org.apache.xpath.internal.SourceTree;
+
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -14,9 +13,8 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-import javax.xml.bind.SchemaOutputResolver;
-import java.awt.*;
-import java.util.ArrayList;
+import assignment.Question;
+import student.Student;
 
 public class ProfessorAddStudents {
 	
@@ -58,7 +56,7 @@ public class ProfessorAddStudents {
 
         // Buttons
         Button backButton = new Button("Back");
-        backButton.setOnAction(e -> Professor.login(primaryStage, user, pass));
+        backButton.setOnAction(e -> ProfessorPage.login(primaryStage, user, pass));
         grid.add(backButton, 0, 10, 1, 1);
         
         
