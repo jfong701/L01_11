@@ -11,6 +11,10 @@ deliverables
   * Product Backlog v1.pdf
   * Product Backlog v1.1.pdf
   * Sprint 1 Backlog.pdf
+* deliverable 4
+  * Sprint 1 Backlog.pdf
+  * Sprint 2 Backlog.pdf
+  * Sprint 3 Backlog.pdf
 
 ProjectMain/src/
 * gui
@@ -32,6 +36,7 @@ ProjectMain/src/
 * Sprint Backlog
   * Sprint 1 Backlog.pdf
   * Sprint 2 Backlog.pdf
+  * Sprint 3 Backlog.pdf
   
 ## Build Instructions
 1. Download directory ProjectMain/src/ and all subdirectories and files
