@@ -2,8 +2,12 @@ package student;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.sql.*;
+import java.sql.Connection;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import com.mysql.jdbc.*;
 
 /**
  * 
@@ -91,11 +95,4 @@ public class Students {
 		}
 		return format;
 	}
-	/*
-	public static void main(String [] args) {
-		a.readStudentsFile("src/student");
-		System.out.println(a);
-		System.out.println(a.findStudent("124"));
-
-	}*/
 }
