@@ -18,6 +18,7 @@ import javafx.stage.Stage;
 
 public class StudentAssignmentPage {
 
+    private static int currentRow;
     /**
      * Creates the StudentAssignmentPage scene where a student can see questions and enter answers for an assignment
      *
@@ -41,7 +42,7 @@ public class StudentAssignmentPage {
 
         Scene addStudentsScene = new Scene(sp, 500, 250);
         primaryStage.setScene(addStudentsScene);
-        int currentRow = 0;
+        currentRow = 0;
 
         // Title
         Text sceneTitle = new Text(assignmentName);
@@ -106,7 +107,7 @@ public class StudentAssignmentPage {
      * @param questionNumber : Used to create Text Label Question#X
      * @param question       : Text to be displayed as the question (e.g. "What is 3 + 4?"
      */
-    private static void addQuestions(int questionNumber, String question) {
+    private static void addQuestions(int questionNumber, String question, String answer) {
 
     }
 }
