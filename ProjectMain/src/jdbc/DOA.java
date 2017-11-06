@@ -2,6 +2,9 @@ package jdbc;
 
 import java.sql.SQLException;
 import java.util.Date;
+
+import assignment.Question;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -170,6 +173,16 @@ public class DOA {
 		    std = new Student(studentNo, first_name, last_name);
 		}
 		return std;
+	}
+	
+	public Question rsToQuestion(ResultSet rs) throws SQLException {
+		Question question = null;
+		while (rs.next()) {
+		    String question_description = rs.getString("question");
+		    String question_answer = rs.getString("answer");
+		    question = new Question(question_description, question_answer);
+		}
+		return question;
 	}
 	
 	
