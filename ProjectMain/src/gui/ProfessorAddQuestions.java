@@ -12,8 +12,15 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+import java.util.Calendar;
+import java.util.Locale;
+import java.util.Random;
+
 import assignment.Question;
+import jdbc.DOA;
+
 public class ProfessorAddQuestions {
+	
 
     public static void addQuestions(Stage primaryStage, String user, String pass) {
         // Create layout
@@ -24,6 +31,8 @@ public class ProfessorAddQuestions {
         grid.setPadding(new Insets(25, 25, 25, 25));
         Scene addStudentsScene = new Scene(grid, 500, 250);
         primaryStage.setScene(addStudentsScene);
+        
+        Random rand = new Random();
 
         // Title
         Text sceneTitle = new Text("Add Questions");
@@ -58,6 +67,10 @@ public class ProfessorAddQuestions {
 
             // .getText() from questionField, answerField
         	Question ques = new Question(questionField.getText(), answerField.getText());
+        	DOA.start();
+        	DOA.addQuestion("CSCC43", "1", Integer.toString(rand.nextInt(10000+1)) , questionField.getText(), answerField.getText());
+        	DOA.close();
+        	
         	System.out.println(ques);
 
         });
