@@ -14,11 +14,11 @@ public class MySQLAccess {
 	
 	// JDBC Driver Name and Database URL
 	static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
-	static final String DB_URL = "jdbc:mysql://localhost/";
+	static final String DB_URL = "jdbc:mysql://mathlab.utsc.utoronto.ca:3306/";
 	
 	// Property variables
-	static final String USER = "username";
-	static final String PASS = "password";
+	static final String USER = "manogar7";
+	static final String PASS = "manogar7";
 	static final String USESSL = "true";
 	static final String VERIFYSC = "false";
 	
