@@ -1,6 +1,5 @@
 package gui;
 
-import com.sun.org.apache.xpath.internal.SourceTree;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -13,8 +12,8 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-import javax.xml.bind.SchemaOutputResolver;
-import java.awt.*;
+import assignment.Question;
+
 
 public class ProfessorAddAssignments {
 
@@ -60,6 +59,8 @@ public class ProfessorAddAssignments {
         submitButton.setOnAction(e -> {
 
             // .getText() from questionField, answerField
+        	Question ques = new Question(questionField.getText(), answerField.getText());
+        	System.out.println(ques);
 
         });
         grid.add(submitButton, 2, 10, 1, 1);

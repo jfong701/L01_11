@@ -1,9 +1,11 @@
-import java.util.*;
+package assignment;
 import java.io.*;
 
 public class Question {
+	
 	String question;
 	String answer;
+	
 	public Question(String q, String ans) {
 		this.question = q;
 		this.answer = ans;
@@ -18,7 +20,7 @@ public class Question {
 	/*
 	 * FileWrite (FileWriter outFile)
 	 * Take a valid file writer and write the question's data to the
-	 * file refered to by outFile
+	 * file referred to by outFile
 	 */
 	public void fileWrite(FileWriter outFile) {
 		try {
@@ -26,5 +28,9 @@ public class Question {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public String toString() {
+		return "Question: " + question + "\nAnswer: " + answer;
 	}
 }
