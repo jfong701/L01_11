@@ -10,7 +10,7 @@ import javafx.scene.control.Label;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 
-public class Professor {
+public class ProfessorPage {
 	public static void login(Stage primaryStage, String user, String pass) {
 		
 		Label welcomeLabel = new Label("Welcome " + user);
@@ -22,12 +22,14 @@ public class Professor {
 		topBorder.getChildren().add(welcomeLabel);
 
 		Button addStudents = new Button("Add Students");
-		Button addAssignments = new Button("Add Assginments");
-		addAssignments.setOnAction(e -> ProfessorAddAssignments.addAssignments(primaryStage, user, pass));
+		addStudents.setOnAction(e -> ProfessorAddStudents.addStudents(primaryStage, user, pass));
+		Button addQuestions = new Button("Add Assginments");
+		addQuestions.setOnAction(e -> ProfessorAddQuestions.addQuestions(primaryStage, user, pass));
 
+		
 		VBox centerBorder = new VBox(50);
 		centerBorder.setAlignment(Pos.CENTER);
-		centerBorder.getChildren().addAll(addStudents, addAssignments);
+		centerBorder.getChildren().addAll(addStudents, addQuestions);
 		
 		BorderPane border = new BorderPane();
 		border.setTop(welcomeLabel);

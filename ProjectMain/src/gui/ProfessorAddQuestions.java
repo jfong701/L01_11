@@ -13,11 +13,9 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import assignment.Question;
+public class ProfessorAddQuestions {
 
-
-public class ProfessorAddAssignments {
-
-    public static void addAssignments(Stage primaryStage, String user, String pass) {
+    public static void addQuestions(Stage primaryStage, String user, String pass) {
         // Create layout
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
@@ -51,7 +49,7 @@ public class ProfessorAddAssignments {
 
         // Buttons
         Button backButton = new Button("Back");
-        backButton.setOnAction(e -> Professor.login(primaryStage, user, pass));
+        backButton.setOnAction(e -> ProfessorPage.login(primaryStage, user, pass));
         grid.add(backButton, 0, 10, 1, 1);
 
         // TO-DO: ADD LOGIC TO SUBMIT BUTTON

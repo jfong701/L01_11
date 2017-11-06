@@ -1,6 +1,6 @@
 package gui;
 
-import gui.Professor;
+import gui.ProfessorPage;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -46,7 +46,7 @@ public class IntroScreen extends Application {
 		Button loginButton = new Button("Login");
 		loginButton.setOnAction(e -> {
 			if (userInput.getText().equals("Professor")) {
-			Professor.login(primaryStage, userInput.getText(), passInput.getText());
+			ProfessorPage.login(primaryStage, userInput.getText(), passInput.getText());
 			}
 		});
 		GridPane.setConstraints(loginButton, 5, 6);
