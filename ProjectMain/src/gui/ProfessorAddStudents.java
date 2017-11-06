@@ -13,8 +13,8 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-import assignment.Question;
 import student.Student;
+import jdbc.DOA;
 
 public class ProfessorAddStudents {
 	
@@ -53,6 +53,15 @@ public class ProfessorAddStudents {
         TextField studentNumField = new TextField();
         studentNumField.setPromptText("e.g. 1001234567");
         grid.add(studentNumField, 0, 6, 2, 1);
+        
+        // UTORid
+        Label uTORidLabel = new Label("Enter a student UTORid");
+        grid.add(uTORidLabel, 2, 5, 1, 1);
+
+        TextField uTORidField = new TextField();
+        uTORidField.setPromptText("e.g. abcdefg1");
+        grid.add(uTORidField, 2, 6, 2, 1);
+
 
         // Buttons
         Button backButton = new Button("Back");
@@ -65,8 +74,15 @@ public class ProfessorAddStudents {
         Button submitButton = new Button("Submit");
         submitButton.setOnAction(e -> {
         	
-        	Student student = new Student(studentNumField.getText(), firstNameField.getText(), lastNameField.getText());
-
+        	String stuNum = studentNumField.getText();
+        	String utor_id = uTORidField.getText();
+        	String first = firstNameField.getText();
+        	String last = lastNameField.getText();
+        	
+        	Student student = new Student(stuNum, first, last);
+        	DOA.start();
+        	DOA.addStudent(stuNum, utor_id, first, last);
+        	DOA.close();
             // .getText() from firstNameField, lastNameField, studentNumField
         	MessageBox.show("New Student Added",
         			student.getStudentNo() + ": " + student.getStudentFirstName() + " " + student.getStudentLastName());

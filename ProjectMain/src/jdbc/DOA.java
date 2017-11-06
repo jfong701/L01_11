@@ -39,16 +39,17 @@ public class DOA {
 		a.loadAndConnect(dbName);
 		
 		a.createTable(stu,
-				"student_id CHAR(10) not NULL",
-				"utor_id VARCHAR(10) UNIQUE",
-				"first_name VARCHAR(255)",
-				"last_name VARCHAR(255)",
+				"student_id CHAR(10) NOT NULL",
+				"utor_id VARCHAR(10) UNIQUE NOT NULL",
+				"first_name VARCHAR(255) NOT NULL",
+				"last_name VARCHAR(255) NOT NULL",
 				"student_password VARCHAR(25)",
 				"PRIMARY KEY ( student_id )"
 				);
 		a.createTable(asmt,
 				"course_id VARCHAR(8) NOT NULL",
 				"assignment_id INTEGER NOT NULL",
+				"num_questions INTEGER NOT NULL",
 				"assignment_name VARCHAR(225)",
 				"deadline DATE",
 				"PRIMARY KEY ( course_id, assignment_id )"
@@ -109,16 +110,17 @@ public class DOA {
 		}	
 	}
 	
-	public static void addAssignment(String course_id, String assignment_id, String assignment_name, Date deadline ) {
-		String sql = a.preparedRecordsSQL(stu, 4, "course_id", "assignment_id", "assignment_name", "deadline");
+	public static void addAssignment(String course_id, String assignment_id, String num_question, String assignment_name, Date deadline ) {
+		String sql = a.preparedRecordsSQL(asmt, 5, "course_id", "assignment_id", "num_questions", "assignment_name", "deadline");
 		System.out.println(sql);
 		Connection conn = a.getConn();
 		try {
 			PreparedStatement pr = conn.prepareStatement(sql);
 			pr.setString(1,  course_id);
 			pr.setInt(2, Integer.parseInt(assignment_id));
-			pr.setString(3, assignment_name);
-			pr.setDate(4, new java.sql.Date(deadline.getTime()));
+			pr.setInt(3, Integer.parseInt(num_question));
+			pr.setString(4, assignment_name);
+			pr.setDate(5, new java.sql.Date(deadline.getTime()));
 			pr.execute();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -161,7 +163,7 @@ public class DOA {
 	public Student rsToStudent(ResultSet rs) throws SQLException {
 		Student std = null;
 		while (rs.next()) {
-			// colums in order: student_id,first_name,last_name,utorid
+			// columns in order: student_id,first_name,last_name,utorid
 		    String studentNo = rs.getString("student_id");
 		    String first_name = rs.getString("first_name");
 		    String last_name = rs.getString("last_name");
