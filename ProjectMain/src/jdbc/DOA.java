@@ -11,7 +11,7 @@ public class DOA {
 
 	//MYSQL FUNCTION EXAMPLES AT THE END
 	
-	private static String dbName = "db";
+	private static String dbName = "cscc43f17_manogar7_sakila";
 	private static String stu = "STUDENTS";
 	private static String asmt = "ASSIGNMENTS";
 	private static String ques = "QUESTIONS";
@@ -32,61 +32,54 @@ public class DOA {
 	
 	public static void initDatabase() throws SQLException {
 		a = new MySQLAccess();
-		int rv = a.createDatabase(dbName);
-			if (rv == 1) {
-				System.out.println("Initializing database");
-				a.loadAndConnect(dbName);
-				
-				a.createTable(stu,
-						"student_id CHAR(10) not NULL",
-						"utor_id VARCHAR(10) UNIQUE",
-						"first_name VARCHAR(255)",
-						"last_name VARCHAR(255)",
-						"student_password VARCHAR(25)",
-						"PRIMARY KEY ( student_id )"
-						);
-				a.createTable(asmt,
-						"course_id VARCHAR(8) NOT NULL",
-						"assignment_id INTEGER NOT NULL",
-						"assignment_name VARCHAR(225)",
-						"deadline DATE",
-						"PRIMARY KEY ( course_id, assignment_id )"
-						);
-				a.createTable(ques,
-						"course_id VARCHAR(8) NOT NULL",
-						"assignment_id INTEGER NOT NULL",
-						"question_id INTEGER NOT NULL",
-						"question VARCHAR(1000) NOT NULL",
-						"answer_function VARCHAR(1000) NOT NULL",
-						"lower_range INTEGER",
-						"upper_range INTEGER",
-						"decimal_places INTEGER",
-						"FOREIGN KEY ( course_id, assignment_id ) REFERENCES ASSIGNMENTS ( course_id, assignment_id )",
-						"PRIMARY KEY ( course_id, assignment_id, question_id )"
-						);
-				a.createTable(stu_asmt,
-						"student_id CHAR(10) NOT NULL",
-						"course_id VARCHAR(8) NOT NULL",
-						"assignment_id INTEGER NOT NULL",
-						"mark INTEGER",
-						"FOREIGN KEY ( student_id ) REFERENCES STUDENTS ( student_id )",
-						"FOREIGN KEY ( course_id, assignment_id ) REFERENCES ASSIGNMENTS ( course_id, assignment_id )",
-						"PRIMARY KEY ( student_id, course_id, assignment_id )"
-						);
-				a.createTable(prof,
-						"professor_id CHAR(10) NOT NULL",
-						"professor_first_name VARCHAR(225)",
-						"professor_last_name VARCHAR(225)",
-						"professor_password VARCHAR(25)",
-						"PRIMARY KEY ( professor_id )"
-						);
-				System.out.println("Finished initialization");
-			} else if (rv == 0) {
-				System.out.println("Database already exists");
-			} else {
-				System.out.println("Error occurred");
-			}
 
+		System.out.println("Initializing database");
+		a.loadAndConnect(dbName);
+		
+		a.createTable(stu,
+				"student_id CHAR(10) not NULL",
+				"utor_id VARCHAR(10) UNIQUE",
+				"first_name VARCHAR(255)",
+				"last_name VARCHAR(255)",
+				"student_password VARCHAR(25)",
+				"PRIMARY KEY ( student_id )"
+				);
+		a.createTable(asmt,
+				"course_id VARCHAR(8) NOT NULL",
+				"assignment_id INTEGER NOT NULL",
+				"assignment_name VARCHAR(225)",
+				"deadline DATE",
+				"PRIMARY KEY ( course_id, assignment_id )"
+				);
+		a.createTable(ques,
+				"course_id VARCHAR(8) NOT NULL",
+				"assignment_id INTEGER NOT NULL",
+				"question_id INTEGER NOT NULL",
+				"question VARCHAR(1000) NOT NULL",
+				"answer_function VARCHAR(1000) NOT NULL",
+				"lower_range INTEGER",
+				"upper_range INTEGER",
+				"decimal_places INTEGER",
+				"FOREIGN KEY ( course_id, assignment_id ) REFERENCES ASSIGNMENTS ( course_id, assignment_id )",
+				"PRIMARY KEY ( course_id, assignment_id, question_id )"
+				);
+		a.createTable(stu_asmt,
+				"student_id CHAR(10) NOT NULL",
+				"course_id VARCHAR(8) NOT NULL",
+				"assignment_id INTEGER NOT NULL",
+				"mark INTEGER",
+				"FOREIGN KEY ( student_id ) REFERENCES STUDENTS ( student_id )",
+				"FOREIGN KEY ( course_id, assignment_id ) REFERENCES ASSIGNMENTS ( course_id, assignment_id )",
+				"PRIMARY KEY ( student_id, course_id, assignment_id )"
+				);
+		a.createTable(prof,
+				"professor_id CHAR(10) NOT NULL",
+				"professor_first_name VARCHAR(225)",
+				"professor_last_name VARCHAR(225)",
+				"professor_password VARCHAR(25)",
+				"PRIMARY KEY ( professor_id )"
+				);
+		System.out.println("Finished initialization");
 	}
 	
 	public static void start() {
