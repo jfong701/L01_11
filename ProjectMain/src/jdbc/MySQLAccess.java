@@ -161,6 +161,7 @@ public class MySQLAccess {
 		ResultSet resultSet = null;
 		try {
 			String sql = selectSQL(tableName, columns) + " WHERE " + where;
+			System.out.println(sql);
 			resultSet = stmt.executeQuery(sql);
 			System.out.println(sql + " completely successfully.\n");
 			
@@ -239,6 +240,8 @@ public class MySQLAccess {
 			}
 			System.out.format(format, row);
 		}
+		
+		resultSet.beforeFirst();
 	}
 			
 	private void setProperties() {

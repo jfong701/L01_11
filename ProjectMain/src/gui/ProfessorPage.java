@@ -23,13 +23,15 @@ public class ProfessorPage {
 
 		Button addStudents = new Button("Add Students");
 		addStudents.setOnAction(e -> ProfessorAddStudents.addStudents(primaryStage, user, pass));
-		Button addQuestions = new Button("Add Assginments");
+		Button addAssignments = new Button("Add Assignments");
+		addAssignments.setOnAction(e -> ProfessorAddAssignments.addAssignments(primaryStage, user, pass));
+		Button addQuestions = new Button("Add Questions");
 		addQuestions.setOnAction(e -> ProfessorAddQuestions.addQuestions(primaryStage, user, pass));
 
 		
 		VBox centerBorder = new VBox(50);
 		centerBorder.setAlignment(Pos.CENTER);
-		centerBorder.getChildren().addAll(addStudents, addQuestions);
+		centerBorder.getChildren().addAll(addStudents, addAssignments, addQuestions);
 		
 		BorderPane border = new BorderPane();
 		border.setTop(welcomeLabel);

@@ -1,10 +1,12 @@
 package jdbc;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
 
 import assignment.Question;
 
+import java.sql.Array;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -32,7 +34,6 @@ public class DOA {
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
-
 	}
 	
 	public static void initDatabase() throws SQLException {
@@ -98,6 +99,7 @@ public class DOA {
 	}
 	
 	public static void addStudent(String id, String utor_id, String first, String last) {
+		start();
 		String sql = a.preparedRecordsSQL(stu, 4, "student_id", "utor_id", "first_name", "last_name");
 		System.out.println(sql);
 		Connection conn = a.getConn();
@@ -110,10 +112,13 @@ public class DOA {
 			pr.execute();
 		} catch (SQLException e) {
 			e.printStackTrace();
-		}	
+		} finally {
+			close();
+		}
 	}
 	
 	public static void addAssignment(String course_id, String assignment_id, String num_question, String assignment_name, Date deadline ) {
+		start();
 		String sql = a.preparedRecordsSQL(asmt, 5, "course_id", "assignment_id", "num_questions", "assignment_name", "deadline");
 		System.out.println(sql);
 		Connection conn = a.getConn();
@@ -127,10 +132,50 @@ public class DOA {
 			pr.execute();
 		} catch (SQLException e) {
 			e.printStackTrace();
-		}	
+		} finally {
+			close();
+		}
+	}
+	
+	public static ArrayList<String> getCourseIds() {
+		start();
+		ArrayList<String> list = new ArrayList<String>();
+		
+		try {
+			ResultSet rs =  a.selectRecords(asmt, "DISTINCT course_id");
+			while (rs.next()) {
+				String id = rs.getString("course_id");
+				list.add(id);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close();
+		}
+		return list;
+	}
+	
+	public static ArrayList<Integer> getAssignmentIds(String course_id) {		
+		start();
+		ArrayList<Integer> list = new ArrayList<Integer>();
+		
+		try {
+			ResultSet rs =  a.selectRecordsWhere(asmt, "course_id='" + course_id + "'", "assignment_id");
+			while (rs.next()) {
+				Integer id = rs.getInt("assignment_id");
+				list.add(id);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close();
+		}
+		return list;
 	}
 
+	
 	public static void addQuestion(String course_id, String assignment_id, String question_id, String question, String answer ) {
+		start();
 		String sql = a.preparedRecordsSQL(ques, 5, "course_id", "assignment_id", "question_id", "question", "answer_function");
 		System.out.println(sql);
 		Connection conn = a.getConn();
@@ -145,10 +190,29 @@ public class DOA {
 			pr.execute();
 		} catch (SQLException e) {
 			e.printStackTrace();
-		}	
+		} finally {
+			close();
+		}
+	}
+	
+	public static String QuestionCount(String course_id, String assignment_id) {
+		start();
+		try {
+			ResultSet rs =  a.selectRecordsWhere(ques, "course_id='" + course_id + "' AND assignment_id='" + assignment_id +"'", "DISTINCT question_id");
+			rs.last();
+			return Integer.toString(rs.getRow());
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+		
+
+		
 	}
 	
 	public static void addProfessor(String id, String first, String last) {
+		start();
 		String sql = a.preparedRecordsSQL(prof, 3, "professor_id", "professor_first_name", "professor_last_name");
 		System.out.println(sql);
 		Connection conn = a.getConn();
@@ -160,7 +224,9 @@ public class DOA {
 			pr.execute();
 		} catch (SQLException e) {
 			e.printStackTrace();
-		}	
+		} finally {
+			close();
+		}
 	}
 	
 	public Student rsToStudent(ResultSet rs) throws SQLException {
