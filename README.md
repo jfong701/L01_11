@@ -11,6 +11,10 @@ deliverables
   * Product Backlog v1.pdf
   * Product Backlog v1.1.pdf
   * Sprint 1 Backlog.pdf
+* deliverable 4
+  * Sprint 1 Backlog.pdf
+  * Sprint 2 Backlog.pdf
+  * Sprint 3 Backlog.pdf
 
 ProjectMain/src/
 * gui
@@ -22,6 +26,23 @@ ProjectMain/src/
   * Student.java
   * Students.java
 
+* Product Backlog
+  * Product Backlog v0.pdf
+  * Product Backlog v0.1.pdf
+  * Product Backlog v1.pdf
+  * Product Backlog v1.1.pdf
+  * Product Backlog v2.pdf
+  
+* Sprint Backlog
+  * Sprint 1 Backlog.pdf
+  * Sprint 2 Backlog.pdf
+  * Sprint 3 Backlog.pdf
+  
 ## Build Instructions
 1. Download directory ProjectMain/src/ and all subdirectories and files
-2. From a Java IDE (eg. Eclipse, IntelliJ) navigate to ProjectMain/src/gui and run IntroScreen.java
+2. Open a Java IDE (eg. Eclipse, IntelliJ) and go to File -> Open Projects from File System
+3. The value for "Import source" should be the ProjectMain folder. Click Finish.
+4. Right click and go to Properties.
+5. Go to Java Build Path -> Libraries and click "Add JARS"
+6. Navigate to the "lib" folder and add the mysql connector.
+2. Navigate to ProjectMain/src/gui and run IntroScreen.java
