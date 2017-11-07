@@ -30,7 +30,9 @@ public class DOA {
 	
 	public static void main(String[] args) {
 			try {
+				start();
 				initDatabase();
+				close();
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
@@ -200,15 +202,13 @@ public class DOA {
 		try {
 			ResultSet rs =  a.selectRecordsWhere(ques, "course_id='" + course_id + "' AND assignment_id='" + assignment_id +"'", "DISTINCT question_id");
 			rs.last();
+			close();
 			return Integer.toString(rs.getRow());
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			close();
 			return null;
-		}
-		
-
-		
+		}	
 	}
 	
 	public static void addProfessor(String id, String first, String last) {
