@@ -21,8 +21,8 @@ public class ProfessorPage {
 		topBorder.setAlignment(Pos.CENTER_LEFT);
 		topBorder.getChildren().add(welcomeLabel);
 
-		Button addStudents = new Button("Add Students");
-		addStudents.setOnAction(e -> ProfessorAddStudents.addStudents(primaryStage, user, pass));
+		Button addStudents = new Button("Manage Student Information");
+		addStudents.setOnAction(e -> ProfessorViewStudents.uploadStudents(primaryStage, user, pass));
 		Button addAssignments = new Button("Add Assignments");
 		addAssignments.setOnAction(e -> ProfessorAddAssignments.addAssignments(primaryStage, user, pass));
 		Button addQuestions = new Button("Add Questions");

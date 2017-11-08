@@ -1,11 +1,10 @@
 package gui;
 
-import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
@@ -14,11 +13,6 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Locale;
-import java.util.Random;
 
 import assignment.Question;
 import jdbc.DOA;
@@ -36,9 +30,6 @@ public class ProfessorAddQuestions {
         Scene addStudentsScene = new Scene(grid, 500, 250);
         primaryStage.setScene(addStudentsScene);
         
-        Random rand = new Random();
-
-        
         // Title
         Text sceneTitle = new Text("Add Questions");
         sceneTitle.setFont(Font.font("Verdana", FontWeight.NORMAL, 20));
@@ -50,7 +41,7 @@ public class ProfessorAddQuestions {
         Label courseLabel = new Label("Enter course id:");
         grid.add(courseLabel, 0, 2, 1, 1);
         
-        ChoiceBox<String> courseBox = new ChoiceBox<>();
+        ComboBox<String> courseBox = new ComboBox<>();
         courseBox.getItems().addAll(DOA.getCourseIds());
         grid.add(courseBox, 0, 3, 3, 1);
 
@@ -58,17 +49,15 @@ public class ProfessorAddQuestions {
         Label aIDLabel = new Label("Enter assignment id");
         grid.add(aIDLabel, 1, 2, 1, 1);
         
-        ChoiceBox<Integer> assignmentBox = new ChoiceBox<>();
+        ComboBox<Integer> assignmentBox = new ComboBox<>();
         assignmentBox.getItems().addAll(DOA.getAssignmentIds(courseBox.getValue()));
         
         // Modifying boxes so that changing value in courseBox, change assignments available in assignmentBox
-        courseBox.getSelectionModel()
-        	.selectedItemProperty()
-        	.addListener( (ObservableValue<? extends String> observable, String oldValue, String newValue) 
-        			-> {
-        				assignmentBox.getItems().clear();
-        				assignmentBox.getItems().addAll(DOA.getAssignmentIds(newValue));
-        			});
+        courseBox.setOnAction( e -> {
+        	assignmentBox.getItems().clear();
+			assignmentBox.getItems().addAll(DOA.getAssignmentIds(courseBox.getValue()));
+        });
+        
         grid.add(assignmentBox, 1, 3, 3, 1);
         
         // Question Label

@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 import com.mysql.jdbc.*;
 
+import jdbc.DOA;
+
 /**
  * 
  */
@@ -49,16 +51,15 @@ public class Students {
 			buffer = new BufferedReader(file);
 			String line;
 			String[] splitLine;
-			String studentNo;
-			String studentFirstName;
-			String studentLastName;
+			String studentNo, studentUtor, studentFirstName, studentLastName;
 			// read line by line, split and trim the strings and create a Student to put into studentList
 			while ((line = buffer.readLine()) != null) {
 				splitLine = line.split(",");
 				studentNo = splitLine[0].trim();
+				studentUtor = splitLine[1].trim();
 				studentFirstName = splitLine[1].trim();
 				studentLastName = splitLine[2].trim();
-				studentList.add(new Student(studentNo, studentFirstName, studentLastName));
+				studentList.add(new Student(studentNo, studentUtor, studentFirstName, studentLastName));
 			}
 			
 		} catch (IOException error) {
@@ -66,6 +67,7 @@ public class Students {
 		}
 		
 	}
+
 	
 	/**
 	 * @param  studentNo to search for

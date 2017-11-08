@@ -72,6 +72,16 @@ public class MySQLAccess {
 		
 	}
 	
+	public void executeSQL(String sql) {
+		loadAndConnect("");
+		try {
+			stmt.execute(sql);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	public boolean checkDatabaseExists(String db_name) throws SQLException {
 		ResultSet rs = conn.getMetaData().getCatalogs();
 		
@@ -109,7 +119,9 @@ public class MySQLAccess {
 	public void dropTable(String tableName) {
 		try {
 			System.out.println(tableName);
+			stmt.executeUpdate("SET FOREIGN_KEY_CHECKS=0");
 			stmt.executeUpdate("DROP TABLE " + tableName);
+			stmt.executeUpdate("SET FOREIGN_KEY_CHECKS=1");
 			System.out.println("Dropped table " + tableName + " successfully.");
 		} catch (SQLException e) {
 			e.printStackTrace();

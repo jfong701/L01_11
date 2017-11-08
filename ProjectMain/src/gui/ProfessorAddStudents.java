@@ -65,7 +65,7 @@ public class ProfessorAddStudents {
 
         // Buttons
         Button backButton = new Button("Back");
-        backButton.setOnAction(e -> ProfessorPage.login(primaryStage, user, pass));
+        backButton.setOnAction(e -> ProfessorViewStudents.uploadStudents(primaryStage, user, pass));
         grid.add(backButton, 0, 10, 1, 1);
         
         
@@ -79,7 +79,7 @@ public class ProfessorAddStudents {
         	String first = firstNameField.getText();
         	String last = lastNameField.getText();
         	
-        	Student student = new Student(stuNum, first, last);
+        	Student student = new Student(stuNum, utor_id, first, last);
         	DOA.start();
         	DOA.addStudent(stuNum, utor_id, first, last);
         	DOA.close();

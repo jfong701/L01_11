@@ -4,6 +4,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -44,9 +45,11 @@ public class ProfessorAddAssignments {
         Label courseLabel = new Label("Enter course id:");
         grid.add(courseLabel, 0, 2, 1, 1);
 
-        TextField courseField = new TextField();
-        courseField.setPromptText("e.g CSCC43");
-        grid.add(courseField, 0, 3, 1, 1);
+        ComboBox<String> courseBox = new ComboBox<String>();
+        courseBox.setPromptText("e.g CSCC43");
+        courseBox.getItems().addAll(DOA.getCourseIds());
+        courseBox.setEditable(true);
+        grid.add(courseBox, 0, 3, 1, 1);
 
         // Assignment Number label
         Label aIDLabel = new Label("Enter assignment id");
@@ -89,7 +92,7 @@ public class ProfessorAddAssignments {
 
         	DOA.start();
         	DOA.addAssignment(
-        			courseField.getText(),
+        			courseBox.getValue(),
         			aIDField.getText(),
         			Integer.toString(5),
         			aNameField.getText(),

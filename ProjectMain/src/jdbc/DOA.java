@@ -28,12 +28,12 @@ public class DOA {
 	
 	private static MySQLAccess a;
 	
-	public static void main(String[] args) {
-			try {
-				initDatabase();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+	public static void main(String[] args) throws SQLException {
+			start();
+			//a.dropTable(stu);
+			//close();
+			initDatabase();
+			close();
 	}
 	
 	public static void initDatabase() throws SQLException {
@@ -115,6 +115,12 @@ public class DOA {
 		} finally {
 			close();
 		}
+	}
+	
+	public static void uploadStudentFile(String abs_path) {
+		String sql = "LOAD DATA LOCAL INFILE '" + abs_path + "' INTO TABLE cscc43f17_manogar7_sakila.STUDENTS FIELDS TERMINATED BY ',' (student_id, utor_id, first_name, last_name)";
+		a.executeSQL(sql);
+		System.out.println(sql + " completed.");
 	}
 	
 	public static void addAssignment(String course_id, String assignment_id, String num_question, String assignment_name, Date deadline ) {
@@ -234,9 +240,10 @@ public class DOA {
 		while (rs.next()) {
 			// columns in order: student_id,first_name,last_name,utorid
 		    String studentNo = rs.getString("student_id");
+		    String utor = rs.getString("utor_id");
 		    String first_name = rs.getString("first_name");
 		    String last_name = rs.getString("last_name");
-		    std = new Student(studentNo, first_name, last_name);
+		    std = new Student(studentNo, utor, first_name, last_name);
 		}
 		return std;
 	}

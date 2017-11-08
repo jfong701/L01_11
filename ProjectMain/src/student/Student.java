@@ -15,10 +15,12 @@ public class Student {
 	String studentNo;
 	String studentFirstName;
 	String studentLastName;
+	String studentUTORID;
 	
-	public Student(String studentNo, String studentFirstName, String studentLastName) {
+	public Student(String studentNo, String utor, String studentFirstName, String studentLastName) {
 		// TODO Auto-generated constructor stub
 		this.studentNo = studentNo;
+		this.studentUTORID = utor;
 		this.studentFirstName = studentFirstName;
 		this.studentLastName = studentLastName;
 	}
@@ -39,6 +41,13 @@ public class Student {
 		this.studentNo = studentNo;
 	}
 	
+	public String getUTOR() {
+		return studentUTORID;
+	}
+	
+	public void setUTOR(String utor) {
+		this.studentUTORID = utor;
+	}
 
 	/**
 	 * @return the studentFirstName
