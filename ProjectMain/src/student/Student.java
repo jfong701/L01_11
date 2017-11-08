@@ -1,4 +1,7 @@
 package student;
+
+import java.sql.*;
+
 /**
  * 
  */
@@ -23,6 +26,15 @@ public class Student {
 		this.studentLastName = studentLastName;
 	}
 
+	
+	/**
+	 * Metamorphose Stuent() into searching for existing student instead of creating new object.
+	 * @param studentNo
+	 */
+	public Student(String studentNo) {
+		this.studentNo = studentNo;
+	}
+	
 	
 	/**
 	 * @return the studentNo
@@ -71,6 +83,34 @@ public class Student {
 		this.studentLastName = studentLastName;
 	}
 
+	
+	public void insertSQL() {
+		String utroid = null;
+		String student_password = null;
+		
+		try {
+			Class.forName(com.mysql.jdbc.Driver.class.getName());
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		try {
+			Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/cscc01?useSSL=false", "root", "MySQL");
+			Statement stmt = conn.createStatement();
+			
+			stmt.executeUpdate("insert into student (sid, fname, lname, utroid, student_password)" +
+											"values ('" + this.studentNo +"','" + 
+														  this.studentFirstName + "','" +
+														  this.studentLastName + "','" +
+														  utroid + "','" +
+														  student_password +"')");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 
 	/**
 	 * @return string format of this object
