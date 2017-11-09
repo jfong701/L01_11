@@ -19,7 +19,7 @@ public class Classes {
 	
 	
 	/**
-	 * Metamorphose Professor() into searching for existing student instead of creating
+	 * Metamorphose Classes() into searching for existing student instead of creating
 	 * new object() into searching for existing student instead of creating new object.
 	 * @param classNo
 	 */
