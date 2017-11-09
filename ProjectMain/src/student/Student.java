@@ -18,6 +18,8 @@ public class Student {
 	String studentNo;
 	String studentFirstName;
 	String studentLastName;
+	String studentUtroid;
+	String studentPassword;
 	
 	public Student(String studentNo, String studentFirstName, String studentLastName) {
 		// TODO Auto-generated constructor stub
@@ -85,8 +87,8 @@ public class Student {
 
 	
 	public void insertSQL() {
-		String utroid = null;
-		String student_password = null;
+		this.studentUtroid = null;
+		this.studentPassword = null;
 		
 		try {
 			Class.forName(com.mysql.jdbc.Driver.class.getName());
@@ -103,8 +105,8 @@ public class Student {
 											"values ('" + this.studentNo +"','" + 
 														  this.studentFirstName + "','" +
 														  this.studentLastName + "','" +
-														  utroid + "','" +
-														  student_password +"')");
+														  this.studentUtroid + "','" +
+														  this.studentPassword + "')");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -146,9 +148,35 @@ public class Student {
 			ResultSet rs = pstmt.executeQuery();
 				
 			if(rs.next()) {
-				this.studentFirstName=rs.getString(2);
-				this.studentLastName=rs.getString(3);
+				this.studentFirstName = rs.getString(2);
+				this.studentLastName = rs.getString(3);
+				this.studentUtroid = rs.getString(4);
+				this.studentPassword = rs.getString(5);
 			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	
+	public void updateSQL() {
+		try {
+			Class.forName(com.mysql.jdbc.Driver.class.getName());
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+			
+		try {
+			Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/cscc01?useSSL=false", "root", "MySQL");
+			Statement stmt = conn.createStatement();
+			
+			stmt.executeUpdate("update student set fname = '" + this.studentFirstName + "'," +
+			            						  "lname = '" + this.studentLastName + "'," +
+			            						  "utroid = '" + this.studentUtroid + "'," +
+			            						  "student_password = '" + this.studentPassword + "'" +
+												  "where sid = '" + this.studentNo + "'");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
