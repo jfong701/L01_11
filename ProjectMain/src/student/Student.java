@@ -111,6 +111,50 @@ public class Student {
 		}
 	}
 	
+	
+	public void deleteSQL() {
+		try {
+			Class.forName(com.mysql.jdbc.Driver.class.getName());
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		try {
+			Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/cscc01?useSSL=false", "root", "MySQL");
+			Statement stmt = conn.createStatement();
+			
+			stmt.executeUpdate("delete from student where sid = '" + this.studentNo + "'");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	
+	public void selectSQL() {
+		try {
+			Class.forName(com.mysql.jdbc.Driver.class.getName());
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+			
+		try {
+			Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/cscc01?useSSL=false", "root", "MySQL");
+			PreparedStatement pstmt = conn.prepareStatement("select * from student where sid = '" + this.studentNo + "'");
+			ResultSet rs = pstmt.executeQuery();
+				
+			if(rs.next()) {
+				this.studentFirstName=rs.getString(2);
+				this.studentLastName=rs.getString(3);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 
 	/**
 	 * @return string format of this object
