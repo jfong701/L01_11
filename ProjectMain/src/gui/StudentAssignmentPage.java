@@ -111,11 +111,22 @@ public class StudentAssignmentPage {
     Button submitButton = new Button("Submit");
     submitButton.setOnAction(e -> {
       System.out.println("submitted");
+
+      // Compare answers and output score to messageBox.
+      int score = 0;
+
+      // Compare input strings to stored answers.
       for (int i = 0; i < numQuestions; i++) {
-        System.out.print(answerFields[i].getText());
-        System.out.print("  |  ");
-        System.out.println(answers[i]);
+        if (answerFields[i].getText().equals(answers[i])) {
+          score++;
+        }
       }
+
+      // Display the grade in a message box.
+      String message = "Score: " + Integer.toString(score) + "/"
+          + Integer.toString(numQuestions);
+
+      MessageBox.show(assignmentName, message);
     });
     grid.add(submitButton, 2, currentRow);
   }
