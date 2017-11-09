@@ -28,7 +28,8 @@ public class Professor {
 
 	
 	/**
-	 * Metamorphose Metamorphose Professor() into searching for existing student instead of creating new object.t() into searching for existing student instead of creating new object.
+	 * Metamorphose Professor() into searching for existing professor instead of creating
+	 * new object.t() into searching for existing student instead of creating new object.
 	 * @param professorNo
 	 */
 	public Professor(String professorNo) {
