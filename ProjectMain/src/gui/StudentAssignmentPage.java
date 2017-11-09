@@ -16,6 +16,8 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+import jdbc.DOA;
+
 public class StudentAssignmentPage {
 
     private static int currentRow;
@@ -51,41 +53,16 @@ public class StudentAssignmentPage {
         currentRow++;
 
         // Questions
-        Text questionNumLabel = new Text("1.");
+        Label questionNumLabel = new Label("1.");
         grid.add(questionNumLabel, 0, currentRow, 2, 1);
         currentRow++;
 
-        Text questionLabel = new Text("What is 3 + 4?");
+        Label questionLabel = new Label("What is 3 + 4?");
         grid.add(questionLabel, 0, currentRow,2, 1);
         currentRow++;
 
         TextField answerField = new TextField();
         grid.add(answerField, 0, currentRow, 2, 1);
-        currentRow++;
-
-        // copy-pasted for layout testing --> convert to loop in future
-        Text questionNumLabel2 = new Text("2.");
-        grid.add(questionNumLabel2, 0, currentRow, 2, 1);
-        currentRow++;
-
-        Text questionLabel2 = new Text("What is 3 + 4? ");
-        grid.add(questionLabel2, 0, currentRow,2 , 1);
-        currentRow++;
-
-        TextField answerField2 = new TextField();
-        grid.add(answerField2, 0, currentRow, 2, 1);
-        currentRow++;
-
-        Text questionNumLabel3 = new Text("3.");
-        grid.add(questionNumLabel3, 0, currentRow, 2, 1);
-        currentRow++;
-
-        Text questionLabel3 = new Text("What is 3 + 4?");
-        grid.add(questionLabel3, 0, currentRow, 2, 1);
-        currentRow++;
-
-        TextField answerField3 = new TextField();
-        grid.add(answerField3, 0, currentRow, 2, 1);
         currentRow++;
 
         currentRow += 5;
