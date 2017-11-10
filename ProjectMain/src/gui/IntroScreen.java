@@ -12,6 +12,8 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.geometry.Insets;
 
+import gui.StudentPage;
+
 public class IntroScreen extends Application {
 
 	public static void main(String[] args) {
@@ -47,6 +49,8 @@ public class IntroScreen extends Application {
 		loginButton.setOnAction(e -> {
 			if (userInput.getText().equals("Professor")) {
 				ProfessorPage.login(primaryStage, userInput.getText(), passInput.getText());
+			} else if (userInput.getText().equals("Student")) {
+				StudentPage.login(primaryStage, userInput.getText(), passInput.getText());
 			}
 		});
 		GridPane.setConstraints(loginButton, 5, 6);
