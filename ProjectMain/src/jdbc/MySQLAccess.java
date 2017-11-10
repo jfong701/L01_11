@@ -239,7 +239,7 @@ public class MySQLAccess {
 			}
 		}
 				
-		String format = String.format("%0" + colLength + "d", 0).replace("0", "%-15s") + "\n";
+		String format = String.format("%0" + colLength + "d", 0).replace("0", "%-20s") + "\n";
 		System.out.format(format + "\n", colNames);
 		Object[] row = new Object[colLength];
 		

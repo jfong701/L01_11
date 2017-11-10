@@ -47,7 +47,7 @@ public class DOA {
 				"utor_id VARCHAR(10) UNIQUE NOT NULL",
 				"first_name VARCHAR(255) NOT NULL",
 				"last_name VARCHAR(255) NOT NULL",
-				"student_password VARCHAR(25)",
+				"student_password VARCHAR(25) DEFAULT ''",
 				"PRIMARY KEY ( student_id )"
 				);
 		a.createTable(asmt,
@@ -100,7 +100,7 @@ public class DOA {
 	
 	public static void addStudent(String id, String utor_id, String first, String last) {
 		start();
-		String sql = a.preparedRecordsSQL(stu, 4, "student_id", "utor_id", "first_name", "last_name");
+		String sql = a.preparedRecordsSQL(stu, 5, "student_id", "utor_id", "first_name", "last_name", "student_password");
 		System.out.println(sql);
 		Connection conn = a.getConn();
 		try {
@@ -109,6 +109,7 @@ public class DOA {
 			pr.setString(2, utor_id);
 			pr.setString(3, first);
 			pr.setString(4, last);
+			pr.setString(5, " ");
 			pr.execute();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -267,17 +268,32 @@ public class DOA {
 		}
 	}
 	
-	public Student rsToStudent(ResultSet rs) throws SQLException {
+	public static Student rsToStudent(ResultSet rs) throws SQLException {
 		Student std = null;
-		while (rs.next()) {
-			// columns in order: student_id,first_name,last_name,utorid
-		    String studentNo = rs.getString("student_id");
-		    String utor = rs.getString("utor_id");
-		    String first_name = rs.getString("first_name");
-		    String last_name = rs.getString("last_name");
-		    std = new Student(studentNo, utor, first_name, last_name);
-		}
+		// columns in order: student_id,first_name,last_name,utorid
+		String studentNo = rs.getString("student_id");
+		String utor = rs.getString("utor_id");
+		String first_name = rs.getString("first_name");
+		String last_name = rs.getString("last_name");
+		String password = rs.getString("student_password");
+		std = new Student(studentNo, utor, first_name, last_name, password);
+		
 		return std;
+	}
+	
+	public static ArrayList<Student> getAllStudents() {
+		start();
+		ArrayList<Student> students = new ArrayList<Student>();
+		ResultSet rs = a.selectRecords(stu, "*");
+		try {
+			while (rs.next()) {
+				students.add(rsToStudent(rs)); 
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		close();
+		return students;
 	}
 	
 	public Question rsToQuestion(ResultSet rs) throws SQLException {

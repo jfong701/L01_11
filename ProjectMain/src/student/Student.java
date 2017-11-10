@@ -16,6 +16,7 @@ public class Student {
 	String studentFirstName;
 	String studentLastName;
 	String studentUTORID;
+	String password;
 	
 	public Student(String studentNo, String utor, String studentFirstName, String studentLastName) {
 		// TODO Auto-generated constructor stub
@@ -23,6 +24,15 @@ public class Student {
 		this.studentUTORID = utor;
 		this.studentFirstName = studentFirstName;
 		this.studentLastName = studentLastName;
+	}
+	
+	public Student(String studentNo, String utor, String studentFirstName, String studentLastName, String password) {
+		// TODO Auto-generated constructor stub
+		this.studentNo = studentNo;
+		this.studentUTORID = utor;
+		this.studentFirstName = studentFirstName;
+		this.studentLastName = studentLastName;
+		this.password = password;
 	}
 
 	
@@ -41,11 +51,11 @@ public class Student {
 		this.studentNo = studentNo;
 	}
 	
-	public String getUTOR() {
+	public String getStudentUTORID() {
 		return studentUTORID;
 	}
 	
-	public void setUTOR(String utor) {
+	public void setStudentUTORID(String utor) {
 		this.studentUTORID = utor;
 	}
 
@@ -80,6 +90,9 @@ public class Student {
 		this.studentLastName = studentLastName;
 	}
 
+	public void setPassword(String password) {
+		this.password = password;
+	}
 
 	/**
 	 * @return string format of this object
