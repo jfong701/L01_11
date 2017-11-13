@@ -4,8 +4,13 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 
+import com.mysql.jdbc.StringUtils;
+
 import assignment.Question;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.sql.Array;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -115,6 +120,49 @@ public class DOA {
 		} finally {
 			close();
 		}
+	}
+	
+	public static boolean validateStudentFile(String abs_path) {
+		FileReader file = null;
+		BufferedReader buffer = null;
+		boolean valid = false;
+		// Error check IO calls 
+		try {
+			file = new FileReader(abs_path);
+			buffer = new BufferedReader(file);
+			String line;
+			String[] splitLine;
+			String studentNo, studentUtor, studentFirstName, studentLastName;
+			valid = true;
+			// read line by line, split and trim the strings. ASSUMING WE'RE GIVEN COMMA SEPARATED CSV FILES 
+			// format: studentNo, utorID, firstName, lastName
+			while (((line = buffer.readLine()) != null) && valid) {
+				splitLine = line.split(",");
+				studentNo = splitLine[0].trim();
+				studentUtor = splitLine[1].trim();
+				studentFirstName = splitLine[1].trim();
+				studentLastName = splitLine[2].trim();
+				// check studentNo for 10 digits
+				if (studentNo.length() == 10) {
+					int i = 0;
+					boolean notDigit = false;
+					// loop to check for string of all digits
+					while (i < studentNo.length() && !notDigit) {
+						notDigit = Character.isDigit(studentNo.charAt(i));
+					}
+					if (notDigit) {
+						valid = false;
+					}
+				}
+				// check utorid for max 10 characters
+				if (studentUtor.length() >= 10 || studentUtor.length() < 1) {
+					valid = false;
+				}
+			}	
+		} catch (IOException error) {
+			System.err.println("IOException: " + error.getMessage());
+		}
+		return valid;
 	}
 	
 	public static void uploadStudentFile(String abs_path) {
