@@ -4,8 +4,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 
-import com.mysql.jdbc.StringUtils;
-
 import assignment.Question;
 
 import java.io.BufferedReader;
