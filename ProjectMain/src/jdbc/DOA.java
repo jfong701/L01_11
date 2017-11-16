@@ -3,6 +3,7 @@ package jdbc;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import assignment.Question;
 
@@ -120,10 +121,29 @@ public class DOA {
 		}
 	}
 	
-	public static boolean validateStudentFile(String abs_path) {
+	public static boolean isStudentNumberValid(String studentNo) {
+		if (studentNo.length() == 10) {
+			int i = 0;
+			boolean digit = true;
+			// loop to check for string of all digits
+			while (i < studentNo.length() && !digit) {
+				digit = Character.isDigit(studentNo.charAt(i));
+				i++;
+			}
+			if (!digit) {
+				return false;
+			} else {
+				return true;
+			}
+		} 
+		return false;
+	}
+
+	
+	public static List<String> isStudentFileValid(String abs_path) {
 		FileReader file = null;
 		BufferedReader buffer = null;
-		boolean valid = false;
+		List<String> errorMessages = new ArrayList<String>();
 		// Error check IO calls 
 		try {
 			file = new FileReader(abs_path);
@@ -132,10 +152,10 @@ public class DOA {
 			String[] splitLine;
 			String studentNo, studentUtor, studentFirstName, studentLastName;
 			int lineCount = 0;
-			valid = true;
+			boolean validStudentNo, validUtor, validFirstName, validLastName, duplicate = false;
 			// read line by line, split and trim the strings. ASSUMING WE'RE GIVEN COMMA SEPARATED CSV FILES 
 			// format: studentNo, utorID, firstName, lastName
-			while (((line = buffer.readLine()) != null) && valid) {
+			while (((line = buffer.readLine()) != null)) {
 				System.out.println(line);
 				lineCount++;
 				splitLine = line.split(",");
@@ -144,33 +164,23 @@ public class DOA {
 				studentFirstName = splitLine[1].trim();
 				studentLastName = splitLine[2].trim();
 				// check studentNo for 10 digits
-				if (studentNo.length() == 10) {
-					int i = 0;
-					boolean digit = true;
-					// loop to check for string of all digits
-					while (i < studentNo.length() && !digit) {
-						digit = Character.isDigit(studentNo.charAt(i));
-						i++;
-					}
-					if (!digit) {
-						valid = false;
-					}
+				validStudentNo = isStudentNumberValid(studentNo);
+				// check utorid for min 3 characters and max 10 characters
+				validUtor = studentUtor.length() <= 10 && studentUtor.length() > 2;
+				// check first and last name for at least 1 character each and max 40 characters each
+				validFirstName = studentFirstName.length() >= 1 && studentFirstName.length() <= 40;
+				validLastName = studentLastName.length() >= 1 && studentLastName.length() <= 40;
+				// need to check database for duplicates
+				duplicate = false; // dummy value for now until implementing it
+				if (!(validStudentNo && validUtor && validFirstName && validLastName && duplicate)) {
+					errorMessages.add(String.format("Line %d either has no valid student number, valid UTORID, valid FirstName, valid LastName or it is a duplicate.", lineCount));
 				}
 				
-				// check utorid for max 10 characters
-				if (studentUtor.length() >= 10 || studentUtor.length() < 1) {
-					valid = false;
-				}
-				// need to check database for duplicates
-			}
-			// checks if the file is empty
-			if (lineCount == 0) {
-				valid = false;
 			}
 		} catch (IOException error) {
 			System.err.println("IOException: " + error.getMessage());
 		}
-		return valid;
+		return errorMessages;
 	}
 	
 	public static void uploadStudentFile(String abs_path) {
