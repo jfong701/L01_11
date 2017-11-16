@@ -297,7 +297,7 @@ public class DOA {
 		try {
 			String login_command;
 			login_command = "SELECT * FROM STUDENTS WHERE student_id='" +username+ "' AND student_password='" +passInput+"';";
-			System.out.println(login_command);
+			//System.out.println(login_command);
 			Connection conn = a.getConn();
 			PreparedStatement login_cmd = conn.prepareStatement(login_command);
 			ResultSet valid = login_cmd.executeQuery();
@@ -329,6 +329,28 @@ public class DOA {
 			close();
 		}
 		return false;
+	}
+
+	public static int getAvg(String course_id, int aID) {
+		start();
+		int average = 0;
+		try { 
+			PreparedStatement cmd = a.getConn().prepareStatement("SELECT AVG(mark) FROM STUDENT_ASSIGNMENTS "
+					+ "WHERE course_id = '"+course_id+"' AND assignment_id = "+aID+";");
+			ResultSet avg = cmd.executeQuery();
+			if (avg.first()) {
+				average = avg.getInt(1);
+			} else {
+				System.out.println("No records available");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close();
+		}
+	
+		
+		return average;
 	}
 }
 
