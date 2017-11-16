@@ -257,6 +257,38 @@ public class DOA {
 		}
 	}
 	
+	/*
+	 * Returns an ArrayList of ArrayLists consisting of [question, answer_value] pairs.
+	 * Ex.
+	 * start();
+	 * ArrayList<ArrayList<String>> array = getQuestions("CSCC01", "1");
+	 * close();
+	 * System.out.println();
+	 * for (int i = 0; i < array.size(); i++) {
+	 *     ArrayList<String> inner = array.get(i);
+	 *     System.out.println(inner.get(0) + " " + inner.get(1));
+	 * }
+	 * 
+	 * where inner.get(0) is the question for each row i and inner.get(1) is the answer function for each row i.
+	 */
+	public static ArrayList<ArrayList<String>> getQuestions(String course_id, String assignment_id) {
+		ArrayList<ArrayList<String>> array = new ArrayList<ArrayList<String>>();
+		ArrayList<String> innerArray;
+		try {
+			ResultSet rs =  a.selectRecordsWhere(ques, "course_id='" + course_id + "' AND assignment_id='" + assignment_id +"'", "*");
+			int i = 0;
+			while (rs.next()) {
+				innerArray = new ArrayList<String>();
+				innerArray.add(rs.getString("question"));
+				innerArray.add(rs.getString("answer_function"));
+				array.add(innerArray);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return array;
+	}
+	
 	public static String QuestionCount(String course_id, String assignment_id) {
 		start();
 		try {
