@@ -4,6 +4,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 
+import com.mysql.jdbc.Statement;
+
 import assignment.Question;
 
 import java.sql.Array;
@@ -290,7 +292,44 @@ public class DOA {
 		return question;
 	}
 	
+	public static boolean loginStudent(String username, String passInput) throws SQLException {
+		start();
+		try {
+			String login_command;
+			login_command = "SELECT * FROM STUDENTS WHERE student_id='" +username+ "' AND student_password='" +passInput+"';";
+			System.out.println(login_command);
+			Connection conn = a.getConn();
+			PreparedStatement login_cmd = conn.prepareStatement(login_command);
+			ResultSet valid = login_cmd.executeQuery();
+			if (valid.first()) {
+				return true;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close();
+		}
+		return false;
+	}
 	
+	public static boolean loginProf(String username, String passInput) throws SQLException {
+		start();
+		try {
+			String login_command;
+			login_command = "SELECT * FROM PROFESSORS WHERE professor_id='" +username+ "' AND professor_password='" +passInput+"';";
+			Connection conn = a.getConn();
+			PreparedStatement login_cmd = conn.prepareStatement(login_command);
+			ResultSet valid = login_cmd.executeQuery();
+			if (valid.first()) {
+				return true;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close();
+		}
+		return false;
+	}
 }
 
 //a = new MySQLAccess();

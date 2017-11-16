@@ -1,10 +1,15 @@
 package gui;
 
+import java.sql.SQLException;
+
+import com.mysql.jdbc.Statement;
+
 import gui.ProfessorPage;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import jdbc.DOA;
 import javafx.scene.layout.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -22,7 +27,7 @@ public class IntroScreen extends Application {
 	}
 	
 	@Override
-	public void start(Stage primaryStage) throws Exception {
+	public void start(Stage primaryStage) throws Exception, SQLException {
 		primaryStage.setTitle("Intro Screen");
 		
 		// Create and setup grid layout
@@ -47,10 +52,16 @@ public class IntroScreen extends Application {
 		// Log in button
 		Button loginButton = new Button("Login");
 		loginButton.setOnAction(e -> {
-			if (userInput.getText().equals("Professor")) {
-				ProfessorPage.login(primaryStage, userInput.getText(), passInput.getText());
-			} else if (userInput.getText().equals("Student")) {
-				StudentPage.login(primaryStage, userInput.getText(), passInput.getText());
+			try {
+				if (DOA.loginProf(userInput.getText(), passInput.getText())) {
+					ProfessorPage.login(primaryStage, userInput.getText(), passInput.getText());
+				} else if (DOA.loginStudent(userInput.getText(), passInput.getText())) {
+					StudentPage.login(primaryStage, userInput.getText(), passInput.getText());
+				} else {
+					MessageBox.show("Login Failed", "Invalid Credentials");
+				}
+			} catch (SQLException exc) {
+				exc.printStackTrace();
 			}
 		});
 		GridPane.setConstraints(loginButton, 5, 6);
@@ -61,5 +72,4 @@ public class IntroScreen extends Application {
 		primaryStage.setScene(loginScene);
 		primaryStage.show();
 	}
-
 }
