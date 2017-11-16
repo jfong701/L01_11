@@ -131,10 +131,13 @@ public class DOA {
 			String line;
 			String[] splitLine;
 			String studentNo, studentUtor, studentFirstName, studentLastName;
+			int lineCount = 0;
 			valid = true;
 			// read line by line, split and trim the strings. ASSUMING WE'RE GIVEN COMMA SEPARATED CSV FILES 
 			// format: studentNo, utorID, firstName, lastName
 			while (((line = buffer.readLine()) != null) && valid) {
+				System.out.println(line);
+				lineCount++;
 				splitLine = line.split(",");
 				studentNo = splitLine[0].trim();
 				studentUtor = splitLine[1].trim();
@@ -143,20 +146,27 @@ public class DOA {
 				// check studentNo for 10 digits
 				if (studentNo.length() == 10) {
 					int i = 0;
-					boolean notDigit = false;
+					boolean digit = true;
 					// loop to check for string of all digits
-					while (i < studentNo.length() && !notDigit) {
-						notDigit = Character.isDigit(studentNo.charAt(i));
+					while (i < studentNo.length() && !digit) {
+						digit = Character.isDigit(studentNo.charAt(i));
+						i++;
 					}
-					if (notDigit) {
+					if (!digit) {
 						valid = false;
 					}
 				}
+				
 				// check utorid for max 10 characters
 				if (studentUtor.length() >= 10 || studentUtor.length() < 1) {
 					valid = false;
 				}
-			}	
+				// need to check database for duplicates
+			}
+			// checks if the file is empty
+			if (lineCount == 0) {
+				valid = false;
+			}
 		} catch (IOException error) {
 			System.err.println("IOException: " + error.getMessage());
 		}
