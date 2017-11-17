@@ -47,7 +47,18 @@ public class ProfessorViewStudents {
 			if (list != null) {
 				for (File file : list) {
 					DOA.start();
-					DOA.uploadStudentFile(file.getAbsolutePath().replace('\\', '/'));
+					// check for any errors in the student file using the method in DOA
+					List<String> errors = DOA.getErrorsInStudentFile(file.getAbsolutePath().replace('\\', '/'));
+					String error = "";
+					// if there is at least one string in the list of errors, then show a message box containing the errors
+					if (errors.size() > 0) {
+						for (int i=0; i<errors.size(); i++) {
+							error = error + errors.get(i) + '\n';
+						}
+						MessageBox.show("Error", error);
+					} else {
+						DOA.uploadStudentFile(file.getAbsolutePath().replace('\\', '/'));
+					}
 					DOA.close();
 				}
 			}
