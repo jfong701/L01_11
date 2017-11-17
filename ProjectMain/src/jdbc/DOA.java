@@ -35,17 +35,11 @@ public class DOA {
 	private static MySQLAccess a;
 	
 	public static void main(String[] args) throws SQLException {
-			//start();
+			start();
 			//a.dropTable(stu);
 			//close();
 			//initDatabase();
-			//close();
-		List<String> s = new ArrayList<String>();
-		s = isStudentFileValid("C:/Users/DAVID/eclipse-workspace/StudentValidator/src/student1.csv");
-		System.out.println(s.size());
-		for (int i = 0; i<s.size(); i++) {
-			System.out.println(s.get(i));
-		}
+			close();
 	}
 	
 	public static void initDatabase() throws SQLException {
@@ -165,7 +159,7 @@ public class DOA {
 		return inDB;
 	}
 	
-	public static List<String> isStudentFileValid(String abs_path) {
+	public static List<String> getErrorsInStudentFile(String abs_path) {
 		FileReader file = null;
 		BufferedReader buffer = null;
 		List<String> errorMessages = new ArrayList<String>();
@@ -184,7 +178,7 @@ public class DOA {
 				lineCount++;
 				splitLine = line.split(",");
 				if (splitLine.length != 4) {
-					errorMessages.add(String.format("Line %d: Insufficient number of fields(needs studentNumber, UTORID, firstName, lastName).", lineCount));
+					errorMessages.add(String.format("Line %d : Insufficient number of fields(needs studentNumber, UTORID, firstName, lastName).", lineCount));
 					continue;
 				}
 				studentNo = splitLine[0].trim();
@@ -208,11 +202,13 @@ public class DOA {
 					errorMessages.add(String.format("Line %d : First Name is invalid(min 1 character, max 40 characters).", lineCount));
 				if (!validLastName) 
 					errorMessages.add(String.format("Line %d : Last Name is invalid(min 1 character, max 40 characters).", lineCount));
+				if (duplicate)
+					errorMessages.add(String.format("Line %d : This Student Number already exists in the database.", lineCount));
 			}
 		} catch (IOException error) {
 			System.err.println("IOException: " + error.getMessage());
 		} catch (ArrayIndexOutOfBoundsException error) {
-			return null;
+			System.err.println("ArrayIndexOutOfBoundsException: " + error.getMessage());
 		}
 		return errorMessages;
 	}
