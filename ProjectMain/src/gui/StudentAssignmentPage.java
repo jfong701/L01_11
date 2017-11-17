@@ -46,7 +46,7 @@ public class StudentAssignmentPage {
     sp.setFitToHeight(true);
     sp.setFitToWidth(true);
 
-    Scene addStudentsScene = new Scene(sp, 500, 250);
+    Scene addStudentsScene = new Scene(sp, 500, 500);
     primaryStage.setScene(addStudentsScene);
     currentRow = 0;
 
@@ -104,11 +104,16 @@ public class StudentAssignmentPage {
     currentRow += 5;
 
     Button backButton = new Button("Back");
+    Button submitButton = new Button("Submit");
+
+    grid.add(backButton, 0, currentRow);
+    grid.add(submitButton, 2, currentRow);
+
+    // BACK BUTTON EVENT HANDLER
     backButton
         .setOnAction(e -> gui.StudentPage.login(primaryStage, user, pass));
-    grid.add(backButton, 0, currentRow);
 
-    Button submitButton = new Button("Submit");
+    // SUBMIT BUTTON EVENT HANDLER
     submitButton.setOnAction(e -> {
       System.out.println("submitted");
 
@@ -128,6 +133,5 @@ public class StudentAssignmentPage {
 
       MessageBox.show(assignmentName, message);
     });
-    grid.add(submitButton, 2, currentRow);
   }
 }
