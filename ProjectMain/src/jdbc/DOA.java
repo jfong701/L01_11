@@ -109,7 +109,7 @@ public class DOA {
 			pr.setString(2, utor_id);
 			pr.setString(3, first);
 			pr.setString(4, last);
-			pr.setString(5, " ");
+			pr.setString(5, "password");
 			pr.execute();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -252,7 +252,7 @@ public class DOA {
 	
 	public static void addProfessor(String id, String first, String last) {
 		start();
-		String sql = a.preparedRecordsSQL(prof, 3, "professor_id", "professor_first_name", "professor_last_name");
+		String sql = a.preparedRecordsSQL(prof, 4, "professor_id", "professor_first_name", "professor_last_name", "professor_password");
 		System.out.println(sql);
 		Connection conn = a.getConn();
 		try {
@@ -260,6 +260,7 @@ public class DOA {
 			pr.setString(1,  id);
 			pr.setString(2, first);
 			pr.setString(3, last);
+			pr.setString(4, "password");
 			pr.execute();
 		} catch (SQLException e) {
 			e.printStackTrace();
