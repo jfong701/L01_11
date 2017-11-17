@@ -3,11 +3,15 @@ package jdbc;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import com.mysql.jdbc.Statement;
 
 import assignment.Question;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.sql.Array;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -31,11 +35,17 @@ public class DOA {
 	private static MySQLAccess a;
 	
 	public static void main(String[] args) throws SQLException {
-			start();
+			//start();
 			//a.dropTable(stu);
 			//close();
-			initDatabase();
-			close();
+			//initDatabase();
+			//close();
+		List<String> s = new ArrayList<String>();
+		s = isStudentFileValid("C:/Users/DAVID/eclipse-workspace/StudentValidator/src/student1.csv");
+		System.out.println(s.size());
+		for (int i = 0; i<s.size(); i++) {
+			System.out.println(s.get(i));
+		}
 	}
 	
 	public static void initDatabase() throws SQLException {
@@ -118,6 +128,93 @@ public class DOA {
 		} finally {
 			close();
 		}
+	}
+	
+	public static boolean isStudentNumberValid(String studentNo) {
+		if (studentNo.length() == 10) {
+			int i = 0;
+			boolean digit = true;
+			// loop to check for string of all digits
+			while (i < studentNo.length() && digit) {
+				digit = digit && Character.isDigit(studentNo.charAt(i));
+				i++;
+			}
+			if (!digit) {
+				return false;
+			} else {
+				return true;
+			}
+		} 
+		return false;
+	}
+
+	public static boolean isStudentInDatabase(String studentNo) {
+		start();
+		boolean inDB = false;
+		try {
+			PreparedStatement cmd = a.getConn().prepareStatement("SELECT student_id FROM STUDENTS WHERE student_id = '" + studentNo +"';");
+			ResultSet result = cmd.executeQuery();
+			if (result.first()) {
+				inDB = true;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close();
+		}
+		return inDB;
+	}
+	
+	public static List<String> isStudentFileValid(String abs_path) {
+		FileReader file = null;
+		BufferedReader buffer = null;
+		List<String> errorMessages = new ArrayList<String>();
+		// Error check IO calls 
+		try {
+			file = new FileReader(abs_path);
+			buffer = new BufferedReader(file);
+			String line;
+			String[] splitLine;
+			String studentNo, studentUtor, studentFirstName, studentLastName;
+			int lineCount = 0;
+			boolean validStudentNo, validUtor, validFirstName, validLastName, duplicate = false;
+			// read line by line, split and trim the strings. ASSUMING WE'RE GIVEN COMMA SEPARATED CSV FILES 
+			// format: studentNo, utorID, firstName, lastName
+			while (((line = buffer.readLine()) != null)) {
+				lineCount++;
+				splitLine = line.split(",");
+				if (splitLine.length != 4) {
+					errorMessages.add(String.format("Line %d: Insufficient number of fields(needs studentNumber, UTORID, firstName, lastName).", lineCount));
+					continue;
+				}
+				studentNo = splitLine[0].trim();
+				studentUtor = splitLine[1].trim();
+				studentFirstName = splitLine[2].trim();
+				studentLastName = splitLine[3].trim();
+				// check studentNo for 10 digits
+				validStudentNo = isStudentNumberValid(studentNo);
+				// check utorid for min 3 characters and max 10 characters
+				validUtor = studentUtor.length() <= 10 && studentUtor.length() > 2;
+				// check first and last name for at least 1 character each and max 40 characters each
+				validFirstName = studentFirstName.length() >= 1 && studentFirstName.length() <= 40;
+				validLastName = studentLastName.length() >= 1 && studentLastName.length() <= 40;
+				// need to check database for duplicates
+				duplicate = isStudentInDatabase(studentNo); // dummy value for now until implementing it
+				if (!validStudentNo) 
+					errorMessages.add(String.format("Line %d : Student Number is invalid(needs 10 digits).", lineCount));
+				if (!validUtor) 
+					errorMessages.add(String.format("Line %d : UTORID is invalid(min 3 characters, max 10 characters).", lineCount));
+				if (!validFirstName) 
+					errorMessages.add(String.format("Line %d : First Name is invalid(min 1 character, max 40 characters).", lineCount));
+				if (!validLastName) 
+					errorMessages.add(String.format("Line %d : Last Name is invalid(min 1 character, max 40 characters).", lineCount));
+			}
+		} catch (IOException error) {
+			System.err.println("IOException: " + error.getMessage());
+		} catch (ArrayIndexOutOfBoundsException error) {
+			return null;
+		}
+		return errorMessages;
 	}
 	
 	public static void uploadStudentFile(String abs_path) {
