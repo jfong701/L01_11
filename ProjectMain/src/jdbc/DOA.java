@@ -4,6 +4,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 
+import com.mysql.jdbc.Statement;
+
 import assignment.Question;
 
 import java.sql.Array;
@@ -47,7 +49,7 @@ public class DOA {
 				"utor_id VARCHAR(10) UNIQUE NOT NULL",
 				"first_name VARCHAR(255) NOT NULL",
 				"last_name VARCHAR(255) NOT NULL",
-				"student_password VARCHAR(25)",
+				"student_password VARCHAR(25) DEFAULT ''",
 				"PRIMARY KEY ( student_id )"
 				);
 		a.createTable(asmt,
@@ -100,7 +102,7 @@ public class DOA {
 	
 	public static void addStudent(String id, String utor_id, String first, String last) {
 		start();
-		String sql = a.preparedRecordsSQL(stu, 4, "student_id", "utor_id", "first_name", "last_name");
+		String sql = a.preparedRecordsSQL(stu, 5, "student_id", "utor_id", "first_name", "last_name", "student_password");
 		System.out.println(sql);
 		Connection conn = a.getConn();
 		try {
@@ -109,6 +111,7 @@ public class DOA {
 			pr.setString(2, utor_id);
 			pr.setString(3, first);
 			pr.setString(4, last);
+			pr.setString(5, " ");
 			pr.execute();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -267,17 +270,32 @@ public class DOA {
 		}
 	}
 	
-	public Student rsToStudent(ResultSet rs) throws SQLException {
+	public static Student rsToStudent(ResultSet rs) throws SQLException {
 		Student std = null;
-		while (rs.next()) {
-			// columns in order: student_id,first_name,last_name,utorid
-		    String studentNo = rs.getString("student_id");
-		    String utor = rs.getString("utor_id");
-		    String first_name = rs.getString("first_name");
-		    String last_name = rs.getString("last_name");
-		    std = new Student(studentNo, utor, first_name, last_name);
-		}
+		// columns in order: student_id,first_name,last_name,utorid
+		String studentNo = rs.getString("student_id");
+		String utor = rs.getString("utor_id");
+		String first_name = rs.getString("first_name");
+		String last_name = rs.getString("last_name");
+		String password = rs.getString("student_password");
+		std = new Student(studentNo, utor, first_name, last_name, password);
+		
 		return std;
+	}
+	
+	public static ArrayList<Student> getAllStudents() {
+		start();
+		ArrayList<Student> students = new ArrayList<Student>();
+		ResultSet rs = a.selectRecords(stu, "*");
+		try {
+			while (rs.next()) {
+				students.add(rsToStudent(rs)); 
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		close();
+		return students;
 	}
 	
 	public Question rsToQuestion(ResultSet rs) throws SQLException {
@@ -290,7 +308,66 @@ public class DOA {
 		return question;
 	}
 	
+	public static boolean loginStudent(String username, String passInput) throws SQLException {
+		start();
+		try {
+			String login_command;
+			login_command = "SELECT * FROM STUDENTS WHERE student_id='" +username+ "' AND student_password='" +passInput+"';";
+			//System.out.println(login_command);
+			Connection conn = a.getConn();
+			PreparedStatement login_cmd = conn.prepareStatement(login_command);
+			ResultSet valid = login_cmd.executeQuery();
+			if (valid.first()) {
+				return true;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close();
+		}
+		return false;
+	}
 	
+	public static boolean loginProf(String username, String passInput) throws SQLException {
+		start();
+		try {
+			String login_command;
+			login_command = "SELECT * FROM PROFESSORS WHERE professor_id='" +username+ "' AND professor_password='" +passInput+"';";
+			Connection conn = a.getConn();
+			PreparedStatement login_cmd = conn.prepareStatement(login_command);
+			ResultSet valid = login_cmd.executeQuery();
+			if (valid.first()) {
+				return true;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close();
+		}
+		return false;
+	}
+
+	public static int getAvg(String course_id, int aID) {
+		start();
+		int average = 0;
+		try { 
+			PreparedStatement cmd = a.getConn().prepareStatement("SELECT AVG(mark) FROM STUDENT_ASSIGNMENTS "
+					+ "WHERE course_id = '"+course_id+"' AND assignment_id = "+aID+";");
+			ResultSet avg = cmd.executeQuery();
+			if (avg.first()) {
+				average = avg.getInt(1);
+			} else {
+				System.out.println("No records available");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close();
+		}
+	
+		
+		return average;
+	}
 }
 
 //a = new MySQLAccess();
