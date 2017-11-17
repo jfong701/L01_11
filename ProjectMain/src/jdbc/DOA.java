@@ -33,11 +33,17 @@ public class DOA {
 	private static MySQLAccess a;
 	
 	public static void main(String[] args) throws SQLException {
-			start();
+			//start();
 			//a.dropTable(stu);
 			//close();
-			initDatabase();
-			close();
+			//initDatabase();
+			//close();
+		List<String> s = new ArrayList<String>();
+		s = isStudentFileValid("C:/Users/DAVID/eclipse-workspace/StudentValidator/src/student1.csv");
+		System.out.println(s.size());
+		for (int i = 0; i<s.size(); i++) {
+			System.out.println(s.get(i));
+		}
 	}
 	
 	public static void initDatabase() throws SQLException {
@@ -126,8 +132,8 @@ public class DOA {
 			int i = 0;
 			boolean digit = true;
 			// loop to check for string of all digits
-			while (i < studentNo.length() && !digit) {
-				digit = Character.isDigit(studentNo.charAt(i));
+			while (i < studentNo.length() && digit) {
+				digit = digit && Character.isDigit(studentNo.charAt(i));
 				i++;
 			}
 			if (!digit) {
@@ -139,6 +145,22 @@ public class DOA {
 		return false;
 	}
 
+	public static boolean isStudentInDatabase(String studentNo) {
+		start();
+		boolean inDB = false;
+		try {
+			PreparedStatement cmd = a.getConn().prepareStatement("SELECT student_id FROM STUDENTS WHERE student_id = '" + studentNo +"';");
+			ResultSet result = cmd.executeQuery();
+			if (result.first()) {
+				inDB = true;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close();
+		}
+		return inDB;
+	}
 	
 	public static List<String> isStudentFileValid(String abs_path) {
 		FileReader file = null;
@@ -156,13 +178,16 @@ public class DOA {
 			// read line by line, split and trim the strings. ASSUMING WE'RE GIVEN COMMA SEPARATED CSV FILES 
 			// format: studentNo, utorID, firstName, lastName
 			while (((line = buffer.readLine()) != null)) {
-				System.out.println(line);
 				lineCount++;
 				splitLine = line.split(",");
+				if (splitLine.length != 4) {
+					errorMessages.add(String.format("Line %d: Insufficient number of fields(needs studentNumber, UTORID, firstName, lastName).", lineCount));
+					continue;
+				}
 				studentNo = splitLine[0].trim();
 				studentUtor = splitLine[1].trim();
-				studentFirstName = splitLine[1].trim();
-				studentLastName = splitLine[2].trim();
+				studentFirstName = splitLine[2].trim();
+				studentLastName = splitLine[3].trim();
 				// check studentNo for 10 digits
 				validStudentNo = isStudentNumberValid(studentNo);
 				// check utorid for min 3 characters and max 10 characters
@@ -171,14 +196,20 @@ public class DOA {
 				validFirstName = studentFirstName.length() >= 1 && studentFirstName.length() <= 40;
 				validLastName = studentLastName.length() >= 1 && studentLastName.length() <= 40;
 				// need to check database for duplicates
-				duplicate = false; // dummy value for now until implementing it
-				if (!(validStudentNo && validUtor && validFirstName && validLastName && duplicate)) {
-					errorMessages.add(String.format("Line %d either has no valid student number, valid UTORID, valid FirstName, valid LastName or it is a duplicate.", lineCount));
-				}
-				
+				duplicate = isStudentInDatabase(studentNo); // dummy value for now until implementing it
+				if (!validStudentNo) 
+					errorMessages.add(String.format("Line %d : Student Number is invalid(needs 10 digits).", lineCount));
+				if (!validUtor) 
+					errorMessages.add(String.format("Line %d : UTORID is invalid(min 3 characters, max 10 characters).", lineCount));
+				if (!validFirstName) 
+					errorMessages.add(String.format("Line %d : First Name is invalid(min 1 character, max 40 characters).", lineCount));
+				if (!validLastName) 
+					errorMessages.add(String.format("Line %d : Last Name is invalid(min 1 character, max 40 characters).", lineCount));
 			}
 		} catch (IOException error) {
 			System.err.println("IOException: " + error.getMessage());
+		} catch (ArrayIndexOutOfBoundsException error) {
+			return null;
 		}
 		return errorMessages;
 	}
