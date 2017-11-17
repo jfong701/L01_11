@@ -33,7 +33,7 @@ public class StudentAssignmentPage {
    * @param assignmentName : name of the current assignment being filled out
    */
   public static void startAssignment(Stage primaryStage, String user,
-      String pass, String assignmentName) {
+      String pass, String courseName, int assignmentNumber) {
 
     // Create layout
     GridPane grid = new GridPane();
@@ -46,22 +46,23 @@ public class StudentAssignmentPage {
     sp.setFitToHeight(true);
     sp.setFitToWidth(true);
 
-    Scene addStudentsScene = new Scene(sp, 500, 250);
+    Scene addStudentsScene = new Scene(sp, 500, 500);
     primaryStage.setScene(addStudentsScene);
     currentRow = 0;
 
-    // System.out.println(DOA.getCourseIds());
-    // System.out.println(DOA.getAssignmentIds("CSCC01"));
+    String assignmentName = Integer.toString(assignmentNumber);
 
     // CHECK how many questions are in the assignment
-    int numQuestions = Integer.parseInt(DOA.QuestionCount("CSCC01", "1"));
+    int numQuestions =
+        Integer.parseInt(DOA.QuestionCount(courseName, assignmentName));
 
     // Extract questions to fill out labels.
     ArrayList<ArrayList<String>> questionAndAnswerList =
-        DOA.getQuestions("CSCC01", "1");
+        DOA.getQuestions(courseName, assignmentName);
 
     String questions[] = new String[numQuestions];
     String answers[] = new String[numQuestions];
+
 
     // Extract the questions and answers into local arrays for easier access.
     for (int i = 0; i < questionAndAnswerList.size(); i++) {
@@ -103,10 +104,16 @@ public class StudentAssignmentPage {
     currentRow += 5;
 
     Button backButton = new Button("Back");
-    backButton.setOnAction(e -> gui.StudentPage.login(primaryStage, user, pass));
-    grid.add(backButton, 0, currentRow);
-
     Button submitButton = new Button("Submit");
+
+    grid.add(backButton, 0, currentRow);
+    grid.add(submitButton, 2, currentRow);
+
+    // BACK BUTTON EVENT HANDLER
+    backButton
+        .setOnAction(e -> gui.StudentPage.login(primaryStage, user, pass));
+
+    // SUBMIT BUTTON EVENT HANDLER
     submitButton.setOnAction(e -> {
       System.out.println("submitted");
 
@@ -126,18 +133,5 @@ public class StudentAssignmentPage {
 
       MessageBox.show(assignmentName, message);
     });
-    grid.add(submitButton, 2, currentRow);
-  }
-
-  /**
-   * A helper function to add questions to the GUI.
-   *
-   * @param questionNumber : Used to create Text Label Question#X
-   * @param question : Text to be displayed as the question (e.g. "What is 3 +
-   *        4?"
-   */
-  private static void addQuestions(int questionNumber, String question,
-      String answer) {
-
   }
 }
