@@ -19,6 +19,7 @@ deliverables
   * Product Backlog v4.pdf
   * Sprint 5 Backlog.pdf
   * Validation Testing v1.pdf
+  * Code Review.pdf
 
 executables
 * NotFastJustFurious-2017.11.17.jar
