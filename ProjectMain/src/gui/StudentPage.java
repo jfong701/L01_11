@@ -18,11 +18,11 @@ import javafx.geometry.Pos;
 public class StudentPage {
 
   private static int currentRow;
+  private static final int LEFT_WIDTH = 2;
+  private static final int RIGHT_WIDTH = 2;
   private static final int LEFT_COL_INDEX = 0;
-  private static final int BOX_WIDTH = 2;
-  private static final int LABEL_WIDTH = 2;
-  private static final int RIGHT_COL_INDEX = LABEL_WIDTH + 1;
-  private static final int ROW_HEIGHT = 10;
+  private static final int RIGHT_COL_INDEX = LEFT_WIDTH + 1;
+  private static final int ROW_HEIGHT = 5;
 
   public static void login(Stage primaryStage, String user, String pass) {
 
@@ -37,26 +37,26 @@ public class StudentPage {
     // Create grid layout
     GridPane grid = new GridPane();
     grid.setAlignment(Pos.CENTER);
-    grid.setPadding(new Insets(15, 15, 15, 15));
+    grid.setPadding(new Insets(5, 15, 15, 15));
     grid.setVgap(5);
     grid.setHgap(5);
     currentRow = 0;
 
     // Label for course selection comboBox
     Label courseLabel = new Label("Choose a course:");
-    grid.add(courseLabel, LEFT_COL_INDEX, currentRow, LABEL_WIDTH, ROW_HEIGHT);
+    grid.add(courseLabel, LEFT_COL_INDEX, currentRow, LEFT_WIDTH, ROW_HEIGHT);
 
     // Pull up a list of courses that the student is enrolled in.
     ComboBox<String> courseBox = new ComboBox<String>();
     courseBox.setPromptText("Choose a course");
     courseBox.getItems().addAll(DOA.getCourseIds());
     courseBox.setEditable(false);
-    grid.add(courseBox, RIGHT_COL_INDEX, currentRow, BOX_WIDTH, ROW_HEIGHT);
+    grid.add(courseBox, RIGHT_COL_INDEX, currentRow, RIGHT_WIDTH, ROW_HEIGHT);
     currentRow += ROW_HEIGHT;
 
     // Label for assignment selection comboBox
     Label assignmentLabel = new Label("Choose an assignment:");
-    grid.add(assignmentLabel, LEFT_COL_INDEX, currentRow, LABEL_WIDTH,
+    grid.add(assignmentLabel, LEFT_COL_INDEX, currentRow, LEFT_WIDTH,
         ROW_HEIGHT);
 
     // Show list of available assignments for that course
@@ -64,15 +64,29 @@ public class StudentPage {
     assignmentBox.setPromptText("Choose an assignment");
     assignmentBox.setDisable(true);
 
-    grid.add(assignmentBox, RIGHT_COL_INDEX, currentRow, BOX_WIDTH,
+    grid.add(assignmentBox, RIGHT_COL_INDEX, currentRow, RIGHT_WIDTH,
         ROW_HEIGHT);
-    currentRow += ROW_HEIGHT;
+    // add extra space to separate the 'Open' button
+    currentRow += ROW_HEIGHT + ROW_HEIGHT;
+
+    // label to indicate the deadline for an assignment
+    // filled in when an assignment is selected
+    Label deadlineLabel = new Label();
+    deadlineLabel.setStyle("-fx-font-weight: bold");
+    grid.add(deadlineLabel, LEFT_COL_INDEX, currentRow, LEFT_WIDTH,
+        ROW_HEIGHT);
 
     // Button to open the selected assignment
-    Button viewAssignments = new Button("Open");
-    grid.add(viewAssignments, RIGHT_COL_INDEX, currentRow, BOX_WIDTH,
+    Button viewAssignmentsBtn = new Button("Open");
+    grid.add(viewAssignmentsBtn, RIGHT_COL_INDEX, currentRow, RIGHT_WIDTH,
         ROW_HEIGHT);
 
+    currentRow += ROW_HEIGHT;
+
+    // Label to show the course average for an assignment.
+    Label assignmentAverageLabel = new Label();
+    grid.add(assignmentAverageLabel, LEFT_COL_INDEX, currentRow, LEFT_WIDTH,
+        ROW_HEIGHT);
 
     // EVENT HANDLERS BELOW:
 
@@ -93,12 +107,14 @@ public class StudentPage {
     // ASSIGNMENTBOX EVENT HANDLER
     // when an assignment is chosen, enable the 'open' button
     assignmentBox.setOnAction(e -> {
-      viewAssignments.setDisable(false);
+      viewAssignmentsBtn.setDisable(false);
+      // deadlineLabel.setText("Due: November 17, 2017, at 5:30 pm");
+      // assignmentAverageLabel.setText("Assignment average: 36.12%");
     });
 
     // 'OPEN' BUTTON EVENT HANDLER
-    viewAssignments.setDisable(true);
-    viewAssignments.setOnAction(e -> {
+    viewAssignmentsBtn.setDisable(true);
+    viewAssignmentsBtn.setOnAction(e -> {
 
       String assignmentName = courseBox.getValue();
       int assignmentNumber = assignmentBox.getValue();
@@ -106,12 +122,6 @@ public class StudentPage {
       StudentAssignmentPage.startAssignment(primaryStage, user, pass,
           assignmentName, assignmentNumber);
     });
-
-    /*
-     * VBox centerBorder = new VBox(50); centerBorder.setAlignment(Pos.CENTER);
-     * centerBorder.getChildren().addAll(courseBox, assignmentBox,
-     * viewAssignments);
-     */
 
     BorderPane border = new BorderPane();
     border.setTop(welcomeLabel);
