@@ -35,6 +35,9 @@ public class StudentAssignmentPage {
   public static void startAssignment(Stage primaryStage, String user,
       String pass, String courseName, int assignmentNumber) {
 
+    String title =
+        user + ": " + courseName + ", " + Integer.toString(assignmentNumber);
+    primaryStage.setTitle(title);
     // Create layout
     GridPane grid = new GridPane();
     grid.setAlignment(Pos.CENTER);

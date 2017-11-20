@@ -25,6 +25,7 @@ public class StudentPage {
   private static final int ROW_HEIGHT = 5;
 
   public static void login(Stage primaryStage, String user, String pass) {
+    primaryStage.setTitle(user);
 
     Label welcomeLabel = new Label("Welcome " + user);
     welcomeLabel.setPadding(new Insets(10, 10, 10, 10));
