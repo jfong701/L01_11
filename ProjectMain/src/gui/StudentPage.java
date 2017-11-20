@@ -125,7 +125,7 @@ public class StudentPage {
     });
 
     BorderPane border = new BorderPane();
-    border.setTop(welcomeLabel);
+    border.setTop(topBorder);
     border.setCenter(grid);
 
     primaryStage.setScene(new Scene(border, 500, 250));
