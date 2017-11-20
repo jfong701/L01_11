@@ -8,7 +8,7 @@ import java.util.List;
 import com.mysql.jdbc.Statement;
 
 import assignment.Assignment;
-import assignment.Question;
+import assignment.SingleAnswerQuestion;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -479,14 +479,26 @@ public class DOA {
 		return students;
 	}
 	
-	public Question rsToQuestion(ResultSet rs) throws SQLException {
-		Question question = null;
-		while (rs.next()) {
-		    String question_description = rs.getString("question");
-		    String question_answer = rs.getString("answer");
-		    question = new Question(question_description, question_answer);
-		}
+	public static SingleAnswerQuestion rsToQuestion(ResultSet rs) throws SQLException {
+		SingleAnswerQuestion question = null;
+		String courseID = rs.getString("course_id");
+		int asmtID = rs.getInt("assignment_id");
+		String ques = rs.getString("question");
+		String ans = rs.getString("answer_function");
+		question = new SingleAnswerQuestion(courseID, asmtID, ques, ans);
+		
 		return question;
+	}
+
+	public static ArrayList<SingleAnswerQuestion> getAllQuestions() throws SQLException {
+		start();
+		ArrayList<SingleAnswerQuestion> questions = new ArrayList<SingleAnswerQuestion>();
+		ResultSet rs = a.selectRecords(ques, "*");
+		while (rs.next()) {
+			questions.add(rsToQuestion(rs)); 
+		}
+		close();
+		return questions;
 	}
 	
 	public static boolean loginStudent(String username, String passInput) throws SQLException {

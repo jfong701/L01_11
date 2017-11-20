@@ -27,7 +27,7 @@ import java.util.Locale;
 import java.util.Random;
 
 import assignment.Assignment;
-import assignment.Question;
+import assignment.SingleAnswerQuestion;
 import jdbc.DOA;
 import student.Student;
 

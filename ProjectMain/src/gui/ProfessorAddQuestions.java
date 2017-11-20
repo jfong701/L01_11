@@ -1,34 +1,54 @@
 package gui;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+import java.sql.SQLException;
+import java.util.Date;
 
-import assignment.Question;
+import assignment.Assignment;
+import assignment.SingleAnswerQuestion;
 import jdbc.DOA;
 
 public class ProfessorAddQuestions {
 	
+	private static TableView<SingleAnswerQuestion> questions;	
 
     public static void addQuestions(Stage primaryStage, String user, String pass) {
-        // Create layout
+        
+    	// Create layout
+    	primaryStage.setTitle("View Assignments");
+    	
+    	BorderPane border = new BorderPane();
+    	
+    	try {
+			setUpTable();
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+    	
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
         grid.setHgap(5);
         grid.setVgap(5);
         grid.setPadding(new Insets(25, 25, 25, 25));
-        Scene addStudentsScene = new Scene(grid, 500, 250);
-        primaryStage.setScene(addStudentsScene);
         
         // Title
         Text sceneTitle = new Text("Add Questions");
@@ -86,7 +106,6 @@ public class ProfessorAddQuestions {
         submitButton.setOnAction(e -> {
 
             // .getText() from questionField, answerField
-        	Question ques = new Question(questionField.getText(), answerField.getText());
         	DOA.addQuestion(
         			courseBox.getValue(),
         			assignmentBox.getValue().toString(),
@@ -94,9 +113,52 @@ public class ProfessorAddQuestions {
         			questionField.getText(), 
         			answerField.getText());
         	
-        	System.out.println(ques);
-
         });
         grid.add(submitButton, 2, 10, 1, 1);
+        
+        border.setCenter(questions);
+        border.setBottom(grid);
+        
+        Scene addQuestionsScene = new Scene(border, 500, 500);
+        primaryStage.setScene(addQuestionsScene);
+
     }
+    
+	public static ObservableList<SingleAnswerQuestion> getQuestions() throws SQLException {
+		ObservableList<SingleAnswerQuestion> ques = FXCollections.observableArrayList(DOA.getAllQuestions());
+		return ques;
+	}
+	
+
+	public static void loadTable() throws SQLException {
+		questions.getItems().clear();
+		questions.setItems(getQuestions());
+	}
+    
+	public static void setUpTable() throws SQLException {
+		questions = new TableView<>();
+		
+		// Table Columns
+		TableColumn<SingleAnswerQuestion, String> courseID = new TableColumn<>("Course ID");
+		courseID.setMinWidth(125);
+		courseID.setCellValueFactory(new PropertyValueFactory<>("courseID"));
+		
+		TableColumn<SingleAnswerQuestion, Integer> assignmentID = new TableColumn<>("Assignment ID");
+		assignmentID.setMinWidth(125);
+		assignmentID.setCellValueFactory(new PropertyValueFactory<>("assignmentID"));
+		
+		TableColumn<SingleAnswerQuestion, String> question = new TableColumn<>("Question");
+		question.setMinWidth(125);
+		question.setCellValueFactory(new PropertyValueFactory<>("question"));
+		
+		TableColumn<SingleAnswerQuestion, String> answerFunction = new TableColumn<>("Answer Function");
+		answerFunction.setMinWidth(125);
+		answerFunction.setCellValueFactory(new PropertyValueFactory<>("answerFunction"));
+		
+		questions.getColumns().addAll(courseID, assignmentID, question, answerFunction);
+		questions.setFixedCellSize(25);
+		loadTable();
+
+	}
+
 }
