@@ -33,7 +33,7 @@ public class ProfessorViewStudents {
 		
 		// Student Table View
 		setUpTable();
-		
+				
 		//File chooser to add multiple students
 		HBox fBox = new HBox();
 		fBox.setPadding(new Insets(15, 12, 15, 12));
@@ -47,10 +47,22 @@ public class ProfessorViewStudents {
 			if (list != null) {
 				for (File file : list) {
 					DOA.start();
-					DOA.uploadStudentFile(file.getAbsolutePath().replace('\\', '/'));
+					// check for any errors in the student file using the method in DOA
+					List<String> errors = DOA.getErrorsInStudentFile(file.getAbsolutePath().replace('\\', '/'));
+					String error = "";
+					// if there is at least one string in the list of errors, then show a message box containing the errors
+					if (errors.size() > 0) {
+						for (int i=0; i<errors.size(); i++) {
+							error = error + errors.get(i) + '\n';
+						}
+						MessageBox.show("Error", error);
+					} else {
+						DOA.uploadStudentFile(file.getAbsolutePath().replace('\\', '/'));
+					}
 					DOA.close();
 				}
 			}
+			loadTable();
 		});
 		
 		// Add one student page
@@ -60,11 +72,7 @@ public class ProfessorViewStudents {
 		// Back to professor page
         Button backButton = new Button("Back");
         backButton.setOnAction(e -> ProfessorPage.login(primaryStage, user, pass));
-        
-        // Refresh table
-        Button refreshButton = new Button("Refresh Table");
-
-		
+        	
 		fBox.getChildren().addAll(uploadStudents, addStudent, backButton);
 		border.setBottom(fBox);
 		border.setCenter(students);
@@ -79,6 +87,7 @@ public class ProfessorViewStudents {
 	}
 	
 	public static void setUpTable() {
+students = new TableView<Student>();
 		
 		// Table Columns
 		TableColumn<Student, String> studentNumber = new TableColumn<>("Student Number");
@@ -97,8 +106,14 @@ public class ProfessorViewStudents {
 		studentLastName.setMinWidth(125);
 		studentLastName.setCellValueFactory(new PropertyValueFactory<>("studentLastName"));
 		
-		students = new TableView<Student>();
-		students.setItems(getStudents());
 		students.getColumns().addAll(studentNumber, studentUTOR, studentFirstName, studentLastName);
+		students.setFixedCellSize(25);
+		loadTable();
+
+	}
+	
+	public static void loadTable() {
+		students.getItems().clear();
+		students.setItems(getStudents());
 	}
 }
