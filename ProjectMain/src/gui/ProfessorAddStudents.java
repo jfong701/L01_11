@@ -79,7 +79,8 @@ public class ProfessorAddStudents {
         	String first = firstNameField.getText();
         	String last = lastNameField.getText();
         	
-        	Student student = new Student(stuNum, utor_id, first, last);
+        	// ADDED "password" TO MATCH NEW CONSTRUCTOR. CHANGE IF NECESSARY.
+        	Student student = new Student(stuNum, utor_id, first, last, "password");
         	DOA.start();
         	DOA.addStudent(stuNum, utor_id, first, last);
         	DOA.close();
