@@ -17,18 +17,6 @@ public class Question {
 	public boolean isCorrect(String ans) {
 		return (answer.equals(ans));
 	}
-	/*
-	 * FileWrite (FileWriter outFile)
-	 * Take a valid file writer and write the question's data to the
-	 * file referred to by outFile
-	 */
-	public void fileWrite(FileWriter outFile) {
-		try {
-			outFile.write("\"" + question + "\"," + "\"" + answer + "\"");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
 	
 	public String toString() {
 		return "Question: " + question + "\nAnswer: " + answer;

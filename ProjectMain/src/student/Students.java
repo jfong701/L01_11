@@ -59,7 +59,7 @@ public class Students {
 				studentUtor = splitLine[1].trim();
 				studentFirstName = splitLine[1].trim();
 				studentLastName = splitLine[2].trim();
-				studentList.add(new Student(studentNo, studentUtor, studentFirstName, studentLastName));
+				//studentList.add(new Student(studentNo, studentUtor, studentFirstName, studentLastName));
 			}
 			
 		} catch (IOException error) {
