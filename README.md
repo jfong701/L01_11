@@ -2,19 +2,23 @@
 
 ## Repository Contents
 deliverables
-* deliverable 1
+* Deliverable 1
   * Not Fast Just Furious Team Agreement.pdf
-* delivarable 2
+* Delivarable 2
   * Product Backlog v0.pdf
   * Product Backlog v0.1.pdf
-* deliverable 3
+* Deliverable 3
   * Product Backlog v1.pdf
   * Product Backlog v1.1.pdf
   * Sprint 1 Backlog.pdf
-* deliverable 4
+* Deliverable 4
   * Sprint 1 Backlog.pdf
   * Sprint 2 Backlog.pdf
   * Sprint 3 Backlog.pdf
+* Deliverable 5 (UnitTests in ProjectMain folder)
+  * Product Backlog v4.pdf
+  * Sprint 5 Backlog.pdf
+  * Validation Testing v1.pdf
 
 executables
 * NotFastJustFurious-2017.11.17.jar
@@ -43,6 +47,18 @@ ProjectMain/src/
 * student
   * Student.java
   * Students.java
+
+ProjectMain/UnitTest
+* assignment
+  * TestAssignment.java
+  * TestQuestion.java
+* jdbc
+  * TestDOA.java
+* student
+  * TestStudent.java
+  
+ProjectMain/ValidationTest
+  * Validation Testing.pdf
 
 Product Backlog
   * Product Backlog v0.pdf
