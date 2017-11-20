@@ -114,7 +114,7 @@ public class ProfessorViewStudents {
 	}
 	
 	public static void setUpTable() {
-students = new TableView<Student>();
+		students = new TableView<Student>();
 		
 		// Table Columns
 		TableColumn<Student, String> studentNumber = new TableColumn<>("Student Number");

@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.mysql.jdbc.Statement;
 
+import assignment.Assignment;
 import assignment.Question;
 
 import java.io.BufferedReader;
@@ -291,6 +292,34 @@ public class DOA {
 			close();
 		}
 		return list;
+	}
+	
+	public static Assignment rsToAssignment(ResultSet rs) throws SQLException {
+		Assignment asmt = null;
+		// columns in order: student_id,first_name,last_name,utorid
+		String courseID = rs.getString("course_id");
+		int asmtID = rs.getInt("assignment_id");
+		int numQues = rs.getInt("num_questions");
+		String asmtName = rs.getString("assignment_name");
+		Date deadline = rs.getDate("deadline");
+		asmt = new Assignment(courseID, asmtID, numQues, asmtName, deadline);
+		
+		return asmt;
+	}
+
+	public static ArrayList<Assignment> getAllAssignments() {
+		start();
+		ArrayList<Assignment> asmts = new ArrayList<Assignment>();
+		ResultSet rs = a.selectRecords(asmt, "*");
+		try {
+			while (rs.next()) {
+				asmts.add(rsToAssignment(rs)); 
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		close();
+		return asmts;
 	}
 
 	
