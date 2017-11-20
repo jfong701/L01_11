@@ -18,14 +18,6 @@ public class Student {
 	String studentUTORID;
 	String password;
 	
-	public Student(String studentNo, String utor, String studentFirstName, String studentLastName) {
-		// TODO Auto-generated constructor stub
-		this.studentNo = studentNo;
-		this.studentUTORID = utor;
-		this.studentFirstName = studentFirstName;
-		this.studentLastName = studentLastName;
-	}
-	
 	public Student(String studentNo, String utor, String studentFirstName, String studentLastName, String password) {
 		// TODO Auto-generated constructor stub
 		this.studentNo = studentNo;
@@ -90,6 +82,16 @@ public class Student {
 		this.studentLastName = studentLastName;
 	}
 
+	/**
+	 * @return the password
+	 */
+	public String getPassword() {
+		return this.password;
+	}
+	
+	/**
+	 * @param password the password to set
+	 */
 	public void setPassword(String password) {
 		this.password = password;
 	}
