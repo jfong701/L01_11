@@ -82,6 +82,19 @@ public class MySQLAccess {
 		}
 	}
 	
+	public ResultSet executeSQLQuery(String sql) {
+		ResultSet rs = null;
+		try {
+			System.out.println(sql);
+
+			rs = stmt.executeQuery(sql);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return rs;
+	}
+	
 	public boolean checkDatabaseExists(String db_name) throws SQLException {
 		ResultSet rs = conn.getMetaData().getCatalogs();
 		

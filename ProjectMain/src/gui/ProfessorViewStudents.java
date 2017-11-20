@@ -3,14 +3,17 @@ package gui;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.List;
 
+import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -23,7 +26,8 @@ import student.Students;
 
 public class ProfessorViewStudents {
 	
-	static TableView<Student> students;
+	private static TableView<Student> students;
+	private static ComboBox<String> courseBox;
 	
 	public static void uploadStudents(Stage primaryStage, String user, String pass) {
 		
@@ -31,6 +35,14 @@ public class ProfessorViewStudents {
 		
 		BorderPane border = new BorderPane();
 		
+		// Choose which course to add students to.
+        courseBox = new ComboBox<>();
+        courseBox.getItems().add("All Courses");
+        courseBox.getItems().addAll(DOA.getCourseIds());
+        courseBox.setValue("All Courses");
+		courseBox.setOnAction(e -> {
+			loadTable();
+		});
 		// Student Table View
 		setUpTable();
 				
@@ -58,22 +70,32 @@ public class ProfessorViewStudents {
 						MessageBox.show("Error", error);
 					} else {
 						DOA.uploadStudentFile(file.getAbsolutePath().replace('\\', '/'));
+						try {
+							DOA.uploadCourseStudents(courseBox.getValue(), file);
+						} catch (IOException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
 					}
 					DOA.close();
 				}
 			}
 			loadTable();
 		});
+		uploadStudents.disableProperty().bind(courseBox.valueProperty().isEqualTo("All Courses"));
 		
 		// Add one student page
 		Button addStudent = new Button("Add Student");
 		addStudent.setOnAction(e -> ProfessorAddStudents.addStudents(primaryStage, user, pass));
+		addStudent.disableProperty().bind(courseBox.valueProperty().isEqualTo("All Courses"));
+
 		
 		// Back to professor page
         Button backButton = new Button("Back");
         backButton.setOnAction(e -> ProfessorPage.login(primaryStage, user, pass));
         	
 		fBox.getChildren().addAll(uploadStudents, addStudent, backButton);
+		border.setTop(courseBox);
 		border.setBottom(fBox);
 		border.setCenter(students);
 		Scene scene = new Scene(border, 500, 250);
@@ -82,7 +104,12 @@ public class ProfessorViewStudents {
 	
 	
 	public static ObservableList<Student> getStudents() {
-		ObservableList<Student> students = FXCollections.observableArrayList(DOA.getAllStudents());
+		ObservableList<Student> students = null;
+		if (courseBox.getValue().equals("All Courses")) {
+			students = FXCollections.observableArrayList(DOA.getAllStudents());
+		} else {
+			students = FXCollections.observableArrayList(DOA.getStudentsFromCourse(courseBox.getValue()));
+		}
 		return students;
 	}
 	

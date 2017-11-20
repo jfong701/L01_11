@@ -10,6 +10,7 @@ import com.mysql.jdbc.Statement;
 import assignment.Question;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.sql.Array;
@@ -24,13 +25,13 @@ public class DOA {
 
 	//MYSQL FUNCTION EXAMPLES AT THE END
 	
-	private static String dbName = "cscc43f17_manogar7_sakila";
-	private static String stu = "STUDENTS";
-	private static String asmt = "ASSIGNMENTS";
-	private static String ques = "QUESTIONS";
-	private static String stu_asmt = "STUDENT_ASSIGNMENTS";
-	private static String prof = "PROFESSORS";
-	
+	private final static String dbName = "cscc43f17_manogar7_sakila";
+	private final static String stu = "STUDENTS";
+	private final static String asmt = "ASSIGNMENTS";
+	private final static String ques = "QUESTIONS";
+	private final static String stu_asmt = "STUDENT_ASSIGNMENTS";
+	private final static String prof = "PROFESSORS";
+	private final static String course_stu = "COURSE_STUDENTS";
 	
 	private static MySQLAccess a;
 	
@@ -92,6 +93,14 @@ public class DOA {
 				"professor_password VARCHAR(25)",
 				"PRIMARY KEY ( professor_id )"
 				);
+		a.createTable(course_stu,
+				"course_id VARCHAR(8) NOT NULL",
+				"student_id CHAR(10) NOT NULL",
+				"FOREIGN KEY ( student_id ) REFERENCES STUDENTS ( student_id )",
+				"FOREIGN KEY ( course_id ) REFERENCES ASSIGNMENTS ( course_id )",
+				"PRIMARY KEY ( student_id, course_id )"
+				);
+
 		System.out.println("Finished initialization");
 	}
 	
@@ -217,6 +226,15 @@ public class DOA {
 		String sql = "LOAD DATA LOCAL INFILE '" + abs_path + "' INTO TABLE cscc43f17_manogar7_sakila.STUDENTS FIELDS TERMINATED BY ',' (student_id, utor_id, first_name, last_name)";
 		a.executeSQL(sql);
 		System.out.println(sql + " completed.");
+	}
+	
+	public static void uploadCourseStudents(String course_id, File file) throws IOException {
+		BufferedReader br = new BufferedReader(new FileReader(file));
+		String line;
+		
+		while ((line = br.readLine()) != null) {
+			addStudentToCourse(course_id, line.substring(0,line.indexOf(',')));
+		}
 	}
 	
 	public static void addAssignment(String course_id, String assignment_id, String num_question, String assignment_name, Date deadline ) {
@@ -364,6 +382,25 @@ public class DOA {
 		}
 	}
 	
+	public static void addStudentToCourse(String course_id, String student_id) {
+		start();
+		String sql = a.preparedRecordsSQL(course_stu, 2, "course_id", "student_id");
+		System.out.println(sql);
+		Connection conn = a.getConn();
+		try {
+			PreparedStatement pr = conn.prepareStatement(sql);
+			pr.setString(1,  course_id);
+			pr.setString(2, student_id);
+			pr.execute();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close();
+		}
+	}
+	
+	
+	
 	public static Student rsToStudent(ResultSet rs) throws SQLException {
 		Student std = null;
 		// columns in order: student_id,first_name,last_name,utorid
@@ -381,6 +418,27 @@ public class DOA {
 		start();
 		ArrayList<Student> students = new ArrayList<Student>();
 		ResultSet rs = a.selectRecords(stu, "*");
+		try {
+			while (rs.next()) {
+				students.add(rsToStudent(rs)); 
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		close();
+		return students;
+	}
+	
+	public static ArrayList<Student>getStudentsFromCourse(String course_id) {
+		start();
+		ArrayList<Student> students = new ArrayList<Student>();
+		String sql = "SELECT"
+				+ " STUDENTS.student_id, STUDENTS.utor_id, STUDENTS.first_name, STUDENTS.last_name, STUDENTS.student_password"
+				+ " FROM STUDENTS INNER JOIN COURSE_STUDENTS"
+				+ " ON STUDENTS.student_id=COURSE_STUDENTS.student_id"
+				+ " WHERE COURSE_STUDENTS.course_id='" + course_id + "'"; 
+		ResultSet rs = a.executeSQLQuery(sql);
+		start();
 		try {
 			while (rs.next()) {
 				students.add(rsToStudent(rs)); 
