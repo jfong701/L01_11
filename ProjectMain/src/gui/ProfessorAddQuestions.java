@@ -84,18 +84,23 @@ public class ProfessorAddQuestions {
         // TO-DO: ADD LOGIC TO SUBMIT BUTTON
         Button submitButton = new Button("Submit");
         submitButton.setOnAction(e -> {
-
+        	String questionString = questionField.getText();
+        	String answerString = questionField.getText();
+        	System.out.println(String.format("%d %d", questionString.length(), answerString.length()));
             // .getText() from questionField, answerField
-        	Question ques = new Question(questionField.getText(), answerField.getText());
-        	DOA.addQuestion(
-        			courseBox.getValue(),
-        			assignmentBox.getValue().toString(),
-        			DOA.QuestionCount(courseBox.getValue(), assignmentBox.getValue().toString()),
-        			questionField.getText(), 
-        			answerField.getText());
-        	
-        	System.out.println(ques);
-
+        	if (questionString.length() < 1 || answerString.length() < 1) {
+        		MessageBox.show("Error", "Either no question or no answer.");
+        	} else {
+	        	Question ques = new Question(questionField.getText(), answerField.getText());
+	        	DOA.addQuestion(
+	        			courseBox.getValue(),
+	        			assignmentBox.getValue().toString(),
+	        			DOA.QuestionCount(courseBox.getValue(), assignmentBox.getValue().toString()),
+	        			questionField.getText(), 
+	        			answerField.getText());
+	        	
+	        	System.out.println(ques);
+        	}
         });
         grid.add(submitButton, 2, 10, 1, 1);
     }
