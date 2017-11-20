@@ -16,6 +16,9 @@ deliverables
   * Sprint 2 Backlog.pdf
   * Sprint 3 Backlog.pdf
 
+executables
+* NotFastJustFurious-2017.11.17.jar
+
 ProjectMain/lib/
 * mysql-connector-java-5.1.42-bin.jar
  
@@ -57,12 +60,40 @@ Sprint Backlog
 
 README.md
 SampleStudentFile.csv
+
+## System Requirements to run the .jar
+  * Java 8 JRE
+  * An internet connection
   
-## Build Instructions
-1. Download directory ProjectMain/src/ and all subdirectories and files
-2. Open a Java IDE (eg. Eclipse, IntelliJ) and go to File -> Open Projects from File System
+### Run the standalone.jar
+1. Download a .jar file from the "executables" folder
+2. Navigate to the directory where the .jar is stored.
+3. Double click the .jar to open it.
+
+### Run the program from Eclipse
+(requires Eclipse)
+1. Download directory ProjectMain/ and all subdirectories and files
+2. Open Eclipse and go to File -> Open Projects from File System
 3. The value for "Import source" should be the ProjectMain folder. Click Finish.
 4. Right click and go to Properties.
 5. Go to Java Build Path -> Libraries and click "Add JARS"
 6. Navigate to the "lib" folder and add the mysql connector.
 7. Navigate to ProjectMain/src/gui and run IntroScreen.java
+
+## System Requirements to build the .jar
+  * Java 8 JDK
+  * Eclipse
+  
+### Build Instructions
+1. Download directory ProjectMain/ and all subdirectories and files
+2. Open a Eclipse and go to File -> Open Projects from File System
+3. The value for "Import source" should be the ProjectMain folder. Click Finish.
+4. Right click and go to Properties.
+5. Go to Java Build Path -> Libraries and click "Add JARS"
+6. Navigate to the "lib" folder and add the mysql connector.
+7. Right click the ProjectMain folder and click 'Export'
+8. Select Java > 'Runnable JAR file' and click Next
+9. Set Launch configuration to 'IntroScreen - ProjectMain'
+10. Choose an appropriate Export destination and file name
+11. In Libary handling select 'Extract required libaries into generated JAR
+12. Click Finish
