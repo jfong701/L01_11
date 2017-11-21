@@ -1,5 +1,7 @@
 package gui;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -7,7 +9,11 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -16,76 +22,81 @@ import javafx.stage.Stage;
 
 import java.time.LocalDate;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 import java.util.Random;
 
-import assignment.Question;
+import assignment.Assignment;
+import assignment.SingleAnswerQuestion;
 import jdbc.DOA;
+import student.Student;
 
 public class ProfessorAddAssignments {
 	
+	private static TableView<Assignment> assignments;
 
     public static void addAssignments(Stage primaryStage, String user, String pass) {
-        // Create layout
+    	
+    	// Create layout
+    	primaryStage.setTitle("View Assignments");
+    	
+    	BorderPane border = new BorderPane();
+    	
+    	setUpTable();
+    	
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
         grid.setHgap(5);
         grid.setVgap(5);
         grid.setPadding(new Insets(25, 25, 25, 25));
-        Scene addAssignmentsScene = new Scene(grid, 500, 250);
-        primaryStage.setScene(addAssignmentsScene);
         
-        // Title
-        Text sceneTitle = new Text("Add Assignments");
-        sceneTitle.setFont(Font.font("Verdana", FontWeight.NORMAL, 20));
-        grid.add(sceneTitle, 0, 0, 1, 1);
 
         // Labels and TextFields
         // Course Label
         Label courseLabel = new Label("Enter course id:");
-        grid.add(courseLabel, 0, 2, 1, 1);
+        grid.add(courseLabel, 0, 1, 1, 1);
 
         ComboBox<String> courseBox = new ComboBox<String>();
         courseBox.setPromptText("e.g CSCC43");
         courseBox.getItems().addAll(DOA.getCourseIds());
         courseBox.setEditable(true);
-        grid.add(courseBox, 0, 3, 1, 1);
+        grid.add(courseBox, 0, 2, 1, 1);
 
         // Assignment Number label
         Label aIDLabel = new Label("Enter assignment id");
-        grid.add(aIDLabel, 1, 2, 1, 1);
+        grid.add(aIDLabel, 1, 1, 1, 1);
 
         TextField aIDField = new TextField();
         aIDField.setPromptText("e.g. 2");
-        grid.add(aIDField, 1, 3, 1, 1);
+        grid.add(aIDField, 1, 2, 1, 1);
         
         // Number Questions label
         Label qNumLabel = new Label("Enter number of questions");
-        grid.add(qNumLabel, 2, 2, 1, 1);
+        grid.add(qNumLabel, 2, 1, 1, 1);
 
         TextField qNumField = new TextField();
         qNumField.setPromptText("e.g. 7");
-        grid.add(qNumField, 2, 3, 1, 1);
+        grid.add(qNumField, 2, 2, 1, 1);
         
         // Assignment Name label
         Label aNameLabel = new Label("Enter assignment name");
-        grid.add(aNameLabel, 0, 5, 1, 1);
+        grid.add(aNameLabel, 0, 4, 1, 1);
 
         TextField aNameField = new TextField();
         aNameField.setPromptText("e.g. Assignment 1");
-        grid.add(aNameField, 0, 6, 2, 1);
+        grid.add(aNameField, 0, 5, 2, 1);
         
         // Deadline label
         Label deadlineLabel = new Label("Enter deadline");
-        grid.add(deadlineLabel, 2, 5, 1, 1);
+        grid.add(deadlineLabel, 2, 4, 1, 1);
 
         DatePicker datePicker = new DatePicker();
-        grid.add(datePicker, 2, 6, 1, 1);
+        grid.add(datePicker, 2, 5, 1, 1);
 
         // Buttons
         Button backButton = new Button("Back");
         backButton.setOnAction(e -> ProfessorPage.login(primaryStage, user, pass));
-        grid.add(backButton, 0, 10, 1, 1);
+        grid.add(backButton, 0, 9, 1, 1);
 
         Button submitButton = new Button("Submit");
         submitButton.setOnAction(e -> {
@@ -94,14 +105,64 @@ public class ProfessorAddAssignments {
         	DOA.addAssignment(
         			courseBox.getValue(),
         			aIDField.getText(),
-        			Integer.toString(5),
+        			qNumField.getText(),
         			aNameField.getText(),
         			java.sql.Date.valueOf(datePicker.getValue()));
         	DOA.close();
         	
-
+        	loadTable();
+        	
+        	aIDField.clear();
+        	qNumField.clear();
+        	aNameField.clear();
         });
-        grid.add(submitButton, 2, 10, 1, 1);
-
+        grid.add(submitButton, 2, 9, 1, 1);
+        
+        border.setCenter(assignments);
+        border.setBottom(grid);
+        
+        Scene addAssignmentsScene = new Scene(border, 750, 500);
+        primaryStage.setScene(addAssignmentsScene);
     }
+    
+	public static ObservableList<Assignment> getAssignments() {
+		ObservableList<Assignment> asmts = FXCollections.observableArrayList(DOA.getAllAssignments());
+		return asmts;
+	}
+	
+
+	public static void loadTable() {
+		assignments.getItems().clear();
+		assignments.setItems(getAssignments());
+	}
+    
+	public static void setUpTable() {
+		assignments = new TableView<Assignment>();
+		
+		// Table Columns
+		TableColumn<Assignment, String> courseID = new TableColumn<>("Course ID");
+		courseID.setMinWidth(150);
+		courseID.setCellValueFactory(new PropertyValueFactory<>("courseID"));
+		
+		TableColumn<Assignment, Integer> assignmentID = new TableColumn<>("Assignment ID");
+		assignmentID.setMinWidth(150);
+		assignmentID.setCellValueFactory(new PropertyValueFactory<>("assignmentID"));
+		
+		TableColumn<Assignment, Integer> numQuestions = new TableColumn<>("Number of Questions");
+		numQuestions.setMinWidth(150);
+		numQuestions.setCellValueFactory(new PropertyValueFactory<>("numQuestions"));
+		
+		TableColumn<Assignment, String> assignmentName = new TableColumn<>("Assignment Name");
+		assignmentName.setMinWidth(150);
+		assignmentName.setCellValueFactory(new PropertyValueFactory<>("assignmentName"));
+		
+		TableColumn<Assignment, Date> deadline = new TableColumn<>("Deadline");
+		deadline.setMinWidth(150);
+		deadline.setCellValueFactory(new PropertyValueFactory<>("deadline"));
+		
+		assignments.getColumns().addAll(courseID, assignmentID, numQuestions, assignmentName, deadline);
+		assignments.setFixedCellSize(25);
+		loadTable();
+
+	}
 }
