@@ -76,6 +76,20 @@ public class ProfessorAddQuestions {
         courseBox.setOnAction( e -> {
         	assignmentBox.getItems().clear();
 			assignmentBox.getItems().addAll(DOA.getAssignmentIds(courseBox.getValue()));
+			try {
+				loadTable(courseBox.getValue(), "");
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+        });
+        
+        assignmentBox.setOnAction( e -> {
+        	try {
+				loadTable(courseBox.getValue(), assignmentBox.getValue().toString());
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
         });
         
         grid.add(assignmentBox, 1, 3, 3, 1);
@@ -113,6 +127,15 @@ public class ProfessorAddQuestions {
         			questionField.getText(), 
         			answerField.getText());
         	
+        	questionField.clear();
+        	answerField.clear();
+        	try {
+				loadTable(courseBox.getValue(), assignmentBox.getValue().toString());
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+          	
         });
         grid.add(submitButton, 2, 10, 1, 1);
         
@@ -124,15 +147,22 @@ public class ProfessorAddQuestions {
 
     }
     
-	public static ObservableList<SingleAnswerQuestion> getQuestions() throws SQLException {
-		ObservableList<SingleAnswerQuestion> ques = FXCollections.observableArrayList(DOA.getAllQuestions());
+	public static ObservableList<SingleAnswerQuestion> getQuestions(String course_id, String assignment_id) throws SQLException {
+		ObservableList<SingleAnswerQuestion> ques = null;
+		if (course_id.isEmpty() && assignment_id.isEmpty()) {
+			ques = FXCollections.observableArrayList(DOA.getAllQuestions());
+		} else if (!(course_id.isEmpty()) && assignment_id.isEmpty()) {
+			ques = FXCollections.observableArrayList(DOA.getAllCourseQuestions(course_id));
+		} else if (!(course_id.isEmpty()) && !(assignment_id.isEmpty())) {
+			ques = FXCollections.observableArrayList(DOA.getAllAssignmentQuestions(course_id, assignment_id));
+		}
 		return ques;
 	}
 	
 
-	public static void loadTable() throws SQLException {
+	public static void loadTable(String course_id, String assignment_id) throws SQLException {
 		questions.getItems().clear();
-		questions.setItems(getQuestions());
+		questions.setItems(getQuestions(course_id, assignment_id));
 	}
     
 	public static void setUpTable() throws SQLException {
@@ -157,7 +187,7 @@ public class ProfessorAddQuestions {
 		
 		questions.getColumns().addAll(courseID, assignmentID, question, answerFunction);
 		questions.setFixedCellSize(25);
-		loadTable();
+		loadTable("", "");
 
 	}
 
