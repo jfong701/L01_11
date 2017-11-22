@@ -12,6 +12,8 @@ import javafx.scene.control.Label;
 import java.util.ArrayList;
 import java.util.List;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 
@@ -23,6 +25,8 @@ public class StudentPage {
   private static final int LEFT_COL_INDEX = 0;
   private static final int RIGHT_COL_INDEX = LEFT_WIDTH + 1;
   private static final int ROW_HEIGHT = 5;
+  private static ObservableList<Integer> assignmentIds;
+  private static ObservableList<String> courseCodes;
 
   public static void login(Stage primaryStage, String user, String pass) {
     primaryStage.setTitle(user);
@@ -43,6 +47,14 @@ public class StudentPage {
     grid.setHgap(5);
     currentRow = 0;
 
+    // keep assignment ids for a course in an observable list. (useful for
+    // combo boxes which interact with each other)
+    assignmentIds = FXCollections.observableArrayList();
+    courseCodes = FXCollections.observableArrayList();
+    
+    // set course codes from DOA
+    courseCodes.addAll(DOA.getCourseIds());
+
     // Label for course selection comboBox
     Label courseLabel = new Label("Choose a course:");
     grid.add(courseLabel, LEFT_COL_INDEX, currentRow, LEFT_WIDTH, ROW_HEIGHT);
@@ -50,7 +62,7 @@ public class StudentPage {
     // Pull up a list of courses that the student is enrolled in.
     ComboBox<String> courseBox = new ComboBox<String>();
     courseBox.setPromptText("Choose a course");
-    courseBox.getItems().addAll(DOA.getCourseIds());
+    courseBox.setItems(courseCodes);
     courseBox.setEditable(false);
     grid.add(courseBox, RIGHT_COL_INDEX, currentRow, RIGHT_WIDTH, ROW_HEIGHT);
     currentRow += ROW_HEIGHT;
@@ -63,6 +75,10 @@ public class StudentPage {
     // Show list of available assignments for that course
     ComboBox<Integer> assignmentBox = new ComboBox<Integer>();
     assignmentBox.setPromptText("Choose an assignment");
+
+    // set assignmentBox to use items from Observable.
+    assignmentBox.setItems(assignmentIds);
+    assignmentBox.setEditable(false);
     assignmentBox.setDisable(true);
 
     grid.add(assignmentBox, RIGHT_COL_INDEX, currentRow, RIGHT_WIDTH,
@@ -81,11 +97,11 @@ public class StudentPage {
     Button viewAssignmentsBtn = new Button("Open");
     grid.add(viewAssignmentsBtn, RIGHT_COL_INDEX, currentRow, RIGHT_WIDTH,
         ROW_HEIGHT);
-
     currentRow += ROW_HEIGHT;
 
     // Label to show the course average for an assignment.
     Label assignmentAverageLabel = new Label();
+    assignmentAverageLabel.setVisible(false);
     grid.add(assignmentAverageLabel, LEFT_COL_INDEX, currentRow, LEFT_WIDTH,
         ROW_HEIGHT);
 
@@ -94,23 +110,32 @@ public class StudentPage {
     // COURSEBOX EVENT HANDLER
     // when a course is selected, sets up the assignmentBox for that course.
     courseBox.setOnAction(e -> {
-      assignmentBox.getItems().clear(); // clear any old values
+      
+      // clear the observable for assignment IDs and set based on course
+      assignmentIds.clear();
+      assignmentIds.addAll(DOA.getAssignmentIds(courseBox.getValue()));
 
-      // gets the value of the courseBox (chosen course), then fills assignment
-      // box options
-      assignmentBox.getItems()
-          .addAll(DOA.getAssignmentIds(courseBox.getValue()));
-
-      assignmentBox.setEditable(false);
       assignmentBox.setDisable(false);
+
+      // hide the assignment average label if the assignment hasn't been picked
+      assignmentAverageLabel.setVisible(false);
     });
+
 
     // ASSIGNMENTBOX EVENT HANDLER
     // when an assignment is chosen, enable the 'open' button
     assignmentBox.setOnAction(e -> {
       viewAssignmentsBtn.setDisable(false);
-      // deadlineLabel.setText("Due: November 17, 2017, at 5:30 pm");
-      // assignmentAverageLabel.setText("Assignment average: 36.12%");
+
+      // only update the label if the observable object hasn't been filled
+      // (prevents concurrency issues within the UI)
+      if (!assignmentIds.isEmpty()) {
+        int avgGrade =
+            DOA.getAvg(courseBox.getValue(), assignmentBox.getValue());
+        assignmentAverageLabel.setText(
+            "Assignment average: " + Integer.toString(avgGrade) + "%");
+        assignmentAverageLabel.setVisible(true);
+      }
     });
 
     // 'OPEN' BUTTON EVENT HANDLER
