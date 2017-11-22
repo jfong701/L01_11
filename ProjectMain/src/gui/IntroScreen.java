@@ -66,6 +66,7 @@ public class IntroScreen extends Application {
 		});
 		GridPane.setConstraints(loginButton, 5, 6);
 		//System.out.println(DOA.getAvg("CSCC01", 1));
+		//DOA.setMark("11111", "CSCC01", 1, 100);
 		
 		
 		loginLayout.getChildren().addAll(userLabel, userInput, passLabel, passInput, loginButton);	

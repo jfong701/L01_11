@@ -561,6 +561,32 @@ public class DOA {
 		
 		return average;
 	}
+	
+	public static void setMark(String sID, String cID, int aID, int mark) {
+		start();
+		int old_mark = 0;
+		try {
+			PreparedStatement cmd = a.getConn().prepareStatement("SELECT mark FROM STUDENT_ASSIGNMENTS "
+					+ "WHERE course_id='"+cID+"' AND assignment_id="+aID+" AND student_id='"+sID+"';");
+			ResultSet curr_result = cmd.executeQuery();
+			if (curr_result.first()) {
+				old_mark = curr_result.getInt(1);
+			}
+			if (old_mark < mark) {
+				PreparedStatement inst = a.getConn().prepareStatement("INSERT INTO STUDENT_ASSIGNMENTS (student_id, " +
+						"course_id, assignment_id) VALUES('"+sID+"', '"+cID+"', "+aID+") ON DUPLICATE KEY UPDATE " +
+						"mark="+mark+";");
+				inst.executeUpdate();
+				System.out.println("Successfully updated mark");
+			}
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+		finally {
+			close();
+		}
+	}
 }
 
 //a = new MySQLAccess();
