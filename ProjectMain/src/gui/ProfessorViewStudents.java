@@ -22,6 +22,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import jdbc.DOA;
 import student.Student;
+import validator.Validators;
 
 public class ProfessorViewStudents {
 	
@@ -59,7 +60,7 @@ public class ProfessorViewStudents {
 				for (File file : list) {
 					DOA.start();
 					// check for any errors in the student file using the method in DOA
-					List<String> errors = DOA.getErrorsInStudentFile(file.getAbsolutePath().replace('\\', '/'));
+					List<String> errors = Validators.getErrorsInStudentFile(file.getAbsolutePath().replace('\\', '/'));
 					String error = "";
 					// if there is at least one string in the list of errors, then show a message box containing the errors
 					if (errors.size() > 0) {

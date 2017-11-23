@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import com.mysql.jdbc.Statement;
-
 import assignment.Assignment;
 import assignment.SingleAnswerQuestion;
 
@@ -14,7 +12,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.sql.Array;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -386,10 +383,7 @@ public class DOA {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
-		}
-		
-
-		
+		}		
 	}
 	
 	public static void addProfessor(String id, String first, String last) {
@@ -539,7 +533,8 @@ public class DOA {
 		}
 		return false;
 	}
-
+	
+	
 	public static int getAvg(String course_id, int aID) {
 		start();
 		int average = 0;
