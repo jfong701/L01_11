@@ -83,9 +83,12 @@ public class ProfessorAddQuestions {
 			}
         });
         
+        Button submitButton = new Button("Submit");
+        
         assignmentBox.setOnAction( e -> {
         	try {
 				loadTable(courseBox.getValue(), assignmentBox.getValue().toString());
+				submitButton.setDisable(false);
 			} catch (SQLException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
@@ -116,26 +119,32 @@ public class ProfessorAddQuestions {
         grid.add(backButton, 0, 10, 1, 1);
 
         // TO-DO: ADD LOGIC TO SUBMIT BUTTON
-        Button submitButton = new Button("Submit");
+        submitButton.setDisable(true);
         submitButton.setOnAction(e -> {
-
+        	String questionString = questionField.getText();
+        	String answerString = answerField.getText();
+        	System.out.println(String.format("%d %d", questionString.length(), answerString.length()));
             // .getText() from questionField, answerField
-        	DOA.addQuestion(
+
+        	if (questionString.length() < 1 || answerString.length() < 1) {
+        		MessageBox.show("Error", "Either no question or no answer.");
+        	} else {
+        		DOA.addQuestion(
         			courseBox.getValue(),
         			assignmentBox.getValue().toString(),
         			DOA.QuestionCount(courseBox.getValue(), assignmentBox.getValue().toString()),
         			questionField.getText(), 
         			answerField.getText());
         	
-        	questionField.clear();
-        	answerField.clear();
-        	try {
-				loadTable(courseBox.getValue(), assignmentBox.getValue().toString());
-			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-          	
+        		questionField.clear();
+        		answerField.clear();
+        		try {
+        			loadTable(courseBox.getValue(), assignmentBox.getValue().toString());
+        		} catch (SQLException e1) {
+        			// TODO Auto-generated catch block
+        			e1.printStackTrace();
+        		}
+        	}
         });
         grid.add(submitButton, 2, 10, 1, 1);
         

@@ -22,7 +22,6 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import jdbc.DOA;
 import student.Student;
-import student.Students;
 
 public class ProfessorViewStudents {
 	
