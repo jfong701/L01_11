@@ -1,6 +1,7 @@
 package jdbc;
 
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -16,7 +17,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-import jdbc.MySQLAccess;
+import jdbc.OldMySQLAccess;
 import student.Student;
 
 public class DOA {
@@ -31,18 +32,23 @@ public class DOA {
 	private final static String prof = "PROFESSORS";
 	private final static String course_stu = "COURSE_STUDENTS";
 	
-	private static MySQLAccess a;
+	private static OldMySQLAccess a;
+	private static MySQLAccess db = new MySQLAccess();
 	
 	public static void main(String[] args) throws SQLException {
-			start();
+			//start();
 			//a.dropTable(stu);
 			//close();
 			//initDatabase();
-			close();
+			//close();
+		ArrayList<ArrayList<String>> a = getQuestions("CSCC01", "1");
+		for (int i = 0; i < a.size(); i++) {
+			System.out.println(a.get(i));
+		}
 	}
 	
 	public static void initDatabase() throws SQLException {
-		a = new MySQLAccess();
+		a = new OldMySQLAccess();
 
 		System.out.println("Initializing database");
 		a.loadAndConnect(dbName);
@@ -103,12 +109,12 @@ public class DOA {
 	}
 	
 	public static void start() {
-		a = new MySQLAccess();
+		a = new OldMySQLAccess();
 		a.loadAndConnect(dbName);
 	}
 	
 	public static void close() {
-		a.close();
+		db.close();
 	}
 	
 	public static void addStudent(String id, String utor_id, String first, String last) {
@@ -256,11 +262,11 @@ public class DOA {
 	}
 	
 	public static ArrayList<String> getCourseIds() {
-		start();
 		ArrayList<String> list = new ArrayList<String>();
 		
 		try {
-			ResultSet rs =  a.selectRecords(asmt, "DISTINCT course_id");
+			String query = "SELECT DISTINCT course_id FROM " + asmt + ";";
+			ResultSet rs =  db.execute(query); //a.selectRecords(asmt, "DISTINCT course_id");
 			while (rs.next()) {
 				String id = rs.getString("course_id");
 				list.add(id);
@@ -268,17 +274,17 @@ public class DOA {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			close();
+			db.close();
 		}
 		return list;
 	}
 	
 	public static ArrayList<Integer> getAssignmentIds(String course_id) {		
-		start();
 		ArrayList<Integer> list = new ArrayList<Integer>();
 		
 		try {
-			ResultSet rs =  a.selectRecordsWhere(asmt, "course_id='" + course_id + "'", "assignment_id");
+			String query = "SELECT assignment_id FROM " + asmt + " WHERE course_id = '" + course_id + "';"; 
+			ResultSet rs =  db.execute(query);//a.selectRecordsWhere(asmt, "course_id='" + course_id + "'", "assignment_id");
 			while (rs.next()) {
 				Integer id = rs.getInt("assignment_id");
 				list.add(id);
@@ -305,35 +311,29 @@ public class DOA {
 	}
 
 	public static ArrayList<Assignment> getAllAssignments() {
-		start();
 		ArrayList<Assignment> asmts = new ArrayList<Assignment>();
-		ResultSet rs = a.selectRecords(asmt, "*");
+		
 		try {
+			String query = "SELECT * FROM " + asmt + ";";
+			ResultSet rs =  db.execute(query);// a.selectRecords(asmt, "*");
 			while (rs.next()) {
 				asmts.add(rsToAssignment(rs)); 
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} finally {
+			db.close();
 		}
-		close();
 		return asmts;
 	}
 
 	
 	public static void addQuestion(String course_id, String assignment_id, String question_id, String question, String answer ) {
-		start();
-		String sql = a.preparedRecordsSQL(ques, 5, "course_id", "assignment_id", "question_id", "question", "answer_function");
-		System.out.println(sql);
-		Connection conn = a.getConn();
 		try {
-			PreparedStatement pr = conn.prepareStatement(sql);
-			pr.setString(1,  course_id);
-			pr.setInt(2, Integer.parseInt(assignment_id));
-			pr.setInt(3, Integer.parseInt(question_id));
-			pr.setString(4, question);
-			pr.setString(5, answer);
-			
-			pr.execute();
+			String query = "INSERT INTO " + ques + " values(" + course_id + ", " 
+							+ assignment_id + ", " + question_id + ", " + question 
+							+ ", " + answer + ");";
+			db.execute(query);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -359,8 +359,10 @@ public class DOA {
 		ArrayList<ArrayList<String>> array = new ArrayList<ArrayList<String>>();
 		ArrayList<String> innerArray;
 		try {
-			ResultSet rs =  a.selectRecordsWhere(ques, "course_id='" + course_id + "' AND assignment_id='" + assignment_id +"'", "*");
-			int i = 0;
+			String query = "SELECT * FROM " + ques + " WHERE course_id = '" 
+							+ course_id + "' AND assignment_id = '" 
+							+ assignment_id + "';";
+			ResultSet rs = db.execute(query);
 			while (rs.next()) {
 				innerArray = new ArrayList<String>();
 				innerArray.add(rs.getString("question"));
@@ -374,7 +376,6 @@ public class DOA {
 	}
 	
 	public static String QuestionCount(String course_id, String assignment_id) {
-		start();
 		try {
 			ResultSet rs =  a.selectRecordsWhere(ques, "course_id='" + course_id + "' AND assignment_id='" + assignment_id +"'", "DISTINCT question_id");
 			rs.last();
