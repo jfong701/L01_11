@@ -152,6 +152,7 @@ public class StudentPage {
           } else {
             viewAssignmentsBtn.setDisable(true);
           }
+          viewAssignmentsBtn.setDisable(false);
         } catch (SQLException e1) {
           e1.printStackTrace();
           MessageBox.show("Database Error", "Cannot retrieve assignment.\nPlease try again.");

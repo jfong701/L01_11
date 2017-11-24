@@ -7,9 +7,12 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import student.Student;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import com.sun.org.apache.xpath.internal.SourceTree;
+
+import assignment.Assignment;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -37,13 +40,33 @@ public class StudentAssignmentPage {
   public static void startAssignment(Stage primaryStage, String user,
       String pass, String courseName, int assignmentNumber) {
 
+	  
+    String assignmentNumStr = Integer.toString(assignmentNumber);
+    Assignment curAssgn = null;
+	try {
+		curAssgn = DOA.getAssignment(courseName, assignmentNumStr);
+	} catch (SQLException e1) {
+		// TODO Auto-generated catch block
+		e1.printStackTrace();
+	}
+    int numQuestions = 2;
+    String assignmentName = curAssgn.getAssignmentName();
+    
+    System.out.println("HERE");
+    Assignment.questSet(numQuestions, curAssgn.getNumQuestions());
+    System.out.println("END HERE");
+    String[] questions = {"a", "b"};
+    String[] answers = {"a", "b"};
+	  
+	  
     // window title
     String title =
         user + ": " + courseName + ", " + Integer.toString(assignmentNumber);
     primaryStage.setTitle(title);
 
     // page title (inside window)
-    Label assignmentLabel = new Label(Integer.toString(assignmentNumber));
+    //Label assignmentLabel = new Label(Integer.toString(assignmentNumber));
+    Label assignmentLabel = new Label(curAssgn.getAssignmentName());
     assignmentLabel.setPadding(new Insets(10, 10, 10, 10));
     assignmentLabel.setFont(Font.font("Verdana", 20));
 
@@ -60,7 +83,8 @@ public class StudentAssignmentPage {
     grid.setHgap(5);
 
     currentRow = 0;
-
+    
+    /*
     String assignmentName = Integer.toString(assignmentNumber);
 
     // CHECK how many questions are in the assignment
@@ -81,6 +105,7 @@ public class StudentAssignmentPage {
       questions[i] = qaPair.get(0);
       answers[i] = qaPair.get(1);
     }
+    */
 
     // Declare arrays for textFlow, and input fields.
     TextFlow flow[];
