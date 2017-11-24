@@ -54,7 +54,7 @@ public class DOA {
 		
 		a.createTable(stu,
 				"student_id VARCHAR(10) NOT NULL",
-				"utor_id VARCHAR(9) UNIQUE NOT NULL",
+				"utor_id VARCHAR(8) UNIQUE NOT NULL",
 				"first_name VARCHAR(255) NOT NULL",
 				"last_name VARCHAR(255) NOT NULL",
 				"student_password VARCHAR(25) DEFAULT ''",
