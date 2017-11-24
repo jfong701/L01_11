@@ -10,6 +10,7 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import jdbc.DOA;
+import validator.Validators;
 import javafx.scene.layout.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -53,9 +54,9 @@ public class IntroScreen extends Application {
 		Button loginButton = new Button("Login");
 		loginButton.setOnAction(e -> {
 			try {
-				if (DOA.loginProf(userInput.getText(), passInput.getText())) {
+				if (Validators.loginProf(userInput.getText(), passInput.getText())) {
 					ProfessorPage.login(primaryStage, userInput.getText(), passInput.getText());
-				} else if (DOA.loginStudent(userInput.getText(), passInput.getText())) {
+				} else if (Validators.loginStudent(userInput.getText(), passInput.getText())) {
 					StudentPage.login(primaryStage, userInput.getText(), passInput.getText());
 				} else {
 					MessageBox.show("Login Failed", "Invalid Credentials");

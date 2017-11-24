@@ -14,9 +14,11 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
-
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 import jdbc.DOA;
 
 public class StudentAssignmentPage {
@@ -35,26 +37,35 @@ public class StudentAssignmentPage {
   public static void startAssignment(Stage primaryStage, String user,
       String pass, String courseName, int assignmentNumber) {
 
-    // Create layout
+    // window title
+    String title =
+        user + ": " + courseName + ", " + Integer.toString(assignmentNumber);
+    primaryStage.setTitle(title);
+
+    // page title (inside window)
+    Label assignmentLabel = new Label(Integer.toString(assignmentNumber));
+    assignmentLabel.setPadding(new Insets(10, 10, 10, 10));
+    assignmentLabel.setFont(Font.font("Verdana", 20));
+
+    HBox topBorder = new HBox(50);
+    topBorder.setAlignment(Pos.CENTER_LEFT);
+    topBorder.getChildren().add(assignmentLabel);
+
+
+    // Create main layout
     GridPane grid = new GridPane();
     grid.setAlignment(Pos.CENTER);
-    grid.setPadding(new Insets(15, 15, 15, 15));
+    grid.setPadding(new Insets(5, 5, 5, 5));
     grid.setVgap(5);
     grid.setHgap(5);
 
-    ScrollPane sp = new ScrollPane(grid);
-    sp.setFitToHeight(true);
-    sp.setFitToWidth(true);
-
-    Scene addStudentsScene = new Scene(sp, 500, 500);
-    primaryStage.setScene(addStudentsScene);
     currentRow = 0;
 
     String assignmentName = Integer.toString(assignmentNumber);
 
     // CHECK how many questions are in the assignment
     int numQuestions =
-        Integer.parseInt(DOA.QuestionCount(courseName, assignmentName));
+        Integer.parseInt(DOA.questionCount(courseName, assignmentName));
 
     // Extract questions to fill out labels.
     ArrayList<ArrayList<String>> questionAndAnswerList =
@@ -71,33 +82,32 @@ public class StudentAssignmentPage {
       answers[i] = qaPair.get(1);
     }
 
-    // Title
-    Label sceneTitle = new Label(assignmentName);
-    sceneTitle.setFont(Font.font("Verdana", FontWeight.NORMAL, 20));
-    grid.add(sceneTitle, 0, currentRow, 2, 1);
-    currentRow++;
-
-    // Declare arrays for question numbers, labels, input fields.
-    Label questionNums[];
-    Label questionLabels[];
+    // Declare arrays for textFlow, and input fields.
+    TextFlow flow[];
     TextField answerFields[];
 
-    questionNums = new Label[numQuestions];
-    questionLabels = new Label[numQuestions];
+    flow = new TextFlow[numQuestions];
     answerFields = new TextField[numQuestions];
 
     // Create question labels, and textFields
     for (int i = 0; i < numQuestions; i++) {
-      questionNums[i] = new Label(Integer.toString(i + 1) + ".");
-      grid.add(questionNums[i], 0, currentRow, 3, 1);
+
+      // create Textflow, and add styled Text objects to it.
+      flow[i] = new TextFlow();
+
+      Text numTxt = new Text(Integer.toString(i + 1) + ".  ");
+      numTxt.setStyle("-fx-font-weight: bold; -fx-font-size: 18px");
+
+      Text questionTxt = new Text(questions[i]);
+
+      flow[i].getChildren().addAll(numTxt, questionTxt);
+      grid.add(flow[i], 0, currentRow, 2, 1);
+
       currentRow++;
 
-      questionLabels[i] = new Label(questions[i]);
-      grid.add(questionLabels[i], 0, currentRow, 3, 1);
-      currentRow++;
-
+      // add a text field to enter answers in
       answerFields[i] = new TextField();
-      grid.add(answerFields[i], 0, currentRow, 3, 1);
+      grid.add(answerFields[i], 0, currentRow, 2, 1);
       currentRow += 2;
     }
 
@@ -106,8 +116,10 @@ public class StudentAssignmentPage {
     Button backButton = new Button("Back");
     Button submitButton = new Button("Submit");
 
-    grid.add(backButton, 0, currentRow);
-    grid.add(submitButton, 2, currentRow);
+    // grid.add(backButton, 0, currentRow);
+    // grid.add(submitButton, 2, currentRow);
+    grid.add(backButton, 0, currentRow, 1, 1);
+    grid.add(submitButton, 1, currentRow, 1, 1);
 
     // BACK BUTTON EVENT HANDLER
     backButton
@@ -133,5 +145,16 @@ public class StudentAssignmentPage {
 
       MessageBox.show(assignmentName, message);
     });
+    // embed the layout in a scrollPane
+    ScrollPane sp = new ScrollPane(grid);
+    sp.setFitToHeight(true);
+    sp.setFitToWidth(true);
+
+    BorderPane border = new BorderPane();
+    border.setTop(topBorder);
+    border.setCenter(sp);
+
+    Scene addStudentsScene = new Scene(border, 500, 500);
+    primaryStage.setScene(addStudentsScene);
   }
 }
