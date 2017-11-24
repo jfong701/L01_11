@@ -384,6 +384,7 @@ public class DOA {
 	 * where inner.get(0) is the question for each row i and inner.get(1) is the answer function for each row i.
 	 */
 	public static ArrayList<ArrayList<String>> getQuestions(String course_id, String assignment_id) {
+		start();
 		ArrayList<ArrayList<String>> array = new ArrayList<ArrayList<String>>();
 		ArrayList<String> innerArray;
 		try {
@@ -397,6 +398,8 @@ public class DOA {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} finally {
+			close();
 		}
 		return array;
 	}
