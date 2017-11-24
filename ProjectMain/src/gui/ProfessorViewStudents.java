@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 
 import javafx.beans.binding.Bindings;
@@ -22,6 +23,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import jdbc.DOA;
 import student.Student;
+import validator.Validators;
 
 public class ProfessorViewStudents {
 	
@@ -59,7 +61,7 @@ public class ProfessorViewStudents {
 				for (File file : list) {
 					DOA.start();
 					// check for any errors in the student file using the method in DOA
-					List<String> errors = DOA.getErrorsInStudentFile(file.getAbsolutePath().replace('\\', '/'));
+					List<String> errors = Validators.getErrorsInStudentFile(file.getAbsolutePath().replace('\\', '/'));
 					String error = "";
 					// if there is at least one string in the list of errors, then show a message box containing the errors
 					if (errors.size() > 0) {
@@ -68,10 +70,14 @@ public class ProfessorViewStudents {
 						}
 						MessageBox.show("Error", error);
 					} else {
-						DOA.uploadStudentFile(file.getAbsolutePath().replace('\\', '/'));
+						//DOA.uploadStudentFile(file.getAbsolutePath().replace('\\', '/'));
 						try {
+							DOA.uploadStudentFile(file.getAbsolutePath().replace('\\', '/'));
 							DOA.uploadCourseStudents(courseBox.getValue(), file);
 						} catch (IOException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						} catch (SQLException e1) {
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
 						}
