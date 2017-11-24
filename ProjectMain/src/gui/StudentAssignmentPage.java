@@ -70,15 +70,16 @@ public class StudentAssignmentPage {
       // need
       for (int i = 0; i < numQuestions; i++) {
         // gets the pairs in random order
-        ArrayList<String> qaPair = questionAndAnswerList.get(questionIds[i]-1);
+        ArrayList<String> qaPair =
+            questionAndAnswerList.get(questionIds[i] - 1);
         questions[i] = qaPair.get(0);
         answers[i] = qaPair.get(1);
       }
     }
 
     // window title
-    String title =
-        user + ": " + courseName + ", " + Integer.toString(assignmentNumber);
+    String title = user + ": " + courseName + "Assignment #"
+        + Integer.toString(assignmentNumber) + " - " + assignmentName;
     primaryStage.setTitle(title);
 
     // page title (inside window)
