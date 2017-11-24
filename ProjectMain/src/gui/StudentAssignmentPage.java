@@ -52,24 +52,28 @@ public class StudentAssignmentPage {
       e1.printStackTrace();
     }
 
-    int numQuestions = 2;
+    int numQuestions = curAssgn.getNumQuestions();
     String assignmentName = curAssgn.getAssignmentName();
-    int questionIds[] =
-        Assignment.questSet(numQuestions, curAssgn.getNumQuestions());
 
     ArrayList<ArrayList<String>> questionAndAnswerList =
         DOA.getQuestions(courseName, assignmentNumStr);
 
     String[] questions = new String[numQuestions];
     String[] answers = new String[numQuestions];
+    int[] questionIds = null;
 
-    // iterate through our given IDs, and extract the question and answers we
-    // need
-    for (int i = 0; i < questionIds.length; i++) {
-      // gets the pairs in random order
-      ArrayList<String> qaPair = questionAndAnswerList.get(questionIds[i]);
-      questions[i] = qaPair.get(0);
-      answers[i] = qaPair.get(1);
+    int maxNumQuestions = questionAndAnswerList.size();
+
+    if (numQuestions <= maxNumQuestions) {
+      questionIds = Assignment.questSet(numQuestions, maxNumQuestions);
+      // iterate through our given IDs, and extract the question and answers we
+      // need
+      for (int i = 0; i < numQuestions; i++) {
+        // gets the pairs in random order
+        ArrayList<String> qaPair = questionAndAnswerList.get(questionIds[i]-1);
+        questions[i] = qaPair.get(0);
+        answers[i] = qaPair.get(1);
+      }
     }
 
     // window title
