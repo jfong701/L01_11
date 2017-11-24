@@ -1,6 +1,7 @@
 package gui;
 
 import javafx.collections.FXCollections;
+
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -17,14 +18,18 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
+import java.io.File;
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.List;
 
 import assignment.Assignment;
 import assignment.SingleAnswerQuestion;
 import jdbc.DOA;
+
 
 public class ProfessorAddQuestions {
 	
@@ -50,13 +55,28 @@ public class ProfessorAddQuestions {
         grid.setVgap(5);
         grid.setPadding(new Insets(25, 25, 25, 25));
         
-        // Title
-        Text sceneTitle = new Text("Add Questions");
-        sceneTitle.setFont(Font.font("Verdana", FontWeight.NORMAL, 20));
-        grid.add(sceneTitle, 0, 0, 1, 1);
+		Button uploadQuestions = new Button("Upload Question Files...");
+		uploadQuestions.setOnAction( e -> {
+			FileChooser fileChooser = new FileChooser();
+			fileChooser.setTitle("Upload Question Files");
+			List<File> list = fileChooser.showOpenMultipleDialog(primaryStage);
+			if (list != null) {
+				for (File file : list) {
+					DOA.start();					
+					DOA.uploadQuestionFile(file.getAbsolutePath().replace('\\', '/'));
+					DOA.close();
+				}
+			}
+			try {
+				loadTable("", "");
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		});
+		grid.add(uploadQuestions, 0, 0, 1, 1);
 
-        // Labels and TextFields
-        
+        // Labels and TextFields        
         // Course Label
         Label courseLabel = new Label("Enter course id:");
         grid.add(courseLabel, 0, 2, 1, 1);
@@ -132,10 +152,9 @@ public class ProfessorAddQuestions {
         		DOA.addQuestion(
         			courseBox.getValue(),
         			assignmentBox.getValue().toString(),
-        			DOA.QuestionCount(courseBox.getValue(), assignmentBox.getValue().toString()),
         			questionField.getText(), 
         			answerField.getText());
-        	
+   	
         		questionField.clear();
         		answerField.clear();
         		try {
@@ -146,7 +165,9 @@ public class ProfessorAddQuestions {
         		}
         	}
         });
+        
         grid.add(submitButton, 2, 10, 1, 1);
+        
         
         border.setCenter(questions);
         border.setBottom(grid);

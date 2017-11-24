@@ -38,9 +38,13 @@ public class DOA {
 	
 	public static void main(String[] args) throws SQLException {
 			start();
-			//a.dropTable(stu);
-			//close();
-			//initDatabase();
+			a.dropTable(stu);
+			a.dropTable(asmt);
+			a.dropTable(ques);
+			a.dropTable(stu_asmt);
+			a.dropTable(prof);
+			a.dropTable(course_stu);
+			initDatabase();
 			close();
 	}
 	
@@ -51,8 +55,8 @@ public class DOA {
 		a.loadAndConnect(dbName);
 		
 		a.createTable(stu,
-				"student_id CHAR(10) NOT NULL",
-				"utor_id VARCHAR(10) UNIQUE NOT NULL",
+				"student_id VARCHAR(10) NOT NULL",
+				"utor_id VARCHAR(9) UNIQUE NOT NULL",
 				"first_name VARCHAR(255) NOT NULL",
 				"last_name VARCHAR(255) NOT NULL",
 				"student_password VARCHAR(25) DEFAULT ''",
@@ -67,16 +71,16 @@ public class DOA {
 				"PRIMARY KEY ( course_id, assignment_id )"
 				);
 		a.createTable(ques,
+				"question_id INTEGER NOT NULL AUTO_INCREMENT",
 				"course_id VARCHAR(8) NOT NULL",
 				"assignment_id INTEGER NOT NULL",
-				"question_id INTEGER NOT NULL",
 				"question VARCHAR(1000) NOT NULL",
 				"answer_function VARCHAR(1000) NOT NULL",
 				"lower_range INTEGER",
 				"upper_range INTEGER",
 				"decimal_places INTEGER",
 				"FOREIGN KEY ( course_id, assignment_id ) REFERENCES ASSIGNMENTS ( course_id, assignment_id )",
-				"PRIMARY KEY ( course_id, assignment_id, question_id )"
+				"PRIMARY KEY ( question_id )"
 				);
 		a.createTable(stu_asmt,
 				"student_id CHAR(10) NOT NULL",
@@ -229,6 +233,7 @@ public class DOA {
 		System.out.println(sql + " completed.");
 	}
 	
+	
 	public static void uploadCourseStudents(String course_id, File file) throws IOException {
 		BufferedReader br = new BufferedReader(new FileReader(file));
 		String line;
@@ -294,6 +299,13 @@ public class DOA {
 		return list;
 	}
 	
+	public static void uploadAssignmentFile(String abs_path) {
+		String sql = "LOAD DATA LOCAL INFILE '"+ abs_path + "' INTO TABLE assignments FIELDS TERMINATED BY ',' (course_id, assignment_id, num_questions, assignment_name, deadline);";
+		a.executeSQL(sql);
+		System.out.println(sql + " completed.");
+	}
+
+	
 	public static Assignment rsToAssignment(ResultSet rs) throws SQLException {
 		Assignment asmt = null;
 		// columns in order: student_id,first_name,last_name,utorid
@@ -338,18 +350,17 @@ public class DOA {
 	}
 
 	
-	public static void addQuestion(String course_id, String assignment_id, String question_id, String question, String answer ) {
+	public static void addQuestion(String course_id, String assignment_id,  String question, String answer ) {
 		start();
-		String sql = a.preparedRecordsSQL(ques, 5, "course_id", "assignment_id", "question_id", "question", "answer_function");
+		String sql = a.preparedRecordsSQL(ques, 4, "course_id", "assignment_id", "question", "answer_function");
 		System.out.println(sql);
 		Connection conn = a.getConn();
 		try {
 			PreparedStatement pr = conn.prepareStatement(sql);
 			pr.setString(1,  course_id);
 			pr.setInt(2, Integer.parseInt(assignment_id));
-			pr.setInt(3, Integer.parseInt(question_id));
-			pr.setString(4, question);
-			pr.setString(5, answer);
+			pr.setString(3, question);
+			pr.setString(4, answer);
 			
 			pr.execute();
 		} catch (SQLException e) {
@@ -359,20 +370,13 @@ public class DOA {
 		}
 	}
 	
-	/*
-	 * Returns an ArrayList of ArrayLists consisting of [question, answer_value] pairs.
-	 * Ex.
-	 * start();
-	 * ArrayList<ArrayList<String>> array = getQuestions("CSCC01", "1");
-	 * close();
-	 * System.out.println();
-	 * for (int i = 0; i < array.size(); i++) {
-	 *     ArrayList<String> inner = array.get(i);
-	 *     System.out.println(inner.get(0) + " " + inner.get(1));
-	 * }
-	 * 
-	 * where inner.get(0) is the question for each row i and inner.get(1) is the answer function for each row i.
-	 */
+	public static void uploadQuestionFile(String abs_path) {
+		String sql = "LOAD DATA LOCAL INFILE '"+ abs_path + "' INTO TABLE questions FIELDS TERMINATED BY ',' (course_id, assignment_id, question, answer_function, lower_range, upper_range, decimal_places);";
+		a.executeSQL(sql);
+		System.out.println(sql + " completed.");
+	}
+
+	
 	public static ArrayList<ArrayList<String>> getQuestions(String course_id, String assignment_id) {
 		ArrayList<ArrayList<String>> array = new ArrayList<ArrayList<String>>();
 		ArrayList<String> innerArray;
