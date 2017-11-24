@@ -37,12 +37,11 @@ public class DOA {
 	
 	public static void main(String[] args) throws SQLException {
 			start();
-			a.insertRecords(prof, "'p'", "'p'", "'p'", "'p'");
-			a.insertRecords(stu, "'s'", "'s'", "'s'", "'s'", "'s'");
-
+			a.dropTable(stu);
+			a.dropTable(asmt);
+			a.dropTable(ques);
+			initDatabase();
 			close();
-			//initDatabase();
-			//close();
 	
 	}
 	

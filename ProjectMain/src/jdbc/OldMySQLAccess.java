@@ -73,7 +73,6 @@ public class OldMySQLAccess {
 	}
 	
 	public void executeSQL(String sql) {
-		loadAndConnect("");
 		try {
 			stmt.execute(sql);
 		} catch (SQLException e) {
