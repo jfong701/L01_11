@@ -60,6 +60,7 @@ public class ProfessorAddAssignments {
         courseBox.setPromptText("e.g CSCC43");
         courseBox.getItems().addAll(DOA.getCourseIds());
         courseBox.setEditable(true);
+        courseBox.setOnAction( e -> loadTable(courseBox.getValue()));
         grid.add(courseBox, 0, 2, 1, 1);
 
         // Assignment Number label
@@ -110,7 +111,7 @@ public class ProfessorAddAssignments {
         			java.sql.Date.valueOf(datePicker.getValue()));
         	DOA.close();
         	
-        	loadTable();
+        	loadTable(courseBox.getValue());
         	
         	aIDField.clear();
         	qNumField.clear();
@@ -125,15 +126,21 @@ public class ProfessorAddAssignments {
         primaryStage.setScene(addAssignmentsScene);
     }
     
-	public static ObservableList<Assignment> getAssignments() {
-		ObservableList<Assignment> asmts = FXCollections.observableArrayList(DOA.getAllAssignments());
+	public static ObservableList<Assignment> getAssignments(String course_id) {
+		ObservableList<Assignment> asmts = null;
+
+		if (course_id.isEmpty()) {
+			asmts = FXCollections.observableArrayList(DOA.getAllAssignments());
+		} else {
+			asmts = FXCollections.observableArrayList(DOA.getAllAssignments(course_id));
+		}
 		return asmts;
 	}
 	
 
-	public static void loadTable() {
+	public static void loadTable(String course_id) {
 		assignments.getItems().clear();
-		assignments.setItems(getAssignments());
+		assignments.setItems(getAssignments(course_id));
 	}
     
 	public static void setUpTable() {
@@ -162,7 +169,7 @@ public class ProfessorAddAssignments {
 		
 		assignments.getColumns().addAll(courseID, assignmentID, numQuestions, assignmentName, deadline);
 		assignments.setFixedCellSize(25);
-		loadTable();
+		loadTable("");
 
 	}
 }

@@ -71,6 +71,7 @@ public class IntroScreen extends Application {
 		
 		loginLayout.getChildren().addAll(userLabel, userInput, passLabel, passInput, loginButton);	
 		Scene loginScene = new Scene(loginLayout, 500, 250);
+		loginScene.getStylesheets().add(getClass().getResource("template.css").toExternalForm());
 		primaryStage.setScene(loginScene);
 		primaryStage.show();
 	}

@@ -221,6 +221,31 @@ public class DOA {
 		}
 		return asmts;
 	}
+	
+	public static ArrayList<Assignment> getAllAssignments(String course_id) {
+		start();
+		ArrayList<Assignment> asmts = new ArrayList<Assignment>();
+		ResultSet rs = a.selectRecordsWhere(asmt, "course_id='" + course_id + "'", "*");
+		try {
+			while (rs.next()) {
+				asmts.add(rsToAssignment(rs)); 
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		close();
+		return asmts;
+	}
+	
+	public static Assignment getAssignment(String course_id, String assignment_id) throws SQLException {
+	  start();
+	  Assignment asm = null;
+	  ResultSet rs = a.executeSQLQuery("select * from " + asmt + " where course_id='"+ course_id +"' and assignment_id="+ assignment_id + ";");
+	  rs.next();
+	  asm = rsToAssignment(rs);
+	  close();
+	  return asm;
+	}
 
 	
 	public static void addQuestion(String course_id, String assignment_id, String question_id, String question, String answer ) {
@@ -376,6 +401,28 @@ public class DOA {
 			questions.add(rsToQuestion(rs)); 
 		}
 		db.close();
+		return questions;
+	}
+
+	public static ArrayList<SingleAnswerQuestion> getAllCourseQuestions(String course_id) throws SQLException {
+		start();
+		ArrayList<SingleAnswerQuestion> questions = new ArrayList<SingleAnswerQuestion>();
+		ResultSet rs = a.selectRecordsWhere(ques,"course_id='"+ course_id + "'", "*");
+		while (rs.next()) {
+			questions.add(rsToQuestion(rs)); 
+		}
+		close();
+		return questions;
+	}
+	
+	public static ArrayList<SingleAnswerQuestion> getAllAssignmentQuestions(String course_id, String assignment_id) throws SQLException {
+		start();
+		ArrayList<SingleAnswerQuestion> questions = new ArrayList<SingleAnswerQuestion>();
+		ResultSet rs = a.selectRecordsWhere(ques,"course_id='"+ course_id + "' AND assignment_id='" + assignment_id + "'" , "*");
+		while (rs.next()) {
+			questions.add(rsToQuestion(rs)); 
+		}
+		close();
 		return questions;
 	}
 	
