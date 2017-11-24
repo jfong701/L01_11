@@ -9,9 +9,15 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
+import javax.swing.plaf.synth.SynthSeparatorUI;
+
+import assignment.Assignment;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -51,7 +57,7 @@ public class StudentPage {
     // combo boxes which interact with each other)
     assignmentIds = FXCollections.observableArrayList();
     courseCodes = FXCollections.observableArrayList();
-    
+
     // set course codes from DOA
     courseCodes.addAll(DOA.getCourseIds());
 
@@ -110,7 +116,7 @@ public class StudentPage {
     // COURSEBOX EVENT HANDLER
     // when a course is selected, sets up the assignmentBox for that course.
     courseBox.setOnAction(e -> {
-      
+
       // clear the observable for assignment IDs and set based on course
       assignmentIds.clear();
       assignmentIds.addAll(DOA.getAssignmentIds(courseBox.getValue()));
@@ -125,16 +131,38 @@ public class StudentPage {
     // ASSIGNMENTBOX EVENT HANDLER
     // when an assignment is chosen, enable the 'open' button
     assignmentBox.setOnAction(e -> {
-      viewAssignmentsBtn.setDisable(false);
 
       // only update the label if the observable object hasn't been filled
       // (prevents concurrency issues within the UI)
       if (!assignmentIds.isEmpty()) {
-        int avgGrade =
-            DOA.getAvg(courseBox.getValue(), assignmentBox.getValue());
-        assignmentAverageLabel.setText(
-            "Assignment average: " + Integer.toString(avgGrade) + "%");
-        assignmentAverageLabel.setVisible(true);
+       
+        Date deadline;
+        
+        Assignment curAssgn = null;
+        try {
+          curAssgn = DOA.getAssignment(courseBox.getValue(), (assignmentBox.getValue()).toString());
+          
+          System.out.println(curAssgn.getDeadline());
+          deadline = curAssgn.getDeadline();
+          deadlineLabel.setText("Deadline: " + deadline.toString());
+          deadlineLabel.setVisible(true);
+          
+          if (Calendar.getInstance().getTime().before(deadline)) {
+            viewAssignmentsBtn.setDisable(false);
+          } else {
+            viewAssignmentsBtn.setDisable(true);
+          }
+        } catch (SQLException e1) {
+          e1.printStackTrace();
+          MessageBox.show("Database Error", "Cannot retrieve assignment.\nPlease try again.");
+        }
+        
+        
+         int avgGrade = DOA.getAvg(courseBox.getValue(),
+         assignmentBox.getValue()); assignmentAverageLabel.setText(
+         "Assignment average: " + Integer.toString(avgGrade) + "%");
+         assignmentAverageLabel.setVisible(true);
+         
       }
     });
 

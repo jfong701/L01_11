@@ -336,6 +336,16 @@ public class DOA {
 		close();
 		return asmts;
 	}
+	
+	public static Assignment getAssignment(String course_id, String assignment_id) throws SQLException {
+	  start();
+	  Assignment asm = null;
+	  ResultSet rs = a.executeSQLQuery("select * from " + asmt + " where course_id='"+ course_id +"' and assignment_id="+ assignment_id + ";");
+	  rs.next();
+	  asm = rsToAssignment(rs);
+	  close();
+	  return asm;
+	}
 
 	
 	public static void addQuestion(String course_id, String assignment_id, String question_id, String question, String answer ) {
