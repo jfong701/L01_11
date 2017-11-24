@@ -87,40 +87,34 @@ public class Validators {
 	}
 	
 	public static boolean loginStudent(String username, String passInput) throws SQLException {
-		DOA.start();
 		try {
 			String login_command;
 			login_command = "SELECT * FROM STUDENTS WHERE student_id='" +username+ "' AND student_password='" +passInput+"';";
 			//System.out.println(login_command);
-			Connection conn = a.getConn();
-			PreparedStatement login_cmd = conn.prepareStatement(login_command);
-			ResultSet valid = login_cmd.executeQuery();
+			ResultSet valid = DOA.getMySQLAccess().execute(login_command);
 			if (valid.first()) {
 				return true;
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			DOA.close();
+			DOA.getMySQLAccess().close();
 		}
 		return false;
 	}
 	
 	public static boolean loginProf(String username, String passInput) throws SQLException {
-		DOA.start();
 		try {
 			String login_command;
 			login_command = "SELECT * FROM PROFESSORS WHERE professor_id='" +username+ "' AND professor_password='" +passInput+"';";
-			Connection conn = a.getConn();
-			PreparedStatement login_cmd = conn.prepareStatement(login_command);
-			ResultSet valid = login_cmd.executeQuery();
+			ResultSet valid = DOA.getMySQLAccess().execute(login_command);
 			if (valid.first()) {
 				return true;
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			DOA.close();
+			DOA.getMySQLAccess().close();
 		}
 		return false;
 	}

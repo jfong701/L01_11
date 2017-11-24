@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 
 import javafx.beans.binding.Bindings;
@@ -69,10 +70,14 @@ public class ProfessorViewStudents {
 						}
 						MessageBox.show("Error", error);
 					} else {
-						DOA.uploadStudentFile(file.getAbsolutePath().replace('\\', '/'));
+						//DOA.uploadStudentFile(file.getAbsolutePath().replace('\\', '/'));
 						try {
+							DOA.uploadStudentFile(file.getAbsolutePath().replace('\\', '/'));
 							DOA.uploadCourseStudents(courseBox.getValue(), file);
 						} catch (IOException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						} catch (SQLException e1) {
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
 						}

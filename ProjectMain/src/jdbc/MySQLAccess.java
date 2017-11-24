@@ -85,16 +85,30 @@ public class MySQLAccess {
 	}
 	
 	public ResultSet execute(String query) throws SQLException {
-		start();
 		ResultSet result = null;
 		try {
+			start();
 			Statement stmt = conn.createStatement();
 			result = stmt.executeQuery(query);
+			//close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-		} finally {
-			//close();
 		}
 		return result;
+	}
+	
+	public void insert(String query, Object... values) throws SQLException {
+		try {
+			start();
+			PreparedStatement prepStmt = conn.prepareStatement(query);
+			int i = 1;
+			for (Object obj:values) {
+				prepStmt.setObject(i++, obj);
+			}
+			prepStmt.execute();
+			close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 }

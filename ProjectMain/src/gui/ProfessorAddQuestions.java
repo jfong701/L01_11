@@ -115,7 +115,7 @@ public class ProfessorAddQuestions {
         		DOA.addQuestion(
         			courseBox.getValue(),
         			assignmentBox.getValue().toString(),
-        			DOA.QuestionCount(courseBox.getValue(), assignmentBox.getValue().toString()),
+        			DOA.questionCount(courseBox.getValue(), assignmentBox.getValue().toString()),
         			questionField.getText(), 
         			answerField.getText());
         	}

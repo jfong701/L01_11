@@ -54,7 +54,7 @@ public class StudentAssignmentPage {
 
     // CHECK how many questions are in the assignment
     int numQuestions =
-        Integer.parseInt(DOA.QuestionCount(courseName, assignmentName));
+        Integer.parseInt(DOA.questionCount(courseName, assignmentName));
 
     // Extract questions to fill out labels.
     ArrayList<ArrayList<String>> questionAndAnswerList =
