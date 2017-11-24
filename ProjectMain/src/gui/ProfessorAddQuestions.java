@@ -25,6 +25,7 @@ import java.util.Date;
 import assignment.Assignment;
 import assignment.SingleAnswerQuestion;
 import jdbc.DOA;
+import validator.Validators;
 
 public class ProfessorAddQuestions {
 	
@@ -123,16 +124,15 @@ public class ProfessorAddQuestions {
         submitButton.setOnAction(e -> {
         	String questionString = questionField.getText();
         	String answerString = answerField.getText();
-        	System.out.println(String.format("%d %d", questionString.length(), answerString.length()));
             // .getText() from questionField, answerField
-
-        	if (questionString.length() < 1 || answerString.length() < 1) {
+        	// check if given input is valid for a question
+        	if (!(Validators.isSingleAnswerQuestionValid(questionString, answerString))) {
         		MessageBox.show("Error", "Either no question or no answer.");
         	} else {
         		DOA.addQuestion(
         			courseBox.getValue(),
         			assignmentBox.getValue().toString(),
-        			DOA.QuestionCount(courseBox.getValue(), assignmentBox.getValue().toString()),
+        			DOA.questionCount(courseBox.getValue(), assignmentBox.getValue().toString()),
         			questionField.getText(), 
         			answerField.getText());
         	
