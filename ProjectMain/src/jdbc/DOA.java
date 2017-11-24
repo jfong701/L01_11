@@ -36,11 +36,12 @@ public class DOA {
 	private static MySQLAccess db = new MySQLAccess();
 	
 	public static void main(String[] args) throws SQLException {
-			//start();
-			//a.dropTable(stu);
-			//close();
-			//initDatabase();
-			//close();
+			start();
+			a.dropTable(stu);
+			a.dropTable(asmt);
+			a.dropTable(ques);
+			initDatabase();
+			close();
 	
 	}
 	
@@ -52,7 +53,7 @@ public class DOA {
 		
 		a.createTable(stu,
 				"student_id VARCHAR(10) NOT NULL",
-				"utor_id VARCHAR(9) UNIQUE NOT NULL",
+				"utor_id VARCHAR(8) UNIQUE NOT NULL",
 				"first_name VARCHAR(255) NOT NULL",
 				"last_name VARCHAR(255) NOT NULL",
 				"student_password VARCHAR(25) DEFAULT ''",
@@ -189,7 +190,7 @@ public class DOA {
 	}
 	
 	public static void uploadAssignmentFile(String abs_path) {
-		String sql = "LOAD DATA LOCAL INFILE '"+ abs_path + "' INTO TABLE assignments FIELDS TERMINATED BY ',' (course_id, assignment_id, num_questions, assignment_name, deadline);";
+		String sql = "LOAD DATA LOCAL INFILE '"+ abs_path + "' INTO TABLE ASSIGNMENTS FIELDS TERMINATED BY ',' (course_id, assignment_id, num_questions, assignment_name, deadline);";
 		a.executeSQL(sql);
 		System.out.println(sql + " completed.");
 	}
@@ -272,7 +273,7 @@ public class DOA {
 	}
 	
 	public static void uploadQuestionFile(String abs_path) {
-		String sql = "LOAD DATA LOCAL INFILE '"+ abs_path + "' INTO TABLE questions FIELDS TERMINATED BY ',' (course_id, assignment_id, question, answer_function, lower_range, upper_range, decimal_places);";
+		String sql = "LOAD DATA LOCAL INFILE '"+ abs_path + "' INTO TABLE QUESTIONS FIELDS TERMINATED BY ',' (course_id, assignment_id, question, answer_function, lower_range, upper_range, decimal_places);";
 		a.executeSQL(sql);
 		System.out.println(sql + " completed.");
 	}

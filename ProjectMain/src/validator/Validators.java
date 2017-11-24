@@ -15,7 +15,7 @@ import jdbc.DOA;
 public class Validators {
 	
 	public static boolean isStudentNumberValid(String studentNo) {
-		if (studentNo.length() == 10) {
+		if (studentNo.length() == 10 || studentNo.length() == 9) {
 			int i = 0;
 			boolean digit = true;
 			// loop to check for string of all digits
