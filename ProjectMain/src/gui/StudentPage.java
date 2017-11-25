@@ -1,5 +1,7 @@
 package gui;
 
+import gui.IntroScreen;
+
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import jdbc.DOA;
@@ -43,9 +45,17 @@ public class StudentPage {
 		welcomeLabel.setPadding(new Insets(10, 10, 10, 10));
 		welcomeLabel.setFont(Font.font("Verdana", 20));
 
+		StackPane logoutStack = new StackPane();
+		Button logoutBtn = new Button("Logout");
+		logoutStack.getChildren().addAll(logoutBtn);
+		logoutStack.setAlignment(Pos.CENTER_RIGHT);
+		StackPane.setMargin(logoutBtn, new Insets(0, 10, 0, 0));
+		
 		HBox topBorder = new HBox(50);
 		topBorder.setAlignment(Pos.CENTER_LEFT);
 		topBorder.getChildren().add(welcomeLabel);
+		topBorder.getChildren().add(logoutStack);
+		HBox.setHgrow(logoutStack, Priority.ALWAYS);
 
 		// Create grid layout
 		GridPane grid = new GridPane();
@@ -187,11 +197,17 @@ public class StudentPage {
 
 			StudentAssignmentPage.startAssignment(primaryStage, user, pass, assignmentName, assignmentNumber);
 		});
+		
+		// LOGOUT BUTTON EVENT HANDLER
+		logoutBtn.setOnAction(e -> {
+			
+		});
 
 		BorderPane border = new BorderPane();
 		border.setTop(topBorder);
 		border.setCenter(grid);
 
 		primaryStage.setScene(new Scene(border, 500, 250));
+		courseBox.requestFocus();
 	}
 }
