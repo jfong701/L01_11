@@ -1,6 +1,7 @@
 package gui;
 
 import javafx.scene.Group;
+
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.Border;
@@ -24,6 +25,7 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import jdbc.DOA;
+import org.mariuszgromada.math.mxparser.*;
 
 public class StudentAssignmentPage {
 
@@ -135,8 +137,6 @@ public class StudentAssignmentPage {
     Button backButton = new Button("Back");
     Button submitButton = new Button("Submit");
 
-    // grid.add(backButton, 0, currentRow);
-    // grid.add(submitButton, 2, currentRow);
     grid.add(backButton, 0, currentRow, 1, 1);
     grid.add(submitButton, 1, currentRow, 1, 1);
 
@@ -153,19 +153,32 @@ public class StudentAssignmentPage {
 
       // Compare input strings to stored answers.
       for (int i = 0; i < numQuestions; i++) {
-        if (answerFields[i].getText().equals(answers[i])) {
-          score++;
+
+        Expression e2 = new Expression(answers[i]);
+        System.out.println(answers[i] + "  " + answerFields[i].getText());
+
+        try {
+          // to verify answer, does string match, then does expression
+          // calculation. if it is math
+          if (answers[i].equals(answerFields[i].getText()) || e2
+              .calculate() == Double.parseDouble(answerFields[i].getText())) {
+            score++;
+          }
+        } catch (NumberFormatException e3) {
+          System.out.println(
+              answerFields[i].getText() + " is not parseable to a double");
         }
       }
-
       double percentMark =
           (double) ((double) (score) / (double) (numQuestions)) * 100;
       int percentMarkInt = (int) (percentMark);
+
 
       // Display the grade in a message box.
       String message = "Score: " + Integer.toString(percentMarkInt) + "%";
 
       MessageBox.show("Grade for " + assignmentName, message);
+
     });
     // embed the layout in a scrollPane
     ScrollPane sp = new ScrollPane(grid);
