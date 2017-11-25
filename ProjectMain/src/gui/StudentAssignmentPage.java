@@ -2,14 +2,18 @@ package gui;
 
 import javafx.scene.Group;
 import javafx.scene.control.*;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import student.Student;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import com.sun.org.apache.xpath.internal.SourceTree;
+
+import assignment.Assignment;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -32,18 +36,54 @@ public class StudentAssignmentPage {
    * @param primaryStage : the existing stage of the program
    * @param user : username of student
    * @param pass : password of student
-   * @param assignmentName : name of the current assignment being filled out
+   * @param courseName: Course code eg. "CSCC01"
+   * @param assignmentNumber: eg. 1 - for assignment 1.
    */
   public static void startAssignment(Stage primaryStage, String user,
       String pass, String courseName, int assignmentNumber) {
 
+    String assignmentNumStr = Integer.toString(assignmentNumber);
+    Assignment curAssgn = null;
+
+    try {
+      curAssgn = DOA.getAssignment(courseName, assignmentNumStr);
+    } catch (SQLException e1) {
+      // TODO Auto-generated catch block
+      e1.printStackTrace();
+    }
+
+    int numQuestions = curAssgn.getNumQuestions();
+    String assignmentName = curAssgn.getAssignmentName();
+
+    ArrayList<ArrayList<String>> questionAndAnswerList =
+        DOA.getQuestions(courseName, assignmentNumStr);
+
+    String[] questions = new String[numQuestions];
+    String[] answers = new String[numQuestions];
+    int[] questionIds = null;
+
+    int maxNumQuestions = questionAndAnswerList.size();
+
+    if (numQuestions <= maxNumQuestions) {
+      questionIds = Assignment.questSet(numQuestions, maxNumQuestions);
+      // iterate through our given IDs, and extract the question and answers we
+      // need
+      for (int i = 0; i < numQuestions; i++) {
+        // gets the pairs in random order
+        ArrayList<String> qaPair =
+            questionAndAnswerList.get(questionIds[i] - 1);
+        questions[i] = qaPair.get(0);
+        answers[i] = qaPair.get(1);
+      }
+    }
+
     // window title
-    String title =
-        user + ": " + courseName + ", " + Integer.toString(assignmentNumber);
+    String title = user + ": " + courseName + "Assignment #"
+        + Integer.toString(assignmentNumber) + " - " + assignmentName;
     primaryStage.setTitle(title);
 
     // page title (inside window)
-    Label assignmentLabel = new Label(Integer.toString(assignmentNumber));
+    Label assignmentLabel = new Label(curAssgn.getAssignmentName());
     assignmentLabel.setPadding(new Insets(10, 10, 10, 10));
     assignmentLabel.setFont(Font.font("Verdana", 20));
 
@@ -60,27 +100,6 @@ public class StudentAssignmentPage {
     grid.setHgap(5);
 
     currentRow = 0;
-
-    String assignmentName = Integer.toString(assignmentNumber);
-
-    // CHECK how many questions are in the assignment
-    int numQuestions =
-        Integer.parseInt(DOA.questionCount(courseName, assignmentName));
-
-    // Extract questions to fill out labels.
-    ArrayList<ArrayList<String>> questionAndAnswerList =
-        DOA.getQuestions(courseName, assignmentName);
-
-    String questions[] = new String[numQuestions];
-    String answers[] = new String[numQuestions];
-
-
-    // Extract the questions and answers into local arrays for easier access.
-    for (int i = 0; i < questionAndAnswerList.size(); i++) {
-      ArrayList<String> qaPair = questionAndAnswerList.get(i);
-      questions[i] = qaPair.get(0);
-      answers[i] = qaPair.get(1);
-    }
 
     // Declare arrays for textFlow, and input fields.
     TextFlow flow[];
@@ -139,11 +158,14 @@ public class StudentAssignmentPage {
         }
       }
 
-      // Display the grade in a message box.
-      String message = "Score: " + Integer.toString(score) + "/"
-          + Integer.toString(numQuestions);
+      double percentMark =
+          (double) ((double) (score) / (double) (numQuestions)) * 100;
+      int percentMarkInt = (int) (percentMark);
 
-      MessageBox.show(assignmentName, message);
+      // Display the grade in a message box.
+      String message = "Score: " + Integer.toString(percentMarkInt) + "%";
+
+      MessageBox.show("Grade for " + assignmentName, message);
     });
     // embed the layout in a scrollPane
     ScrollPane sp = new ScrollPane(grid);

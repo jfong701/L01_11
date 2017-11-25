@@ -18,12 +18,16 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.sql.SQLException;
+import java.io.File;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 
@@ -51,6 +55,22 @@ public class ProfessorAddAssignments {
         grid.setHgap(5);
         grid.setVgap(5);
         grid.setPadding(new Insets(25, 25, 25, 25));
+        
+		Button uploadAssignments = new Button("Upload Assignment Files...");
+		uploadAssignments.setOnAction( e -> {
+			FileChooser fileChooser = new FileChooser();
+			fileChooser.setTitle("Upload Assignment File");
+			List<File> list = fileChooser.showOpenMultipleDialog(primaryStage);
+			if (list != null) {
+				for (File file : list) {
+					DOA.start();					
+					DOA.uploadAssignmentFile(file.getAbsolutePath().replace('\\', '/'));
+					DOA.close();
+				}
+			}
+			loadTable("");
+		});
+		grid.add(uploadAssignments, 0, 0, 1, 1);
         
 
         // Labels and TextFields

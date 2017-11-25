@@ -31,6 +31,7 @@ public class StudentPage {
   private static final int LEFT_COL_INDEX = 0;
   private static final int RIGHT_COL_INDEX = LEFT_WIDTH + 1;
   private static final int ROW_HEIGHT = 5;
+  private static final long LENGTH_OF_UNIX_DAY = 86399000;
   private static ObservableList<Integer> assignmentIds;
   private static ObservableList<String> courseCodes;
 
@@ -135,18 +136,22 @@ public class StudentPage {
       // only update the label if the observable object hasn't been filled
       // (prevents concurrency issues within the UI)
       if (!assignmentIds.isEmpty()) {
-       
+
         Date deadline;
-        
+
         Assignment curAssgn = null;
         try {
-          curAssgn = DOA.getAssignment(courseBox.getValue(), (assignmentBox.getValue()).toString());
-          
-          System.out.println(curAssgn.getDeadline());
+          curAssgn = DOA.getAssignment(courseBox.getValue(),
+              (assignmentBox.getValue()).toString());
+
           deadline = curAssgn.getDeadline();
+          
+          // add 23 hrs, 59 minutes, 59 seconds to the deadline, so students
+          // can submit up to 11:59 pm of the deadline day
+          deadline.setTime(deadline.getTime() + LENGTH_OF_UNIX_DAY);
           deadlineLabel.setText("Deadline: " + deadline.toString());
           deadlineLabel.setVisible(true);
-          
+
           if (Calendar.getInstance().getTime().before(deadline)) {
             viewAssignmentsBtn.setDisable(false);
           } else {
@@ -154,15 +159,17 @@ public class StudentPage {
           }
         } catch (SQLException e1) {
           e1.printStackTrace();
-          MessageBox.show("Database Error", "Cannot retrieve assignment.\nPlease try again.");
+          MessageBox.show("Database Error",
+              "Cannot retrieve assignment.\nPlease try again.");
         }
-        
-        
-         int avgGrade = DOA.getAvg(courseBox.getValue(),
-         assignmentBox.getValue()); assignmentAverageLabel.setText(
-         "Assignment average: " + Integer.toString(avgGrade) + "%");
-         assignmentAverageLabel.setVisible(true);
-         
+
+
+        int avgGrade =
+            DOA.getAvg(courseBox.getValue(), assignmentBox.getValue());
+        assignmentAverageLabel.setText(
+            "Assignment average: " + Integer.toString(avgGrade) + "%");
+        assignmentAverageLabel.setVisible(true);
+
       }
     });
 

@@ -81,15 +81,17 @@ public class Assignment {
 	}
 
 	public static int[] questSet(int n, int max) {
-		int[] set = new int[3];
+		int[] set = new int[n];
 		for (int i=0; i<n; i++) {
 			Random rand = new Random();
 			boolean inSet = false;
 			do {
+				inSet = false;
 				int num = rand.nextInt(max) + 1;
 				//System.out.println(num);
 				set[i] = num;
 				for (int j = 0; j<i; j++) {
+					System.out.println(set[i] + " " + set[j]);
 					if (set[i] == set[j]) {
 						inSet = true;
 					}
