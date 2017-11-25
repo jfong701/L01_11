@@ -41,12 +41,7 @@ public class DOA {
 			//close();
 			//initDatabase();
 			//close();
-		ArrayList<ArrayList<String>> a = getQuestions("CSCC01", "1");
-		for (int i = 0; i < a.size(); i++) {
-			System.out.println(a.get(i));
-		}
-		System.out.println(questionCount("CSCC01", "1"));
-		addStudentToCourse("CSCC01", "11111");
+		//System.out.println(getAssignment("CSCC01", "1").getCourseID());
 	}
 	
 	public static void initDatabase() throws SQLException {
@@ -238,12 +233,14 @@ public class DOA {
 	}
 	
 	public static Assignment getAssignment(String course_id, String assignment_id) throws SQLException {
-	  start();
 	  Assignment asm = null;
-	  ResultSet rs = a.executeSQLQuery("select * from " + asmt + " where course_id='"+ course_id +"' and assignment_id="+ assignment_id + ";");
-	  rs.next();
-	  asm = rsToAssignment(rs);
-	  close();
+	  String query = "SELECT * FROM " + asmt + " WHERE course_id = '" + course_id + "' AND assignment_id = " + assignment_id + ";";
+	  System.out.println(query);
+	  ResultSet rs = db.execute(query);
+	  if (rs.next()) {
+		  asm = rsToAssignment(rs);
+	  }
+	  
 	  return asm;
 	}
 

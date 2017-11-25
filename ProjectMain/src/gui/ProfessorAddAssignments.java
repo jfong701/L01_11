@@ -20,6 +20,7 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Date;
@@ -30,6 +31,7 @@ import assignment.Assignment;
 import assignment.SingleAnswerQuestion;
 import jdbc.DOA;
 import student.Student;
+import validator.Validators;
 
 public class ProfessorAddAssignments {
 	
@@ -101,17 +103,27 @@ public class ProfessorAddAssignments {
 
         Button submitButton = new Button("Submit");
         submitButton.setOnAction(e -> {
-
-        	DOA.start();
-        	DOA.addAssignment(
-        			courseBox.getValue(),
-        			aIDField.getText(),
-        			qNumField.getText(),
-        			aNameField.getText(),
-        			java.sql.Date.valueOf(datePicker.getValue()));
-        	DOA.close();
-        	
-        	loadTable(courseBox.getValue());
+        	try {
+				if (!Validators.isAssignmentValid(courseBox.getValue() == null ? "":courseBox.getValue(), aIDField.getText(), 
+						qNumField.getText(), aNameField.getText(), datePicker.getValue())) {
+					MessageBox.show("Error", "Invalid input for assignments.");
+				} else {
+		        	DOA.addAssignment(
+		        			courseBox.getValue(),
+		        			aIDField.getText(),
+		        			qNumField.getText(),
+		        			aNameField.getText(),
+		        			java.sql.Date.valueOf(datePicker.getValue()));
+		        	
+		        	loadTable(courseBox.getValue());
+				}
+			} catch (NumberFormatException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
         	
         	aIDField.clear();
         	qNumField.clear();
@@ -128,8 +140,7 @@ public class ProfessorAddAssignments {
     
 	public static ObservableList<Assignment> getAssignments(String course_id) {
 		ObservableList<Assignment> asmts = null;
-
-		if (course_id.isEmpty()) {
+		if (course_id == null) {
 			asmts = FXCollections.observableArrayList(DOA.getAllAssignments());
 		} else {
 			asmts = FXCollections.observableArrayList(DOA.getAllAssignments(course_id));

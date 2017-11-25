@@ -59,7 +59,7 @@ public class ProfessorViewStudents {
 			List<File> list = fileChooser.showOpenMultipleDialog(primaryStage);
 			if (list != null) {
 				for (File file : list) {
-					DOA.start();
+					//DOA.start(); <- Don't think this is needed anymore- David
 					// check for any errors in the student file using the method in DOA
 					List<String> errors = Validators.getErrorsInStudentFile(file.getAbsolutePath().replace('\\', '/'));
 					String error = "";
