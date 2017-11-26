@@ -97,7 +97,7 @@ public class MySQLAccess {
 		return result;
 	}
 	
-	public void insert(String query, Object... values) throws SQLException {
+	public void prepExecute(String query, Object... values) throws SQLException {
 		try {
 			start();
 			PreparedStatement prepStmt = conn.prepareStatement(query);

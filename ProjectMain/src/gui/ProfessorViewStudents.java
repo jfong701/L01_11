@@ -92,17 +92,39 @@ public class ProfessorViewStudents {
 		Button addStudent = new Button("Add Student");
 		addStudent.setOnAction(e -> ProfessorAddStudents.addStudents(primaryStage, user, pass));
 		addStudent.disableProperty().bind(courseBox.valueProperty().isEqualTo("All Courses"));
+		
+		//Delete selected student
+		Button removeStudent = new Button("Remove Selected Student");
+		removeStudent.setOnAction( e -> {
+			Student stu = students.getSelectionModel().getSelectedItem();
+			DOA.deleteStudentRecord(stu.getStudentNo(), courseBox.getValue());
+			students.getItems().remove(stu);
+		});
+		removeStudent.disableProperty().bind(courseBox.valueProperty().isEqualTo("All Courses"));
+		
+		//Delete all students from course
+		Button removeAllStudents = new Button("Remove All Students from Course");
+		removeAllStudents.setOnAction( e -> {
+			String course = courseBox.getValue();
+			students.getItems().forEach( item -> {
+				DOA.deleteStudentRecord(item.getStudentNo(), course);
+			});
+			students.getItems().clear();
+		});
+		removeAllStudents.disableProperty().bind(courseBox.valueProperty().isEqualTo("All Courses"));
 
+
+				
 		
 		// Back to professor page
         Button backButton = new Button("Back");
         backButton.setOnAction(e -> ProfessorPage.login(primaryStage, user, pass));
         	
-		fBox.getChildren().addAll(uploadStudents, addStudent, backButton);
+		fBox.getChildren().addAll(uploadStudents, addStudent, removeStudent, removeAllStudents, backButton);
 		border.setTop(courseBox);
 		border.setBottom(fBox);
 		border.setCenter(students);
-		Scene scene = new Scene(border, 500, 250);
+		Scene scene = new Scene(border, 750, 500);
 		primaryStage.setScene(scene);
 	}
 	
@@ -122,20 +144,22 @@ public class ProfessorViewStudents {
 		
 		// Table Columns
 		TableColumn<Student, String> studentNumber = new TableColumn<>("Student Number");
-		studentNumber.setMinWidth(125);
 		studentNumber.setCellValueFactory(new PropertyValueFactory<>("studentNo"));
 		
 		TableColumn<Student, String> studentUTOR = new TableColumn<>("UTORid");
-		studentUTOR.setMinWidth(125);
 		studentUTOR.setCellValueFactory(new PropertyValueFactory<>("studentUTORID"));
 		
 		TableColumn<Student, String> studentFirstName = new TableColumn<>("First Name");
-		studentFirstName.setMinWidth(125);
 		studentFirstName.setCellValueFactory(new PropertyValueFactory<>("studentFirstName"));
 		
 		TableColumn<Student, String> studentLastName = new TableColumn<>("Last Name");
-		studentLastName.setMinWidth(125);
 		studentLastName.setCellValueFactory(new PropertyValueFactory<>("studentLastName"));
+		
+		studentNumber.prefWidthProperty().bind(students.widthProperty().divide(3)); // w * 1/4
+		studentUTOR.prefWidthProperty().bind(students.widthProperty().divide(3)); // w * 1/4
+		studentFirstName.prefWidthProperty().bind(students.widthProperty().divide(3)); // w * 1/2
+		studentLastName.prefWidthProperty().bind(students.widthProperty().divide(3)); // w * 1/4
+
 		
 		students.getColumns().addAll(studentNumber, studentUTOR, studentFirstName, studentLastName);
 		students.setFixedCellSize(25);

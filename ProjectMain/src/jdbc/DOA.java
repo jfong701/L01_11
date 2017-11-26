@@ -7,12 +7,16 @@ import java.util.List;
 
 import assignment.Assignment;
 import assignment.SingleAnswerQuestion;
+import gui.MessageBox;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.sql.ResultSet;
+
+import jdbc.OldMySQLAccess;
+import student.Professor;
 import student.Student;
 
 public class DOA {
@@ -41,6 +45,7 @@ public class DOA {
 			a.dropTable(ques);
 			initDatabase();
 			*/
+		deleteStudentRecord("CSCC01", "201327408");
 	}
 	
 	public static void initDatabase() throws SQLException {
@@ -106,7 +111,7 @@ public class DOA {
 	public static void addStudent(String id, String utor_id, String first, String last) {
 		try {
 			String query = "INSERT INTO " + stu + " values(?, ?, ?, ?, ?)";
-			db.insert(query, id, utor_id, first, last, "password");
+			db.prepExecute(query, id, utor_id, first, last, "password");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -132,7 +137,7 @@ public class DOA {
 	public static void addAssignment(String course_id, String assignment_id, String num_question, String assignment_name, Date deadline ) {
 		try {
 			String query = "INSERT INTO " + asmt + " values(?, ?, ?, ?, ?)";
-			db.insert(query, course_id, assignment_id, num_question, assignment_name, deadline);
+			db.prepExecute(query, course_id, assignment_id, num_question, assignment_name, deadline);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -249,7 +254,7 @@ public class DOA {
 	public static void addQuestion(String course_id, String assignment_id,  String question, String answer ) {
 		String query = "INSERT INTO " + ques + " (course_id, assignment_id, question, answer_function) values (? , ?, ?, ?)";
 		try {
-			db.insert(query, course_id, Integer.parseInt(assignment_id), question, answer);
+			db.prepExecute(query, course_id, Integer.parseInt(assignment_id), question, answer);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -306,26 +311,60 @@ public class DOA {
 	public static void addProfessor(String professor_id, String first_name, String last_name) {
 		try {
 			String query = "INSERT INTO " + prof + " values(?, ?, ?, ?);";
-			db.insert(query, professor_id, first_name, last_name, "password");
+			db.prepExecute(query, professor_id, first_name, last_name, "password");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
 			db.close();
 		}
 	}
+	
+	public static void uploadProfessorFile(String abs_path) throws SQLException {
+		String sql = "LOAD DATA LOCAL INFILE '" + abs_path + "' INTO TABLE cscc43f17_manogar7_sakila.PROFESSORS FIELDS TERMINATED BY ',' (professor_id, professor_first_name, professor_last_name)";
+		db.execute(sql);
+		System.out.println(sql + " completed.");
+	}
+	
+	public static Professor rsToProfessor(ResultSet rs) throws SQLException {
+		Professor prof = null;
+		// columns in order: student_id,first_name,last_name,utorid
+		String profID = rs.getString("professor_id");
+		String first_name = rs.getString("professor_first_name");
+		String last_name = rs.getString("professor_last_name");
+		String password = rs.getString("professor_password");
+		prof = new Professor(profID,  first_name, last_name, password);
+		
+		return prof;
+	}
+	
+	public static ArrayList<Professor> getAllProfessors() {
+		ArrayList<Professor> profs = new ArrayList<Professor>();
+		try {
+			String query = "SELECT * FROM " + prof + ";";
+			ResultSet rs = db.execute(query);
+			while (rs.next()) {
+				profs.add(rsToProfessor(rs)); 
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			db.close();
+		}
+		return profs;
+	}
+
+
 	
 	public static void addStudentToCourse(String course_id, String student_id) {
 		try {
 			String query = "INSERT INTO " + course_stu + " values(?, ?);";
-			db.insert(query, course_id, student_id);
+			db.prepExecute(query, course_id, student_id);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
 			db.close();
 		}
 	}
-	
-	
 	
 	public static Student rsToStudent(ResultSet rs) throws SQLException {
 		Student std = null;
@@ -504,7 +543,7 @@ public class DOA {
 				query = "INSERT INTO STUDENT_ASSIGNMENTS (student_id, " +
 						"course_id, assignment_id) VALUES(?, ?, ?) ON DUPLICATE KEY UPDATE " +
 						"mark="+mark+";";
-				db.insert(query, sID, cID, aID);
+				db.prepExecute(query, sID, cID, aID);
 				System.out.println("Successfully updated mark");
 			}
 		}
@@ -514,5 +553,42 @@ public class DOA {
 		finally {
 			db.close();
 		}
+	}
+	
+	public static void deleteStudentRecord(String sID, String cID) {
+		try {
+			//PreparedStatement delCourse = a.getConn().prepareStatement("DELETE FROM COURSE_STUDENTS WHERE "+
+			//		"course_id = '"+cID+"' AND student_id='"+sID+"';");
+			//PreparedStatement delMark = a.getConn().prepareStatement("DELETE FROM STUDENT_ASSIGNMENTS WHERE "+
+			//		"course_id = '"+cID+"' AND student_id='"+sID+"';");
+			String delCourse = "DELETE FROM COURSE_STUDENTS WHERE " + "course_id = ? AND student_id  = ?;";
+			String delMark = "DELETE FROM STUDENT_ASSIGNMENTS WHERE " + "course_id = ? AND student_id = ?;";
+			db.prepExecute(delCourse, sID, cID);
+			db.prepExecute(delMark, sID, cID);
+			//MessageBox.show("Delete Success", "Entry successfully deleted.");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			db.close();
+		}
+	}
+	
+	public static int getMark(String sID, String cID, int aID) {
+		int mark = 0;
+		try {
+			//PreparedStatement cmd = a.getConn().prepareStatement("SELECT mark FROM STUDENT_ASSIGNMENTS "
+			//		+ "WHERE course_id='" + cID + "' AND assignment_id=" + aID + " AND student_id='" + sID + "';");
+			String query = "SELECT mark FROM STUDENT_ASSIGNMENTS WHERE course_id ='"+cID + 
+							"' AND assignment_id=" + aID + " AND student_id ='"+sID+"';";
+			ResultSet curr_result = db.execute(query);
+			if (curr_result.first()) {
+				mark = curr_result.getInt(1);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			db.close();
+		}
+		return mark;
 	}
 }
