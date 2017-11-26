@@ -7,7 +7,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import jdbc.DOA;
@@ -61,7 +63,7 @@ public class Validators {
 				// check studentNo for 10 digits
 				validStudentNo = isStudentNumberValid(studentNo);
 				// check utorid for min 3 characters and max 10 characters
-				validUtor = studentUtor.length() <= 10 && studentUtor.length() > 2;
+				validUtor = studentUtor.length() <= 9 && studentUtor.length() > 3;
 				// check first and last name for at least 1 character each and max 40 characters each
 				validFirstName = studentFirstName.length() >= 1 && studentFirstName.length() <= 40;
 				validLastName = studentLastName.length() >= 1 && studentLastName.length() <= 40;
@@ -70,7 +72,7 @@ public class Validators {
 				if (!validStudentNo) 
 					errorMessages.add(String.format("Line %d : Student Number is invalid(needs 10 digits).", lineCount));
 				if (!validUtor) 
-					errorMessages.add(String.format("Line %d : UTORID is invalid(min 3 characters, max 10 characters).", lineCount));
+					errorMessages.add(String.format("Line %d : UTORID is invalid(min 3 characters, max 9 characters).", lineCount));
 				if (!validFirstName) 
 					errorMessages.add(String.format("Line %d : First Name is invalid(min 1 character, max 40 characters).", lineCount));
 				if (!validLastName) 
@@ -122,4 +124,20 @@ public class Validators {
 	public static boolean isSingleAnswerQuestionValid(String question, String answer) {
 		return question.length() > 0 && answer.length() > 0;
 	}
+	
+	public static boolean isAssignmentValid(String course_id, String assignment_id, String num_questions, String assignment_name, LocalDate localDate) throws NumberFormatException, SQLException {
+		// checks for course_id and assignment_id having values for checking duplicate assignments
+		if (course_id.length() != 6 || assignment_id.length() < 1 ||
+			num_questions.length() < 1 || Integer.parseInt(num_questions) < 0 
+			|| assignment_name.length() < 1 || localDate == null) return false;
+		System.out.println("CHECKING DUPES");
+		return (DOA.getAssignment(course_id, assignment_id) == null) ? true : false;
+	}
+	
+	public static boolean isAssignmentUnique(String course_id, String assignment_id) throws SQLException {
+		return DOA.getAssignment(course_id, assignment_id) == null;
+	}
+	
+	
+	
 }

@@ -36,15 +36,18 @@ public class DOA {
 	private static MySQLAccess db = new MySQLAccess();
 	
 	public static void main(String[] args) throws SQLException {
-			start();
-			/*
+			//start();
+			//a.dropTable(stu);
+			//close();
+			//initDatabase();
+			//close();
+		//System.out.println(getAssignment("CSCC01", "1").getCourseID());
+			/*start();
 			a.dropTable(stu);
 			a.dropTable(asmt);
 			a.dropTable(ques);
-			*/
 			initDatabase();
-			close();
-	
+			close();*/
 	}
 	
 	public static void initDatabase() throws SQLException {
@@ -244,12 +247,14 @@ public class DOA {
 	}
 	
 	public static Assignment getAssignment(String course_id, String assignment_id) throws SQLException {
-	  start();
 	  Assignment asm = null;
-	  ResultSet rs = a.executeSQLQuery("select * from " + asmt + " where course_id='"+ course_id +"' and assignment_id="+ assignment_id + ";");
-	  rs.next();
-	  asm = rsToAssignment(rs);
-	  close();
+	  String query = "SELECT * FROM " + asmt + " WHERE course_id = '" + course_id + "' AND assignment_id = " + assignment_id + ";";
+	  System.out.println(query);
+	  ResultSet rs = db.execute(query);
+	  if (rs.next()) {
+		  asm = rsToAssignment(rs);
+	  }
+	  
 	  return asm;
 	}
 
