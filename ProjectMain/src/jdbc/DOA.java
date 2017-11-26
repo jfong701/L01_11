@@ -18,6 +18,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 import jdbc.OldMySQLAccess;
+import student.Professor;
 import student.Student;
 
 public class DOA {
@@ -334,6 +335,42 @@ public class DOA {
 		}
 	}
 	
+	public static void uploadProfessorFile(String abs_path) throws SQLException {
+		String sql = "LOAD DATA LOCAL INFILE '" + abs_path + "' INTO TABLE cscc43f17_manogar7_sakila.PROFESSORS FIELDS TERMINATED BY ',' (professor_id, professor_first_name, professor_last_name)";
+		a.executeSQL(sql);
+		System.out.println(sql + " completed.");
+	}
+	
+	public static Professor rsToProfessor(ResultSet rs) throws SQLException {
+		Professor prof = null;
+		// columns in order: student_id,first_name,last_name,utorid
+		String profID = rs.getString("professor_id");
+		String first_name = rs.getString("professor_first_name");
+		String last_name = rs.getString("professor_last_name");
+		String password = rs.getString("professor_password");
+		prof = new Professor(profID,  first_name, last_name, password);
+		
+		return prof;
+	}
+	
+	public static ArrayList<Professor> getAllProfessors() {
+		ArrayList<Professor> profs = new ArrayList<Professor>();
+		try {
+			String query = "SELECT * FROM " + prof + ";";
+			ResultSet rs = db.execute(query);
+			while (rs.next()) {
+				profs.add(rsToProfessor(rs)); 
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			db.close();
+		}
+		return profs;
+	}
+
+
+	
 	public static void addStudentToCourse(String course_id, String student_id) {
 		try {
 			String query = "INSERT INTO " + course_stu + " values(?, ?);";
@@ -344,8 +381,6 @@ public class DOA {
 			db.close();
 		}
 	}
-	
-	
 	
 	public static Student rsToStudent(ResultSet rs) throws SQLException {
 		Student std = null;
