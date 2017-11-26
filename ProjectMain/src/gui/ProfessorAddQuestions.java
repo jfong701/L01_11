@@ -168,11 +168,12 @@ public class ProfessorAddQuestions {
         
         grid.add(submitButton, 2, 10, 1, 1);
         
-        
         border.setCenter(questions);
         border.setBottom(grid);
+        border.getStyleClass().add("border-no-overlay");
         
         Scene addQuestionsScene = new Scene(border, 500, 500);
+        addQuestionsScene.getStylesheets().add("gui/style/css/professor-style.css");
         primaryStage.setScene(addQuestionsScene);
 
     }

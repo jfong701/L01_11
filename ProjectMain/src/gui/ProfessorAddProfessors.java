@@ -127,8 +127,10 @@ public class ProfessorAddProfessors {
         
         border.setCenter(professors);
         border.setBottom(grid);
+        border.getStyleClass().add("border-no-overlay");
         
         Scene addProfessorsScene = new Scene(border, 750, 500);
+        addProfessorsScene.getStylesheets().add("gui/style/css/professor-style.css");
         primaryStage.setScene(addProfessorsScene);
     }
     

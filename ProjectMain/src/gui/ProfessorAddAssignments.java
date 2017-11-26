@@ -150,11 +150,12 @@ public class ProfessorAddAssignments {
         	aNameField.clear();
         });
         grid.add(submitButton, 2, 9, 1, 1);
-        
         border.setCenter(assignments);
         border.setBottom(grid);
+        border.getStyleClass().add("border-no-overlay");
         
         Scene addAssignmentsScene = new Scene(border, 750, 500);
+        addAssignmentsScene.getStylesheets().add("gui/style/css/professor-style.css");
         primaryStage.setScene(addAssignmentsScene);
     }
     
