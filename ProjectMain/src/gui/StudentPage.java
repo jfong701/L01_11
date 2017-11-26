@@ -200,7 +200,7 @@ public class StudentPage {
 
 		// LOGOUT BUTTON EVENT HANDLER
 		logoutBtn.setOnAction(e -> {
-
+			IntroScreen.startProgram(primaryStage);
 		});
 
 		BorderPane border = new BorderPane();
