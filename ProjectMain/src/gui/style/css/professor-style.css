@@ -30,7 +30,14 @@
 	-fx-background-image: url("../images/TeamLogoAngryTranslucent25.png");
     -fx-background-repeat: stretch;
     -fx-background-size: contain;
-    -fx-background-position: 100% 0%;
+    -fx-background-position: 50% 0%;
+}
+
+.border-no-overlay {
+	-fx-background-image: url("../images/TeamLogoAngryTranslucent2.png");
+    -fx-background-repeat: stretch;
+    -fx-background-size: contain;
+    -fx-background-position: 50% 0%;
 }
 
 .text-field {
