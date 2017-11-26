@@ -8,6 +8,7 @@ import java.util.List;
 
 import assignment.Assignment;
 import assignment.SingleAnswerQuestion;
+import gui.MessageBox;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -533,6 +534,23 @@ public class DOA {
 			e.printStackTrace();
 		}
 		finally {
+			close();
+		}
+	}
+	
+	public static void deleteStudentRecord(String sID, String cID) {
+		start();
+		try {
+			PreparedStatement delCourse = a.getConn().prepareStatement("DELETE FROM COURSE_STUDENTS WHERE "+
+					"course_id = '"+cID+"' AND student_id='"+sID+"';");
+			PreparedStatement delMark = a.getConn().prepareStatement("DELETE FROM STUDENT_ASSIGNMENTS WHERE "+
+					"course_id = '"+cID+"' AND student_id='"+sID+"';");
+			delCourse.executeUpdate();
+			delMark.executeUpdate();
+			//MessageBox.show("Delete Success", "Entry successfully deleted.");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
 			close();
 		}
 	}
