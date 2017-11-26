@@ -90,9 +90,11 @@ public class StudentAssignmentPage {
 		Label assignmentLabel = new Label(assignmentName);
 		assignmentLabel.setPadding(new Insets(10, 10, 10, 10));
 		assignmentLabel.setFont(Font.font("Verdana", 20));
+		assignmentLabel.setId("headerLabel");
 
 		HBox topBorder = new HBox(50);
 		topBorder.setAlignment(Pos.CENTER_LEFT);
+		topBorder.getStyleClass().add("hbox");
 		topBorder.getChildren().add(assignmentLabel);
 
 		// Declaring layout grid where the actual questions + boxes will be
@@ -101,7 +103,7 @@ public class StudentAssignmentPage {
 		grid.setPadding(new Insets(5, 5, 5, 5));
 		grid.setVgap(5);
 		grid.setHgap(5);
-
+		grid.getStyleClass().add("grid");
 		currentRow = 0;
 
 		// Declare arrays for elements so they can be added with a loop.
@@ -162,13 +164,16 @@ public class StudentAssignmentPage {
 		ScrollPane sp = new ScrollPane(grid);
 		sp.setFitToHeight(true);
 		sp.setFitToWidth(true);
+		sp.getStyleClass().add("scroll");
 
 		BorderPane border = new BorderPane();
 		border.setTop(topBorder);
 		border.setCenter(sp);
+		border.getStyleClass().add("border");
 
-		Scene addStudentsScene = new Scene(border, 500, 500);
-		primaryStage.setScene(addStudentsScene);
+		Scene studentAssignmentScene = new Scene(border, 500, 500);
+		studentAssignmentScene.getStylesheets().add("gui/style/css/student-style.css");
+		primaryStage.setScene(studentAssignmentScene);
 	}
 
 	/**

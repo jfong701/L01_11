@@ -70,7 +70,8 @@ public class IntroScreen extends Application {
 		
 		loginLayout.getChildren().addAll(userLabel, userInput, passLabel, passInput, loginButton);	
 		Scene loginScene = new Scene(loginLayout, 500, 250);
-		loginScene.getStylesheets().add(getClass().getResource("style/css/template.css").toExternalForm());
+		//loginScene.getStylesheets().add(getClass().getResource("style/css/template.css").toExternalForm());
+		loginScene.getStylesheets().add("gui/style/css/template.css");
 		primaryStage.setScene(loginScene);
 		primaryStage.show();
 	}
