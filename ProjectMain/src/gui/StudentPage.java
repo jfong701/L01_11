@@ -7,10 +7,12 @@ import javafx.stage.Stage;
 import jdbc.DOA;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 
+import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -44,17 +46,19 @@ public class StudentPage {
 		Label welcomeLabel = new Label("Welcome " + user);
 		welcomeLabel.setPadding(new Insets(10, 10, 10, 10));
 		welcomeLabel.setFont(Font.font("Verdana", 20));
+		welcomeLabel.setId("headerLabel");
 
 		StackPane logoutStack = new StackPane();
 		Button logoutBtn = new Button("Logout");
 		logoutStack.getChildren().addAll(logoutBtn);
 		logoutStack.setAlignment(Pos.CENTER_RIGHT);
 		StackPane.setMargin(logoutBtn, new Insets(0, 10, 0, 0));
-		
+
 		HBox topBorder = new HBox(50);
 		topBorder.setAlignment(Pos.CENTER_LEFT);
 		topBorder.getChildren().add(welcomeLabel);
 		topBorder.getChildren().add(logoutStack);
+		topBorder.getStyleClass().add("hbox");
 		HBox.setHgrow(logoutStack, Priority.ALWAYS);
 
 		// Create grid layout
@@ -63,6 +67,7 @@ public class StudentPage {
 		grid.setPadding(new Insets(5, 15, 15, 15));
 		grid.setVgap(5);
 		grid.setHgap(5);
+		grid.getStyleClass().add("grid");
 		currentRow = 0;
 
 		// keep assignment ids for a course in an observable list. (useful for
@@ -197,17 +202,20 @@ public class StudentPage {
 
 			StudentAssignmentPage.startAssignment(primaryStage, user, pass, assignmentName, assignmentNumber);
 		});
-		
+
 		// LOGOUT BUTTON EVENT HANDLER
 		logoutBtn.setOnAction(e -> {
-			
+
 		});
 
 		BorderPane border = new BorderPane();
 		border.setTop(topBorder);
 		border.setCenter(grid);
+		border.getStyleClass().add("border");
 
-		primaryStage.setScene(new Scene(border, 500, 250));
+		Scene studentPageScene = new Scene(border, 500, 250);
+		studentPageScene.getStylesheets().add("gui/style/css/student-style.css");
+		primaryStage.setScene(studentPageScene);
 		courseBox.requestFocus();
 	}
 }

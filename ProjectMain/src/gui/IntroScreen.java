@@ -66,13 +66,11 @@ public class IntroScreen extends Application {
 			}
 		});
 		GridPane.setConstraints(loginButton, 5, 6);
-		//System.out.println(DOA.getAvg("CSCC01", 1));
-		//DOA.deleteStudentRecord("123", "CSCC01");
-		//DOA.deleteStudentRecord("HELLOWORLD", "MATA67");
-		
+		//System.out.println(DOA.getAvg("CSCC01", 1));		
 		loginLayout.getChildren().addAll(userLabel, userInput, passLabel, passInput, loginButton);	
 		Scene loginScene = new Scene(loginLayout, 500, 250);
-		loginScene.getStylesheets().add(getClass().getResource("template.css").toExternalForm());
+		//loginScene.getStylesheets().add(getClass().getResource("style/css/template.css").toExternalForm());
+		loginScene.getStylesheets().add("gui/style/css/template.css");
 		primaryStage.setScene(loginScene);
 		primaryStage.show();
 	}
