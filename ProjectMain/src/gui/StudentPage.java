@@ -146,8 +146,11 @@ public class StudentPage {
 
 			assignmentBox.setDisable(false);
 
-			// hide the assignment average label if the assignment hasn't been picked
+			// hide the deadline and average labels since the assignment hasn't been picked
+			// yet
+			deadlineLabel.setVisible(false);
 			assignmentAverageLabel.setVisible(false);
+			assignmentCurrentGradeLabel.setVisible(false);
 		});
 
 		// ASSIGNMENTBOX EVENT HANDLER
