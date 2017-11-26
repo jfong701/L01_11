@@ -17,15 +17,6 @@
 	-fx-background-color: rgba(255, 255, 255, .9);
 }
 
-.scroll > .viewport {
-	-fx-background-color: transparent;
-}
-
-.scroll {
-	-fx-background-color: transparent;
-}
-
-
 .border {
 	-fx-background-image: url("../images/TeamLogoAngryTranslucent25.png");
     -fx-background-repeat: stretch;
@@ -38,6 +29,7 @@
     -fx-background-repeat: stretch;
     -fx-background-size: contain;
     -fx-background-position: 50% 0%;
+	-fx-background-color: #FFFFFF;
 }
 
 .text-field {
