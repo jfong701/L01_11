@@ -93,17 +93,39 @@ public class ProfessorViewStudents {
 		Button addStudent = new Button("Add Student");
 		addStudent.setOnAction(e -> ProfessorAddStudents.addStudents(primaryStage, user, pass));
 		addStudent.disableProperty().bind(courseBox.valueProperty().isEqualTo("All Courses"));
+		
+		//Delete selected student
+		Button removeStudent = new Button("Remove Selected Student");
+		removeStudent.setOnAction( e -> {
+			Student stu = students.getSelectionModel().getSelectedItem();
+			DOA.deleteStudentRecord(stu.getStudentNo(), courseBox.getValue());
+			students.getItems().remove(stu);
+		});
+		removeStudent.disableProperty().bind(courseBox.valueProperty().isEqualTo("All Courses"));
+		
+		//Delete all students from course
+		Button removeAllStudents = new Button("Remove All Students from Course");
+		removeAllStudents.setOnAction( e -> {
+			String course = courseBox.getValue();
+			students.getItems().forEach( item -> {
+				DOA.deleteStudentRecord(item.getStudentNo(), course);
+			});
+			students.getItems().clear();
+		});
+		removeAllStudents.disableProperty().bind(courseBox.valueProperty().isEqualTo("All Courses"));
 
+
+				
 		
 		// Back to professor page
         Button backButton = new Button("Back");
         backButton.setOnAction(e -> ProfessorPage.login(primaryStage, user, pass));
         	
-		fBox.getChildren().addAll(uploadStudents, addStudent, backButton);
+		fBox.getChildren().addAll(uploadStudents, addStudent, removeStudent, removeAllStudents, backButton);
 		border.setTop(courseBox);
 		border.setBottom(fBox);
 		border.setCenter(students);
-		Scene scene = new Scene(border, 500, 250);
+		Scene scene = new Scene(border, 750, 500);
 		primaryStage.setScene(scene);
 	}
 	
