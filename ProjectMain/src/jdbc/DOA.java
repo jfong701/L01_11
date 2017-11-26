@@ -571,4 +571,23 @@ public class DOA {
 			close();
 		}
 	}
+	
+	public static int getMark(String sID, String cID, int aID) {
+		start();
+		int mark = 0;
+		try {
+			PreparedStatement cmd = a.getConn().prepareStatement("SELECT mark FROM STUDENT_ASSIGNMENTS "
+					+ "WHERE course_id='" + cID + "' AND assignment_id=" + aID + " AND student_id='" + sID + "';");
+			ResultSet curr_result = cmd.executeQuery();
+			if (curr_result.first()) {
+				mark = curr_result.getInt(1);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close();
+		}
+		return mark;
+	}
+	
 }
