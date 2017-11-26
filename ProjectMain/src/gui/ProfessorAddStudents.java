@@ -25,7 +25,9 @@ public class ProfessorAddStudents {
         grid.setHgap(5);
         grid.setVgap(5);
         grid.setPadding(new Insets(25, 25, 25, 25));
+        grid.getStyleClass().add("border-no-overlay");
         Scene addStudentsScene = new Scene(grid, 500, 250);
+        addStudentsScene.getStylesheets().add("gui/style/css/professor-style.css");
         primaryStage.setScene(addStudentsScene);
 
         // Title

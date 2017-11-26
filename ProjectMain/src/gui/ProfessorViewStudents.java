@@ -124,7 +124,10 @@ public class ProfessorViewStudents {
 		border.setTop(courseBox);
 		border.setBottom(fBox);
 		border.setCenter(students);
+		border.getStyleClass().add("border-no-overlay");
+
 		Scene scene = new Scene(border, 750, 500);
+		scene.getStylesheets().add("gui/style/css/professor-style.css");
 		primaryStage.setScene(scene);
 	}
 	
