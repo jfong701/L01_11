@@ -160,7 +160,7 @@ public class ProfessorAddAssignments {
     
 	public static ObservableList<Assignment> getAssignments(String course_id) {
 		ObservableList<Assignment> asmts = null;
-		if (course_id == null) {
+		if (course_id.equals("")) {
 			asmts = FXCollections.observableArrayList(DOA.getAllAssignments());
 		} else {
 			asmts = FXCollections.observableArrayList(DOA.getAllAssignments(course_id));
@@ -179,24 +179,26 @@ public class ProfessorAddAssignments {
 		
 		// Table Columns
 		TableColumn<Assignment, String> courseID = new TableColumn<>("Course ID");
-		courseID.setMinWidth(150);
 		courseID.setCellValueFactory(new PropertyValueFactory<>("courseID"));
 		
 		TableColumn<Assignment, Integer> assignmentID = new TableColumn<>("Assignment ID");
-		assignmentID.setMinWidth(150);
 		assignmentID.setCellValueFactory(new PropertyValueFactory<>("assignmentID"));
 		
 		TableColumn<Assignment, Integer> numQuestions = new TableColumn<>("Number of Questions");
-		numQuestions.setMinWidth(150);
 		numQuestions.setCellValueFactory(new PropertyValueFactory<>("numQuestions"));
 		
 		TableColumn<Assignment, String> assignmentName = new TableColumn<>("Assignment Name");
-		assignmentName.setMinWidth(150);
 		assignmentName.setCellValueFactory(new PropertyValueFactory<>("assignmentName"));
 		
 		TableColumn<Assignment, Date> deadline = new TableColumn<>("Deadline");
-		deadline.setMinWidth(150);
 		deadline.setCellValueFactory(new PropertyValueFactory<>("deadline"));
+		
+		courseID.prefWidthProperty().bind(assignments.widthProperty().divide(3)); // w * 1/4
+		assignmentID.prefWidthProperty().bind(assignments.widthProperty().divide(3)); // w * 1/2
+		numQuestions.prefWidthProperty().bind(assignments.widthProperty().divide(3)); // w * 1/4
+		assignmentName.prefWidthProperty().bind(assignments.widthProperty().divide(3)); // w * 1/4
+		deadline.prefWidthProperty().bind(assignments.widthProperty().divide(3)); // w * 1/4
+
 		
 		assignments.getColumns().addAll(courseID, assignmentID, numQuestions, assignmentName, deadline);
 		assignments.setFixedCellSize(25);

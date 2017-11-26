@@ -200,20 +200,22 @@ public class ProfessorAddQuestions {
 		
 		// Table Columns
 		TableColumn<SingleAnswerQuestion, String> courseID = new TableColumn<>("Course ID");
-		courseID.setMinWidth(125);
 		courseID.setCellValueFactory(new PropertyValueFactory<>("courseID"));
 		
 		TableColumn<SingleAnswerQuestion, Integer> assignmentID = new TableColumn<>("Assignment ID");
-		assignmentID.setMinWidth(125);
 		assignmentID.setCellValueFactory(new PropertyValueFactory<>("assignmentID"));
 		
 		TableColumn<SingleAnswerQuestion, String> question = new TableColumn<>("Question");
-		question.setMinWidth(125);
 		question.setCellValueFactory(new PropertyValueFactory<>("question"));
 		
 		TableColumn<SingleAnswerQuestion, String> answerFunction = new TableColumn<>("Answer Function");
-		answerFunction.setMinWidth(125);
 		answerFunction.setCellValueFactory(new PropertyValueFactory<>("answerFunction"));
+		
+		courseID.prefWidthProperty().bind(questions.widthProperty().divide(3)); // w * 1/4
+		assignmentID.prefWidthProperty().bind(questions.widthProperty().divide(3)); // w * 1/2
+		question.prefWidthProperty().bind(questions.widthProperty().divide(3)); // w * 1/4
+		answerFunction.prefWidthProperty().bind(questions.widthProperty().divide(3)); // w * 1/4
+
 		
 		questions.getColumns().addAll(courseID, assignmentID, question, answerFunction);
 		questions.setFixedCellSize(25);

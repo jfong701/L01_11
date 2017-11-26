@@ -123,20 +123,22 @@ public class ProfessorViewStudents {
 		
 		// Table Columns
 		TableColumn<Student, String> studentNumber = new TableColumn<>("Student Number");
-		studentNumber.setMinWidth(125);
 		studentNumber.setCellValueFactory(new PropertyValueFactory<>("studentNo"));
 		
 		TableColumn<Student, String> studentUTOR = new TableColumn<>("UTORid");
-		studentUTOR.setMinWidth(125);
 		studentUTOR.setCellValueFactory(new PropertyValueFactory<>("studentUTORID"));
 		
 		TableColumn<Student, String> studentFirstName = new TableColumn<>("First Name");
-		studentFirstName.setMinWidth(125);
 		studentFirstName.setCellValueFactory(new PropertyValueFactory<>("studentFirstName"));
 		
 		TableColumn<Student, String> studentLastName = new TableColumn<>("Last Name");
-		studentLastName.setMinWidth(125);
 		studentLastName.setCellValueFactory(new PropertyValueFactory<>("studentLastName"));
+		
+		studentNumber.prefWidthProperty().bind(students.widthProperty().divide(3)); // w * 1/4
+		studentUTOR.prefWidthProperty().bind(students.widthProperty().divide(3)); // w * 1/4
+		studentFirstName.prefWidthProperty().bind(students.widthProperty().divide(3)); // w * 1/2
+		studentLastName.prefWidthProperty().bind(students.widthProperty().divide(3)); // w * 1/4
+
 		
 		students.getColumns().addAll(studentNumber, studentUTOR, studentFirstName, studentLastName);
 		students.setFixedCellSize(25);
