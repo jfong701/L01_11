@@ -111,4 +111,36 @@ public class MySQLAccess {
 			e.printStackTrace();
 		}
 	}
+	
+	public void createTable(String tableName, String... sqlAttributes ) {
+		String sql = "CREATE TABLE " + tableName + " " + concatValues(sqlAttributes);
+		System.out.println("Create table " + tableName + " successfully.");
+		try {
+			stmt.executeUpdate(sql);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void dropTable(String tableName) {
+		try {
+			System.out.println(tableName);
+			stmt.executeUpdate("SET FOREIGN_KEY_CHECKS=0");
+			stmt.executeUpdate("DROP TABLE " + tableName);
+			stmt.executeUpdate("SET FOREIGN_KEY_CHECKS=1");
+			System.out.println("Dropped table " + tableName + " successfully.");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private String concatValues(String...strings) {
+		String values = "(";
+		for (String string : strings) {
+			values += string + ", ";
+		}		
+		values = values.substring(0, values.length() - 2) + ")";
+		return values;
+	}
+	
 }

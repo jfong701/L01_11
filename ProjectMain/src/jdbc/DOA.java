@@ -1,7 +1,6 @@
 package jdbc;
 
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -13,11 +12,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-
-import jdbc.OldMySQLAccess;
 import student.Student;
 
 public class DOA {
@@ -32,7 +27,6 @@ public class DOA {
 	private final static String prof = "PROFESSORS";
 	private final static String course_stu = "COURSE_STUDENTS";
 	
-	private static OldMySQLAccess a;
 	private static MySQLAccess db = new MySQLAccess();
 	
 	public static void main(String[] args) throws SQLException {
@@ -41,22 +35,20 @@ public class DOA {
 			//close();
 			//initDatabase();
 			//close();
-		//System.out.println(getAssignment("CSCC01", "1").getCourseID());
-			/*start();
+			/*
 			a.dropTable(stu);
 			a.dropTable(asmt);
 			a.dropTable(ques);
 			initDatabase();
-			close();*/
+			*/
 	}
 	
 	public static void initDatabase() throws SQLException {
-		a = new OldMySQLAccess();
 
 		System.out.println("Initializing database");
-		a.loadAndConnect(dbName);
+		db.loadAndConnect(dbName);
 		
-		a.createTable(stu,
+		db.createTable(stu,
 				"student_id VARCHAR(10) NOT NULL",
 				"utor_id VARCHAR(8) UNIQUE NOT NULL",
 				"first_name VARCHAR(255) NOT NULL",
@@ -64,7 +56,7 @@ public class DOA {
 				"student_password VARCHAR(25) DEFAULT ''",
 				"PRIMARY KEY ( student_id )"
 				);
-		a.createTable(asmt,
+		db.createTable(asmt,
 				"course_id VARCHAR(8) NOT NULL",
 				"assignment_id INTEGER NOT NULL",
 				"num_questions INTEGER NOT NULL",
@@ -72,7 +64,7 @@ public class DOA {
 				"deadline DATE",
 				"PRIMARY KEY ( course_id, assignment_id )"
 				);
-		a.createTable(ques,
+		db.createTable(ques,
 				"question_id INTEGER NOT NULL AUTO_INCREMENT",
 				"course_id VARCHAR(8) NOT NULL",
 				"assignment_id INTEGER NOT NULL",
@@ -84,7 +76,7 @@ public class DOA {
 				"FOREIGN KEY ( course_id, assignment_id ) REFERENCES ASSIGNMENTS ( course_id, assignment_id )",
 				"PRIMARY KEY ( question_id )"
 				);
-		a.createTable(stu_asmt,
+		db.createTable(stu_asmt,
 				"student_id CHAR(10) NOT NULL",
 				"course_id VARCHAR(8) NOT NULL",
 				"assignment_id INTEGER NOT NULL",
@@ -93,14 +85,14 @@ public class DOA {
 				"FOREIGN KEY ( course_id, assignment_id ) REFERENCES ASSIGNMENTS ( course_id, assignment_id )",
 				"PRIMARY KEY ( student_id, course_id, assignment_id )"
 				);
-		a.createTable(prof,
+		db.createTable(prof,
 				"professor_id CHAR(10) NOT NULL",
 				"professor_first_name VARCHAR(225)",
 				"professor_last_name VARCHAR(225)",
 				"professor_password VARCHAR(25)",
 				"PRIMARY KEY ( professor_id )"
 				);
-		a.createTable(course_stu,
+		db.createTable(course_stu,
 				"course_id VARCHAR(8) NOT NULL",
 				"student_id CHAR(10) NOT NULL",
 				"FOREIGN KEY ( student_id ) REFERENCES STUDENTS ( student_id )",
@@ -109,15 +101,6 @@ public class DOA {
 				);
 
 		System.out.println("Finished initialization");
-	}
-	
-	public static void start() {
-		a = new OldMySQLAccess();
-		a.loadAndConnect(dbName);
-	}
-	
-	public static void close() {
-		db.close();
 	}
 	
 	public static void addStudent(String id, String utor_id, String first, String last) {
@@ -133,7 +116,6 @@ public class DOA {
 	
 	public static void uploadStudentFile(String abs_path) throws SQLException {
 		String sql = "LOAD DATA LOCAL INFILE '" + abs_path + "' INTO TABLE cscc43f17_manogar7_sakila.STUDENTS FIELDS TERMINATED BY ',' (student_id, utor_id, first_name, last_name)";
-		//a.executeSQL(sql);
 		db.execute(sql);
 		System.out.println(sql + " completed.");
 	}
@@ -163,7 +145,7 @@ public class DOA {
 		
 		try {
 			String query = "SELECT DISTINCT course_id FROM " + asmt + ";";
-			ResultSet rs =  db.execute(query); //a.selectRecords(asmt, "DISTINCT course_id");
+			ResultSet rs =  db.execute(query); 
 			while (rs.next()) {
 				String id = rs.getString("course_id");
 				list.add(id);
@@ -181,7 +163,7 @@ public class DOA {
 		
 		try {
 			String query = "SELECT assignment_id FROM " + asmt + " WHERE course_id = '" + course_id + "';"; 
-			ResultSet rs =  db.execute(query);//a.selectRecordsWhere(asmt, "course_id='" + course_id + "'", "assignment_id");
+			ResultSet rs =  db.execute(query);
 			while (rs.next()) {
 				Integer id = rs.getInt("assignment_id");
 				list.add(id);
@@ -196,14 +178,20 @@ public class DOA {
 	
 	public static void uploadAssignmentFile(String abs_path) {
 		String sql = "LOAD DATA LOCAL INFILE '"+ abs_path + "' INTO TABLE ASSIGNMENTS FIELDS TERMINATED BY ',' (course_id, assignment_id, num_questions, assignment_name, deadline);";
-		a.executeSQL(sql);
+		try {
+			db.execute(sql);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			db.close();
+		}
 		System.out.println(sql + " completed.");
 	}
 
 	
 	public static Assignment rsToAssignment(ResultSet rs) throws SQLException {
 		Assignment asmt = null;
-		// columns in order: student_id,first_name,last_name,utorid
+		// columns in order: course id, assignment id, number of questions, assignment name and deadline
 		String courseID = rs.getString("course_id");
 		int asmtID = rs.getInt("assignment_id");
 		int numQues = rs.getInt("num_questions");
@@ -216,10 +204,9 @@ public class DOA {
 
 	public static ArrayList<Assignment> getAllAssignments() {
 		ArrayList<Assignment> asmts = new ArrayList<Assignment>();
-		
 		try {
 			String query = "SELECT * FROM " + asmt + ";";
-			ResultSet rs =  db.execute(query);// a.selectRecords(asmt, "*");
+			ResultSet rs =  db.execute(query);
 			while (rs.next()) {
 				asmts.add(rsToAssignment(rs)); 
 			}
@@ -231,10 +218,10 @@ public class DOA {
 		return asmts;
 	}
 	
-	public static ArrayList<Assignment> getAllAssignments(String course_id) {
-		start();
+	public static ArrayList<Assignment> getAllAssignments(String course_id) throws SQLException {
 		ArrayList<Assignment> asmts = new ArrayList<Assignment>();
-		ResultSet rs = a.selectRecordsWhere(asmt, "course_id='" + course_id + "'", "*");
+		String query = "SELECT * FROM " + asmt + " WHERE course_id = '" + course_id + "';";
+		ResultSet rs = db.execute(query);
 		try {
 			while (rs.next()) {
 				asmts.add(rsToAssignment(rs)); 
@@ -242,7 +229,7 @@ public class DOA {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		close();
+		db.close();
 		return asmts;
 	}
 	
@@ -260,18 +247,9 @@ public class DOA {
 
 	
 	public static void addQuestion(String course_id, String assignment_id,  String question, String answer ) {
-		start();
-		String sql = a.preparedRecordsSQL(ques, 4, "course_id", "assignment_id", "question", "answer_function");
-		System.out.println(sql);
-		Connection conn = a.getConn();
+		String query = "INSERT INTO " + ques + " (course_id, assignment_id, question, answer_function) values (? , ?, ?, ?)";
 		try {
-			PreparedStatement pr = conn.prepareStatement(sql);
-			pr.setString(1,  course_id);
-			pr.setInt(2, Integer.parseInt(assignment_id));
-			pr.setString(3, question);
-			pr.setString(4, answer);
-			
-			pr.execute();
+			db.insert(query, course_id, Integer.parseInt(assignment_id), question, answer);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -279,15 +257,18 @@ public class DOA {
 		}
 	}
 	
-	public static void uploadQuestionFile(String abs_path) {
+	public static void uploadQuestionFile(String abs_path){
 		String sql = "LOAD DATA LOCAL INFILE '"+ abs_path + "' INTO TABLE QUESTIONS FIELDS TERMINATED BY ',' (course_id, assignment_id, question, answer_function, lower_range, upper_range, decimal_places);";
-		a.executeSQL(sql);
+		try {
+			db.execute(sql);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		System.out.println(sql + " completed.");
 	}
 
 	
 	public static ArrayList<ArrayList<String>> getQuestions(String course_id, String assignment_id) {
-		start();
 		ArrayList<ArrayList<String>> array = new ArrayList<ArrayList<String>>();
 		ArrayList<String> innerArray;
 		try {
@@ -304,7 +285,7 @@ public class DOA {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			close();
+			db.close();
 		}
 		return array;
 	}
@@ -313,11 +294,10 @@ public class DOA {
 		try {
 			String query = "SELECT * FROM " + ques + " WHERE course_id = '" + course_id 
 							+ "' AND assignment_id = '" + assignment_id + "';";
-			ResultSet rs =  db.execute(query);//a.selectRecordsWhere(ques, "course_id='" + course_id + "' AND assignment_id='" + assignment_id +"'", "DISTINCT question_id");
+			ResultSet rs =  db.execute(query);
 			rs.last();
 			return Integer.toString(rs.getRow());
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
 		}		
@@ -419,29 +399,29 @@ public class DOA {
 	}
 
 	public static ArrayList<SingleAnswerQuestion> getAllCourseQuestions(String course_id) throws SQLException {
-		start();
 		ArrayList<SingleAnswerQuestion> questions = new ArrayList<SingleAnswerQuestion>();
-		ResultSet rs = a.selectRecordsWhere(ques,"course_id='"+ course_id + "'", "*");
+		String query = "SELECT * FROM " + ques + " WHERE course_id = '" + course_id + "';";
+		ResultSet rs = db.execute(query);
 		while (rs.next()) {
 			questions.add(rsToQuestion(rs)); 
 		}
-		close();
+		db.close();
 		return questions;
 	}
 	
 	public static ArrayList<SingleAnswerQuestion> getAllAssignmentQuestions(String course_id, String assignment_id) throws SQLException {
-		start();
 		ArrayList<SingleAnswerQuestion> questions = new ArrayList<SingleAnswerQuestion>();
-		ResultSet rs = a.selectRecordsWhere(ques,"course_id='"+ course_id + "' AND assignment_id='" + assignment_id + "'" , "*");
+		String query = "SELECT * FROM " + ques + " WHERE course_id = '" + course_id + "' AND assignment_id = " + assignment_id + ";";
+
+		ResultSet rs = db.execute(query);
 		while (rs.next()) {
 			questions.add(rsToQuestion(rs)); 
 		}
-		close();
+		db.close();
 		return questions;
 	}
 	
 	public static int getAvg(String course_id, int aID) {
-		start();
 		int average = 0;
 		try { 
 			String query = "SELECT AVG(mark) FROM STUDENT_ASSIGNMENTS " + "WHERE course_id = '"+course_id+"' AND assignment_id = "+aID+";";
@@ -512,20 +492,19 @@ public class DOA {
 		return false;
 	}
 	public static void setMark(String sID, String cID, int aID, int mark) {
-		start();
 		int old_mark = 0;
 		try {
-			PreparedStatement cmd = a.getConn().prepareStatement("SELECT mark FROM STUDENT_ASSIGNMENTS "
-					+ "WHERE course_id='"+cID+"' AND assignment_id="+aID+" AND student_id='"+sID+"';");
-			ResultSet curr_result = cmd.executeQuery();
+			String query = "SELECT mark FROM STUDENT_ASSIGNMENTS "
+					+ "WHERE course_id='"+cID+"' AND assignment_id="+String.valueOf(aID)+" AND student_id='"+sID+"';";
+			ResultSet curr_result = db.execute(query); 
 			if (curr_result.first()) {
 				old_mark = curr_result.getInt(1);
 			}
 			if (old_mark < mark) {
-				PreparedStatement inst = a.getConn().prepareStatement("INSERT INTO STUDENT_ASSIGNMENTS (student_id, " +
-						"course_id, assignment_id) VALUES('"+sID+"', '"+cID+"', "+aID+") ON DUPLICATE KEY UPDATE " +
-						"mark="+mark+";");
-				inst.executeUpdate();
+				query = "INSERT INTO STUDENT_ASSIGNMENTS (student_id, " +
+						"course_id, assignment_id) VALUES(?, ?, ?) ON DUPLICATE KEY UPDATE " +
+						"mark="+mark+";";
+				db.insert(query, sID, cID, aID);
 				System.out.println("Successfully updated mark");
 			}
 		}
@@ -533,7 +512,7 @@ public class DOA {
 			e.printStackTrace();
 		}
 		finally {
-			close();
+			db.close();
 		}
 	}
 }

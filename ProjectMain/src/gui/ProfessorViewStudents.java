@@ -82,7 +82,6 @@ public class ProfessorViewStudents {
 							e1.printStackTrace();
 						}
 					}
-					DOA.close();
 				}
 			}
 			loadTable();
