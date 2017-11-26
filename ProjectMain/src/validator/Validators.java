@@ -13,6 +13,7 @@ import java.util.Date;
 import java.util.List;
 
 import jdbc.DOA;
+import student.Professor;
 
 public class Validators {
 	
@@ -65,7 +66,7 @@ public class Validators {
 				validFirstName = studentFirstName.length() >= 1 && studentFirstName.length() <= 40;
 				validLastName = studentLastName.length() >= 1 && studentLastName.length() <= 40;
 				// need to check database for duplicates
-				duplicate = DOA.isStudentInDatabase(studentNo); // dummy value for now until implementing it
+				duplicate = DOA.isUserInDatabase(studentNo); 
 				if (!validStudentNo) 
 					errorMessages.add(String.format("Line %d : Student Number is invalid(needs 10 digits).", lineCount));
 				if (!validUtor) 
@@ -75,7 +76,7 @@ public class Validators {
 				if (!validLastName) 
 					errorMessages.add(String.format("Line %d : Last Name is invalid(min 1 character, max 40 characters).", lineCount));
 				if (duplicate)
-					errorMessages.add(String.format("Line %d : This Student Number already exists in the database.", lineCount));
+					errorMessages.add(String.format("Line %d : This Student/Professor number already exists in the database.", lineCount));
 			}
 		} catch (IOException error) {
 			System.err.println("IOException: " + error.getMessage());
@@ -178,7 +179,6 @@ public class Validators {
 					} else {
 						errorMessages.add(String.format("Line %d : Course ID or Assignment ID not consistent with the rest above.", lineCount));
 					}
-					
 				}
 			}
 		} catch (IOException error) {
@@ -196,5 +196,47 @@ public class Validators {
 				!isAllDigits(lower) || !isAllDigits(upper) || Double.parseDouble(lower) >
 				Double.parseDouble(upper))	return false;	
 		return true;
+	}
+	
+	public static boolean isProfessorValid(String professorID, String firstName, String lastName) {
+		if (professorID.length() < 9 || professorID.length() > 10 || firstName.length() < 1 
+				|| lastName.length() < 1) return false;
+		// checks for duplicate prof id's and student id's
+		if (!(isAllDigits(professorID)) || DOA.isUserInDatabase(professorID)) return false;
+		return true;
+	}
+	
+	public static List<String> getErrorsInProfessorFile(String abs_path) { 
+		FileReader file = null;
+		BufferedReader buffer = null;
+		List<String> errorMessages = new ArrayList<String>();
+		// Error check IO calls 
+		try {
+			file = new FileReader(abs_path);
+			buffer = new BufferedReader(file);
+			String line;
+			String[] splitLine;
+			int lineCount = 0;
+			String professorID, professorFirstName, professorLastName;
+			while ((line = buffer.readLine()) != null) {
+				lineCount++;
+				splitLine = line.split(",", -1);
+				professorID = splitLine[0];
+				professorFirstName = splitLine[1];
+				professorLastName = splitLine[2];
+				if (professorID.length() < 8 || professorID.length() > 10) 
+					errorMessages.add(String.format("Line %d : Professor ID must be 9 to 10 digits.", lineCount));
+				if (professorFirstName.length() < 1 || professorLastName.length() < 1) 
+					errorMessages.add(String.format("Line %d : First Name or Last Name are < 1 characters.", lineCount));
+				if (DOA.isUserInDatabase(professorID))
+					errorMessages.add(String.format("Line %d : Student or Professor ID already exists.", lineCount));
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} 
+		return errorMessages;
+	}
+	
+	public static void main(String[] args) throws SQLException {
 	}
 }

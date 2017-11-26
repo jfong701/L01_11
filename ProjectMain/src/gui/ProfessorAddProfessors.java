@@ -65,11 +65,18 @@ public class ProfessorAddProfessors {
 			List<File> list = fileChooser.showOpenMultipleDialog(primaryStage);
 			if (list != null) {
 				for (File file : list) {					
-					try {
-						DOA.uploadProfessorFile(file.getAbsolutePath().replace('\\', '/'));
-					} catch (SQLException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
+					List<String> errors = Validators.getErrorsInProfessorFile(file.getAbsolutePath().replace('\\', '/'));
+					if (!errors.isEmpty()) {
+						String error = "";
+						for (String err : errors) error = error + err + '\n';
+						MessageBox.show("Errors", error);
+					} else {
+						try {
+							DOA.uploadProfessorFile(file.getAbsolutePath().replace('\\', '/'));
+						} catch (SQLException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
 					}
 				}
 			}
@@ -110,16 +117,18 @@ public class ProfessorAddProfessors {
 
         Button submitButton = new Button("Submit");
         submitButton.setOnAction(e -> {
-		   DOA.addProfessor(
-		       	profIDField.getText(),
-		       	profFirstField.getText(),
-		       	profLastField.getText());
-		       	
-		   loadTable();
-        	
-        	profIDField.clear();
-        	profFirstField.clear();
-        	profLastField.clear();
+        	if (!Validators.isProfessorValid(profIDField.getText(), profFirstField.getText(), profLastField.getText()))	{
+        		MessageBox.show("Errors", "Invalid input for Professor.");
+        	} else {
+	        	DOA.addProfessor(
+			       	profIDField.getText(),
+			       	profFirstField.getText(),
+			       	profLastField.getText());
+	        	profIDField.clear();
+	        	profFirstField.clear();
+	        	profLastField.clear();
+	        	loadTable();
+        	}
         });
         grid.add(submitButton, 2, 9, 1, 1);
         
@@ -133,7 +142,6 @@ public class ProfessorAddProfessors {
 	public static ObservableList<Professor> getProfessors() {
 		ObservableList<Professor> profs = null;
 		profs = FXCollections.observableArrayList(DOA.getAllProfessors());
-		
 		return profs;
 	}
 	

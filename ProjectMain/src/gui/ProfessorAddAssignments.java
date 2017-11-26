@@ -132,7 +132,9 @@ public class ProfessorAddAssignments {
 		        			qNumField.getText(),
 		        			aNameField.getText(),
 		        			java.sql.Date.valueOf(datePicker.getValue()));
-		        	
+		        	aIDField.clear();
+		        	qNumField.clear();
+		        	aNameField.clear();
 		        	loadTable(courseBox.getValue());
 				}
 			} catch (NumberFormatException e1) {
@@ -142,10 +144,6 @@ public class ProfessorAddAssignments {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-        	
-        	aIDField.clear();
-        	qNumField.clear();
-        	aNameField.clear();
         });
         grid.add(submitButton, 2, 9, 1, 1);
         

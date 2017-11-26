@@ -45,7 +45,6 @@ public class DOA {
 			a.dropTable(ques);
 			initDatabase();
 			*/
-		deleteStudentRecord("CSCC01", "201327408");
 	}
 	
 	public static void initDatabase() throws SQLException {
@@ -327,13 +326,12 @@ public class DOA {
 	
 	public static Professor rsToProfessor(ResultSet rs) throws SQLException {
 		Professor prof = null;
-		// columns in order: student_id,first_name,last_name,utorid
+		// columns in order: prof id, prof first name, prof last name and password
 		String profID = rs.getString("professor_id");
 		String first_name = rs.getString("professor_first_name");
 		String last_name = rs.getString("professor_last_name");
 		String password = rs.getString("professor_password");
 		prof = new Professor(profID,  first_name, last_name, password);
-		
 		return prof;
 	}
 	
@@ -352,8 +350,6 @@ public class DOA {
 		}
 		return profs;
 	}
-
-
 	
 	public static void addStudentToCourse(String course_id, String student_id) {
 		try {
@@ -422,7 +418,6 @@ public class DOA {
 		String ques = rs.getString("question");
 		String ans = rs.getString("answer_function");
 		question = new SingleAnswerQuestion(courseID, asmtID, ques, ans);
-		
 		return question;
 	}
 
@@ -482,20 +477,20 @@ public class DOA {
 		return db;
 	}
 	
-	public static boolean isStudentInDatabase(String studentNo) {
-		boolean inDB = false;
+	public static boolean isUserInDatabase(String userID) {
 		try {
-			String query = "SELECT student_id FROM STUDENTS WHERE student_id = '" + studentNo +"';";
-			ResultSet result = DOA.getMySQLAccess().execute(query);
-			if (result.first()) {
-				inDB = true;
-			}
+			String queryStudent = "SELECT student_id FROM STUDENTS WHERE student_id = '" + userID + "';";
+			String queryProf = "SELECT professor_id from PROFESSORS WHERE professor_id = '" + userID + "';";
+			ResultSet result = db.execute(queryStudent);
+			if (result.first()) return true;
+			result = db.execute(queryProf);
+			if (result.first()) return true;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			DOA.getMySQLAccess().close();
+			db.close();
 		}
-		return inDB;
+		return false;
 	}
 	
 	public static boolean loginStudent(String username, String passInput) throws SQLException {
