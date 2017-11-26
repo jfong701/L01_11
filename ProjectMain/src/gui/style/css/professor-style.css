@@ -1,0 +1,42 @@
+.root {
+	-fx-accent: #C8E6C9;
+	-fx-focus-color: #4CAF50;
+	-fx-faint-focus-color: rgba(76, 175, 80, 0.2);
+}
+
+.label {
+	-fx-text-fill: #212121;
+}
+
+.hbox {
+    -fx-background-color: #4CAF50;
+	-fx-text-fill: #FFFFFF;
+}
+
+.grid {
+	-fx-background-color: rgba(255, 255, 255, .9);
+}
+
+.scroll > .viewport {
+	-fx-background-color: transparent;
+}
+
+.scroll {
+	-fx-background-color: transparent;
+}
+
+
+.border {
+	-fx-background-image: url("../images/TeamLogoAngryTranslucent25.png");
+    -fx-background-repeat: stretch;
+    -fx-background-size: contain;
+    -fx-background-position: 100% 0%;
+}
+
+.text-field {
+	-fx-accent: #388E3C;
+}
+
+#headerLabel {
+	-fx-text-fill: #FFFFFF;
+}

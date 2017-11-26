@@ -16,10 +16,12 @@ public class ProfessorPage {
 		Label welcomeLabel = new Label("Welcome " + user);
 		welcomeLabel.setPadding(new Insets(10, 10, 10, 10));
 		welcomeLabel.setFont(Font.font("Verdana", 20));
+		welcomeLabel.setId("headerLabel");
 		
 		HBox topBorder = new HBox(50);
 		topBorder.setAlignment(Pos.CENTER_LEFT);
 		topBorder.getChildren().add(welcomeLabel);
+		topBorder.getStyleClass().add("hbox");
 
 		Button addProfessors = new Button("Add Professors");
 		addProfessors.setOnAction(e -> ProfessorAddProfessors.addProfessors(primaryStage, user, pass));		
@@ -34,11 +36,15 @@ public class ProfessorPage {
 		VBox centerBorder = new VBox(25);
 		centerBorder.setAlignment(Pos.CENTER);
 		centerBorder.getChildren().addAll(addProfessors, addStudents, addAssignments, addQuestions);
+		centerBorder.getStyleClass().add("grid");
 		
 		BorderPane border = new BorderPane();
-		border.setTop(welcomeLabel);
+		border.setTop(topBorder);
 		border.setCenter(centerBorder);
+		border.getStyleClass().add("border");
 
-		primaryStage.setScene(new Scene(border, 500, 250));
+		Scene professorScene = new Scene(border, 500, 250);
+		professorScene.getStylesheets().add("gui/style/css/professor-style.css");
+		primaryStage.setScene(professorScene);
 	}
 }
