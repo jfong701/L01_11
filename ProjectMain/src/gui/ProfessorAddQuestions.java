@@ -63,9 +63,14 @@ public class ProfessorAddQuestions {
 			List<File> list = fileChooser.showOpenMultipleDialog(primaryStage);
 			if (list != null) {
 				for (File file : list) {
-					DOA.start();					
-					DOA.uploadQuestionFile(file.getAbsolutePath().replace('\\', '/'));
-					DOA.close();
+					List<String> errors = Validators.getErrorsInQuestionFile(file.getAbsolutePath().replace('\\', '/'));
+					if (!errors.isEmpty()) {
+						String error = "";
+						for (String i:errors) error = error + i + '\n';
+						MessageBox.show("Error", error);
+					} else {				
+						DOA.uploadQuestionFile(file.getAbsolutePath().replace('\\', '/'));
+					}
 				}
 			}
 			try {

@@ -64,15 +64,13 @@ public class ProfessorAddProfessors {
 			fileChooser.setTitle("Upload Professor File");
 			List<File> list = fileChooser.showOpenMultipleDialog(primaryStage);
 			if (list != null) {
-				for (File file : list) {
-					DOA.start();					
+				for (File file : list) {					
 					try {
 						DOA.uploadProfessorFile(file.getAbsolutePath().replace('\\', '/'));
 					} catch (SQLException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
-					DOA.close();
 				}
 			}
 			loadTable();

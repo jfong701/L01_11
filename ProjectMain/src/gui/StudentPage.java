@@ -1,31 +1,27 @@
 package gui;
 
-import gui.IntroScreen;
-
-import javafx.scene.Scene;
-import javafx.stage.Stage;
+import assignment.Assignment;
 import jdbc.DOA;
-import javafx.scene.layout.*;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
 
-import java.nio.file.Paths;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
-import javax.swing.plaf.synth.SynthSeparatorUI;
-
-import assignment.Assignment;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.StackPane;
+import javafx.scene.text.Font;
+import javafx.stage.Stage;
 
 public class StudentPage {
 
@@ -75,14 +71,14 @@ public class StudentPage {
 		assignmentIds = FXCollections.observableArrayList();
 		courseCodes = FXCollections.observableArrayList();
 
-		// set course codes from DOA
+		// set course codes from database
 		courseCodes.addAll(DOA.getCourseIds());
 
 		// Label for course selection comboBox
 		Label courseLabel = new Label("Choose a course:");
 		grid.add(courseLabel, LEFT_COL_INDEX, currentRow, LEFT_WIDTH, ROW_HEIGHT);
 
-		// Pull up a list of courses that the student is enrolled in.
+		// ComboBox to select list of courses the student is enrolled in.
 		ComboBox<String> courseBox = new ComboBox<String>();
 		courseBox.setPromptText("Choose a course");
 		courseBox.setItems(courseCodes);
@@ -94,7 +90,7 @@ public class StudentPage {
 		Label assignmentLabel = new Label("Choose an assignment:");
 		grid.add(assignmentLabel, LEFT_COL_INDEX, currentRow, LEFT_WIDTH, ROW_HEIGHT);
 
-		// Show list of available assignments for that course
+		// ComboBox to select available assignments for that course
 		ComboBox<Integer> assignmentBox = new ComboBox<Integer>();
 		assignmentBox.setPromptText("Choose an assignment");
 
@@ -114,7 +110,6 @@ public class StudentPage {
 		grid.add(deadlineLabel, LEFT_COL_INDEX, currentRow, LEFT_WIDTH, ROW_HEIGHT_SMALL);
 
 		// use smaller spacing between info labels
-
 		currentRow += ROW_HEIGHT_SMALL;
 
 		// Label to show the course average for an assignment.
@@ -140,18 +135,19 @@ public class StudentPage {
 		// when a course is selected, sets up the assignmentBox for that course.
 		courseBox.setOnAction(e -> {
 
-			// clear the observable for assignment IDs and set based on course
 			assignmentIds.clear();
 			assignmentIds.addAll(DOA.getAssignmentIds(courseBox.getValue()));
 
 			assignmentBox.setDisable(false);
 
-			// hide the assignment average label if the assignment hasn't been picked
+			// ensure assignment-specific labels are hidden until assignment is chosen.
+			deadlineLabel.setVisible(false);
 			assignmentAverageLabel.setVisible(false);
+			assignmentCurrentGradeLabel.setVisible(false);
 		});
 
 		// ASSIGNMENTBOX EVENT HANDLER
-		// when an assignment is chosen, enable the 'open' button
+		// when an assignment is chosen, enable the 'open' button and show labels.
 		assignmentBox.setOnAction(e -> {
 
 			// only update the label if the observable object hasn't been filled
@@ -189,7 +185,6 @@ public class StudentPage {
 				int currentGrade = DOA.getMark(user, courseBox.getValue(), assignmentBox.getValue());
 				assignmentCurrentGradeLabel.setText("Your assignment grade:  " + Integer.toString(currentGrade) + "%");
 				assignmentCurrentGradeLabel.setVisible(true);
-
 			}
 		});
 
