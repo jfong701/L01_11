@@ -10,7 +10,7 @@
 3. Double click the .jar to open it.
 
 ### Run the program from Eclipse
-(requires Eclipse)
+(requires [Eclipse](https://www.eclipse.org/downloads/))
 1. Download directory ProjectMain/ and all subdirectories and files
 2. Open Eclipse and go to File -> Open Projects from File System
 3. The value for "Import source" should be the ProjectMain folder. Click Finish.
@@ -60,6 +60,7 @@ deliverables
 
 executables
 * NotFastJustFurious-2017.11.17.jar
+* NotFastJustFurious-2017.11.27.jar
 
 ProjectMain/lib/
 * mxparser.jar
