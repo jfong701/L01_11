@@ -60,7 +60,8 @@ public class StudentAssignmentPage {
 			e1.printStackTrace();
 		}
 
-		int numQuestions = curAssgn.getNumQuestions();
+		int numQ = curAssgn.getNumQuestions();
+		
 		String assignmentName = curAssgn.getAssignmentName();
 
 		// Extract question and answers from database, and process it to an easily
@@ -72,12 +73,19 @@ public class StudentAssignmentPage {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+		
+		int maxNumQuestions = questionAndAnswerList.size();
+		if (numQ > maxNumQuestions) {
+		    numQ = maxNumQuestions;
+		}
 
+		final int numQuestions = numQ;
+		
 		String[] questions = new String[numQuestions];
 		Expression[] answers = new Expression[numQuestions];
 		int[] questionIds = null;
 
-		int maxNumQuestions = questionAndAnswerList.size();
+
 
 		// iterate through our given IDs, and extract the question and answers we need
 		// (in random order)
