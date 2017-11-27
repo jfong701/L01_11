@@ -1,7 +1,7 @@
 .root {
 	-fx-accent: #DCEDC8;
-	-fx-focus-color: rgba(135, 195, 74, 1);
-	-fx-faint-focus-color: rgba(135, 195, 74, 0.2);
+	-fx-focus-color: #8BC34A;
+	-fx-faint-focus-color: rgba(139, 195, 74, 0.2);
 }
 
 .label {

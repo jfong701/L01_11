@@ -63,9 +63,14 @@ public class ProfessorAddQuestions {
 			List<File> list = fileChooser.showOpenMultipleDialog(primaryStage);
 			if (list != null) {
 				for (File file : list) {
-					DOA.start();					
-					DOA.uploadQuestionFile(file.getAbsolutePath().replace('\\', '/'));
-					DOA.close();
+					List<String> errors = Validators.getErrorsInQuestionFile(file.getAbsolutePath().replace('\\', '/'));
+					if (!errors.isEmpty()) {
+						String error = "";
+						for (String i:errors) error = error + i + '\n';
+						MessageBox.show("Error", error);
+					} else {				
+						DOA.uploadQuestionFile(file.getAbsolutePath().replace('\\', '/'));
+					}
 				}
 			}
 			try {
@@ -168,11 +173,12 @@ public class ProfessorAddQuestions {
         
         grid.add(submitButton, 2, 10, 1, 1);
         
-        
         border.setCenter(questions);
         border.setBottom(grid);
+        border.getStyleClass().add("border-no-overlay");
         
         Scene addQuestionsScene = new Scene(border, 500, 500);
+        addQuestionsScene.getStylesheets().add("gui/style/css/professor-style.css");
         primaryStage.setScene(addQuestionsScene);
 
     }

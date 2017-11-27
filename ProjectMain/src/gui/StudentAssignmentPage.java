@@ -167,6 +167,7 @@ public class StudentAssignmentPage {
 
 		Button backButton = new Button("Back");
 		Button submitButton = new Button("Submit");
+		submitButton.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
 
 		grid.add(backButton, 0, currentRow, 1, 1);
 		grid.add(submitButton, 1, currentRow, 1, 1);

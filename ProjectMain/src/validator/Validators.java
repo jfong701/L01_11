@@ -13,23 +13,21 @@ import java.util.Date;
 import java.util.List;
 
 import jdbc.DOA;
+import student.Professor;
 
 public class Validators {
 	
+	private static boolean isAllDigits(String value) {
+		int i = 0;
+		while (i < value.length()) {
+			if (!Character.isDigit(value.charAt(i))) return false;
+			i++;
+		}
+		return true;
+	}
 	public static boolean isStudentNumberValid(String studentNo) {
 		if (studentNo.length() == 10 || studentNo.length() == 9) {
-			int i = 0;
-			boolean digit = true;
-			// loop to check for string of all digits
-			while (i < studentNo.length() && digit) {
-				digit = digit && Character.isDigit(studentNo.charAt(i));
-				i++;
-			}
-			if (!digit) {
-				return false;
-			} else {
-				return true;
-			}
+			if(isAllDigits(studentNo)) return true;
 		} 
 		return false;
 	}
@@ -46,7 +44,7 @@ public class Validators {
 			String[] splitLine;
 			String studentNo, studentUtor, studentFirstName, studentLastName;
 			int lineCount = 0;
-			boolean validStudentNo, validUtor, validFirstName, validLastName, duplicate = false;
+			boolean validStudentNo, validUtor, validFirstName, validLastName, duplicate;
 			// read line by line, split and trim the strings. ASSUMING WE'RE GIVEN COMMA SEPARATED CSV FILES 
 			// format: studentNo, utorID, firstName, lastName
 			while (((line = buffer.readLine()) != null)) {
@@ -68,7 +66,7 @@ public class Validators {
 				validFirstName = studentFirstName.length() >= 1 && studentFirstName.length() <= 40;
 				validLastName = studentLastName.length() >= 1 && studentLastName.length() <= 40;
 				// need to check database for duplicates
-				duplicate = DOA.isStudentInDatabase(studentNo); // dummy value for now until implementing it
+				duplicate = DOA.isUserInDatabase(studentNo); 
 				if (!validStudentNo) 
 					errorMessages.add(String.format("Line %d : Student Number is invalid(needs 10 digits).", lineCount));
 				if (!validUtor) 
@@ -78,7 +76,7 @@ public class Validators {
 				if (!validLastName) 
 					errorMessages.add(String.format("Line %d : Last Name is invalid(min 1 character, max 40 characters).", lineCount));
 				if (duplicate)
-					errorMessages.add(String.format("Line %d : This Student Number already exists in the database.", lineCount));
+					errorMessages.add(String.format("Line %d : This Student/Professor number already exists in the database.", lineCount));
 			}
 		} catch (IOException error) {
 			System.err.println("IOException: " + error.getMessage());
@@ -130,14 +128,115 @@ public class Validators {
 		if (course_id.length() != 6 || assignment_id.length() < 1 ||
 			num_questions.length() < 1 || Integer.parseInt(num_questions) < 0 
 			|| assignment_name.length() < 1 || localDate == null) return false;
-		System.out.println("CHECKING DUPES");
+		// checking if assignment is unique
 		return (DOA.getAssignment(course_id, assignment_id) == null) ? true : false;
 	}
 	
-	public static boolean isAssignmentUnique(String course_id, String assignment_id) throws SQLException {
-		return DOA.getAssignment(course_id, assignment_id) == null;
+	public static List<String> getErrorsInQuestionFile(String abs_path) {
+		FileReader file = null;
+		BufferedReader buffer = null;
+		List<String> errorMessages = new ArrayList<String>();
+		// Error check IO calls 
+		try {
+			file = new FileReader(abs_path);
+			buffer = new BufferedReader(file);
+			String line;
+			String[] splitLine;
+			int lineCount = 0;
+			String courseID, assignmentID, question, answerFunction, lowerRange, upperRange, decimalPlaces;
+			String prevCourseID = "", prevAssignmentID = "";
+			while ((line = buffer.readLine()) != null) {
+				lineCount++;
+				splitLine = line.split(",", -1);
+				courseID = splitLine[0];
+				assignmentID = splitLine[1];
+				question = splitLine[2];
+				answerFunction = splitLine[3]; 
+				lowerRange = splitLine[4];
+				upperRange = splitLine[5];
+				decimalPlaces = splitLine[6];
+				// valid course id must have 6 characters
+				if (!(courseID.length() == 6)) 
+					errorMessages.add(String.format("Line %d : Course ID does not have 6 characters.", lineCount));
+				// valid assignment id must be a digit > 0 (maybe also all have to be the same assignment ids)
+				if (!(assignmentID.length() > 0 && isAllDigits(assignmentID))) 
+					errorMessages.add(String.format("Line %d : Assignment ID is not all digits.", lineCount));
+				// valid question must have more than or equal to 1 character
+				if (!(question.length() > 0)) 
+					errorMessages.add(String.format("Line %d : Question does not have any value.", lineCount));
+				// valid answer function must have more than or equal to 1 character
+				if (!(answerFunction.length() > 0)) 
+					errorMessages.add(String.format("Line %d : Answer function does not have any value.", lineCount));
+				// valid range must have lower < upper (if both are not "")
+				if (!(isValidRange(lowerRange, upperRange))) 
+					errorMessages.add(String.format("Line %d : Ranges are invalid.", lineCount));
+				// valid decimal can be empty string or all digits
+				if (!(decimalPlaces.length() == 0 || isAllDigits(decimalPlaces))) 
+					errorMessages.add(String.format("Line %d : Decimal Places is either not empty or has letters.", lineCount));
+				if (!prevCourseID.equals(courseID) || !prevAssignmentID.equals(assignmentID)) {
+					if (prevCourseID.equals("") && prevAssignmentID.equals("")) {
+						prevCourseID = courseID; prevAssignmentID = assignmentID;
+					} else {
+						errorMessages.add(String.format("Line %d : Course ID or Assignment ID not consistent with the rest above.", lineCount));
+					}
+				}
+			}
+		} catch (IOException error) {
+			System.err.println("IOException: " + error.getMessage());
+		} catch (ArrayIndexOutOfBoundsException error) {
+			System.err.println("ArrayIndexOutOfBoundsException: " + error.getMessage());
+		}
+		return errorMessages;
 	}
 	
+	public static boolean isValidRange(String lower, String upper) {
+		// range is still valid if they're both empty strings otherwise have to check for other conditions
+		if (lower.equals("") && upper.equals("")) return true;
+		if ((lower.equals("") && !upper.equals("") || !lower.equals("") && upper.equals("")) || 
+				!isAllDigits(lower) || !isAllDigits(upper) || Double.parseDouble(lower) >
+				Double.parseDouble(upper))	return false;	
+		return true;
+	}
 	
+	public static boolean isProfessorValid(String professorID, String firstName, String lastName) {
+		if (professorID.length() < 9 || professorID.length() > 10 || firstName.length() < 1 
+				|| lastName.length() < 1) return false;
+		// checks for duplicate prof id's and student id's
+		if (!(isAllDigits(professorID)) || DOA.isUserInDatabase(professorID)) return false;
+		return true;
+	}
 	
+	public static List<String> getErrorsInProfessorFile(String abs_path) { 
+		FileReader file = null;
+		BufferedReader buffer = null;
+		List<String> errorMessages = new ArrayList<String>();
+		// Error check IO calls 
+		try {
+			file = new FileReader(abs_path);
+			buffer = new BufferedReader(file);
+			String line;
+			String[] splitLine;
+			int lineCount = 0;
+			String professorID, professorFirstName, professorLastName;
+			while ((line = buffer.readLine()) != null) {
+				lineCount++;
+				splitLine = line.split(",", -1);
+				professorID = splitLine[0];
+				professorFirstName = splitLine[1];
+				professorLastName = splitLine[2];
+				if (professorID.length() < 8 || professorID.length() > 10) 
+					errorMessages.add(String.format("Line %d : Professor ID must be 9 to 10 digits.", lineCount));
+				if (professorFirstName.length() < 1 || professorLastName.length() < 1) 
+					errorMessages.add(String.format("Line %d : First Name or Last Name are < 1 characters.", lineCount));
+				if (DOA.isUserInDatabase(professorID))
+					errorMessages.add(String.format("Line %d : Student or Professor ID already exists.", lineCount));
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} 
+		return errorMessages;
+	}
+	
+	public static void main(String[] args) throws SQLException {
+	}
 }

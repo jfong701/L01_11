@@ -62,10 +62,8 @@ public class ProfessorAddAssignments {
 			fileChooser.setTitle("Upload Assignment File");
 			List<File> list = fileChooser.showOpenMultipleDialog(primaryStage);
 			if (list != null) {
-				for (File file : list) {
-					DOA.start();					
+				for (File file : list) {				
 					DOA.uploadAssignmentFile(file.getAbsolutePath().replace('\\', '/'));
-					DOA.close();
 				}
 			}
 			loadTable("");
@@ -134,7 +132,9 @@ public class ProfessorAddAssignments {
 		        			qNumField.getText(),
 		        			aNameField.getText(),
 		        			java.sql.Date.valueOf(datePicker.getValue()));
-		        	
+		        	aIDField.clear();
+		        	qNumField.clear();
+		        	aNameField.clear();
 		        	loadTable(courseBox.getValue());
 				}
 			} catch (NumberFormatException e1) {
@@ -144,21 +144,18 @@ public class ProfessorAddAssignments {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-        	
-        	aIDField.clear();
-        	qNumField.clear();
-        	aNameField.clear();
         });
         grid.add(submitButton, 2, 9, 1, 1);
-        
         border.setCenter(assignments);
         border.setBottom(grid);
+        border.getStyleClass().add("border-no-overlay");
         
         Scene addAssignmentsScene = new Scene(border, 750, 500);
+        addAssignmentsScene.getStylesheets().add("gui/style/css/professor-style.css");
         primaryStage.setScene(addAssignmentsScene);
     }
     
-	public static ObservableList<Assignment> getAssignments(String course_id) {
+	public static ObservableList<Assignment> getAssignments(String course_id) throws SQLException {
 		ObservableList<Assignment> asmts = null;
 		if (course_id.equals("")) {
 			asmts = FXCollections.observableArrayList(DOA.getAllAssignments());
@@ -171,7 +168,11 @@ public class ProfessorAddAssignments {
 
 	public static void loadTable(String course_id) {
 		assignments.getItems().clear();
-		assignments.setItems(getAssignments(course_id));
+		try {
+			assignments.setItems(getAssignments(course_id));
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
     
 	public static void setUpTable() {
