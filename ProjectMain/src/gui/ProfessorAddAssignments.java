@@ -62,8 +62,15 @@ public class ProfessorAddAssignments {
 			fileChooser.setTitle("Upload Assignment File");
 			List<File> list = fileChooser.showOpenMultipleDialog(primaryStage);
 			if (list != null) {
-				for (File file : list) {				
-					DOA.uploadAssignmentFile(file.getAbsolutePath().replace('\\', '/'));
+				for (File file : list) {
+					List<String> errors = Validators.getErrorsInAssignmentFile(file.getAbsolutePath().replace('\\','/'));
+					if (!errors.isEmpty()) {
+						String error = "";
+						for (String i : errors) error = error + i + '\n';
+						MessageBox.show("Error", error);
+					} else {
+						DOA.uploadAssignmentFile(file.getAbsolutePath().replace('\\', '/'));
+					}
 				}
 			}
 			loadTable("");

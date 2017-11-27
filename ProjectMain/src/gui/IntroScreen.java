@@ -54,9 +54,9 @@ public class IntroScreen extends Application {
 		Button loginButton = new Button("Login");
 		loginButton.setOnAction(e -> {
 			try {
-				if (Validators.loginProf(userInput.getText(), passInput.getText())) {
+				if (Validators.checkProf(userInput.getText(), passInput.getText())) {
 					ProfessorPage.login(primaryStage, userInput.getText(), passInput.getText());
-				} else if (Validators.loginStudent(userInput.getText(), passInput.getText())) {
+				} else if (Validators.checkStudent(userInput.getText(), passInput.getText())) {
 					StudentPage.login(primaryStage, userInput.getText(), passInput.getText());
 				} else {
 					MessageBox.show("Login Failed", "Invalid Credentials");

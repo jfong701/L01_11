@@ -493,37 +493,39 @@ public class DOA {
 		return false;
 	}
 	
-	public static boolean loginStudent(String username, String passInput) throws SQLException {
+	public static Student getStudent(String username, String passInput) throws SQLException {
+		Student result = null;
 		try {
 			String login_command;
 			login_command = "SELECT * FROM STUDENTS WHERE student_id='" +username+ "' AND student_password='" +passInput+"';";
 			//System.out.println(login_command);
 			ResultSet valid = db.execute(login_command);
 			if (valid.first()) {
-				return true;
+				result = rsToStudent(valid);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			DOA.getMySQLAccess().close();
+			db.close();
 		}
-		return false;
+		return result;
 	}
 	
-	public static boolean loginProf(String username, String passInput) throws SQLException {
+	public static Professor getProfessor(String username, String passInput) throws SQLException {
+		Professor result = null;
 		try {
 			String login_command;
 			login_command = "SELECT * FROM PROFESSORS WHERE professor_id='" +username+ "' AND professor_password='" +passInput+"';";
 			ResultSet valid = db.execute(login_command);
 			if (valid.first()) {
-				return true;
+				result = rsToProfessor(valid);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			DOA.getMySQLAccess().close();
+			db.close();
 		}
-		return false;
+		return result;
 	}
 	public static void setMark(String sID, String cID, int aID, int mark) {
 		int old_mark = 0;

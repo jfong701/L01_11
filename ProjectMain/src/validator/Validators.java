@@ -19,13 +19,16 @@ public class Validators {
 	
 	private static boolean isAllDigits(String value) {
 		int i = 0;
+		// loop to check for all digits 
 		while (i < value.length()) {
 			if (!Character.isDigit(value.charAt(i))) return false;
 			i++;
 		}
 		return true;
 	}
+	
 	public static boolean isStudentNumberValid(String studentNo) {
+		// student number can only be 9 or 10 digits long
 		if (studentNo.length() == 10 || studentNo.length() == 9) {
 			if(isAllDigits(studentNo)) return true;
 		} 
@@ -49,7 +52,7 @@ public class Validators {
 			// format: studentNo, utorID, firstName, lastName
 			while (((line = buffer.readLine()) != null)) {
 				lineCount++;
-				splitLine = line.split(",");
+				splitLine = line.split(",", -1);
 				if (splitLine.length != 4) {
 					errorMessages.add(String.format("Line %d : Insufficient number of fields(needs studentNumber, UTORID, firstName, lastName).", lineCount));
 					continue;
@@ -78,6 +81,8 @@ public class Validators {
 				if (duplicate)
 					errorMessages.add(String.format("Line %d : This Student/Professor number already exists in the database.", lineCount));
 			}
+			buffer.close();
+			file.close();
 		} catch (IOException error) {
 			System.err.println("IOException: " + error.getMessage());
 		} catch (ArrayIndexOutOfBoundsException error) {
@@ -86,37 +91,12 @@ public class Validators {
 		return errorMessages;
 	}
 	
-	public static boolean loginStudent(String username, String passInput) throws SQLException {
-		try {
-			String login_command;
-			login_command = "SELECT * FROM STUDENTS WHERE student_id='" +username+ "' AND student_password='" +passInput+"';";
-			//System.out.println(login_command);
-			ResultSet valid = DOA.getMySQLAccess().execute(login_command);
-			if (valid.first()) {
-				return true;
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			DOA.getMySQLAccess().close();
-		}
-		return false;
+	public static boolean checkStudent(String username, String passInput) throws SQLException {
+		return DOA.getStudent(username, passInput) != null;
 	}
 	
-	public static boolean loginProf(String username, String passInput) throws SQLException {
-		try {
-			String login_command;
-			login_command = "SELECT * FROM PROFESSORS WHERE professor_id='" +username+ "' AND professor_password='" +passInput+"';";
-			ResultSet valid = DOA.getMySQLAccess().execute(login_command);
-			if (valid.first()) {
-				return true;
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			DOA.getMySQLAccess().close();
-		}
-		return false;
+	public static boolean checkProf(String username, String passInput) throws SQLException {
+		return DOA.getProfessor(username, passInput) != null;
 	}
 	
 	public static boolean isSingleAnswerQuestionValid(String question, String answer) {
@@ -181,6 +161,8 @@ public class Validators {
 					}
 				}
 			}
+			buffer.close();
+			file.close();
 		} catch (IOException error) {
 			System.err.println("IOException: " + error.getMessage());
 		} catch (ArrayIndexOutOfBoundsException error) {
@@ -224,19 +206,87 @@ public class Validators {
 				professorID = splitLine[0];
 				professorFirstName = splitLine[1];
 				professorLastName = splitLine[2];
-				if (professorID.length() < 8 || professorID.length() > 10) 
+				// id must be 9-10 digits 
+				if (professorID.length() < 8 || professorID.length() > 10 || !isAllDigits(professorID)) 
 					errorMessages.add(String.format("Line %d : Professor ID must be 9 to 10 digits.", lineCount));
+				// names must be >= 1 character
 				if (professorFirstName.length() < 1 || professorLastName.length() < 1) 
 					errorMessages.add(String.format("Line %d : First Name or Last Name are < 1 characters.", lineCount));
+				// id must not be a duplicate in the database
 				if (DOA.isUserInDatabase(professorID))
 					errorMessages.add(String.format("Line %d : Student or Professor ID already exists.", lineCount));
 			}
+			buffer.close();
+			file.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		} 
 		return errorMessages;
 	}
 	
+	public static List<String> getErrorsInAssignmentFile(String abs_path) {
+		FileReader file = null;
+		BufferedReader buffer = null;
+		List<String> errorMessages = new ArrayList<String>();
+		// Error check IO calls 
+		try {
+			file = new FileReader(abs_path);
+			buffer = new BufferedReader(file);
+			String line;
+			String[] splitLine;
+			int lineCount = 0;
+			String courseID, assignmentID, title, numQuestions, date;
+			while ((line = buffer.readLine()) != null) {
+				lineCount++;
+				splitLine = line.split(",", -1);
+				courseID = splitLine[0];
+				assignmentID = splitLine[1];
+				numQuestions = splitLine[2];
+				title = splitLine[3];
+				date = splitLine[4];
+				// course id must be = 6 characters
+				if (courseID.length() != 6) 
+					errorMessages.add(String.format("Line %d : Course ID does not have 6 characters.", lineCount));
+				// assignment id must be >= 1 digits
+				if (assignmentID.length() < 1 || !isAllDigits(assignmentID))
+					errorMessages.add(String.format("Line %d : Assignment ID must have all digits.", lineCount));
+				// num questions must be > 0 
+				if (!isAllDigits(numQuestions) || Integer.parseInt(numQuestions) < 1) 
+					errorMessages.add(String.format("Line %d : Number of Questions must be > 0.", lineCount));
+				// title > 0 characters
+				if (title.length() < 1) 
+					errorMessages.add(String.format("Line %d : Assignment Title must have at least 1 character.", lineCount));
+				// date must be of the form yyyy-mm-dd
+				if (!isValidDate(date))
+					errorMessages.add(String.format("Line %d : Date must be of the format yyyy-mm-dd.", lineCount));
+				// another assignment can't exist
+				if (DOA.getAssignment(courseID, assignmentID) != null)
+					errorMessages.add(String.format("Line %d : This assignment already exists.", lineCount));
+			}
+			buffer.close();
+			file.close();
+		} catch (IOException | SQLException e) {
+			e.printStackTrace();
+		}
+		return errorMessages;
+	}
+		
+	public static boolean isValidDate(String date) {
+		String[] dateSplit = date.split("-", -1);
+		for (String i:dateSplit) {
+			if (i.equals("")) return false;
+		}
+		// if format isn't correct or not all digits
+		if (dateSplit.length != 3 || !isAllDigits(dateSplit[0] + dateSplit[1] + dateSplit[2])) return false;
+		int year, month, day;
+		year = Integer.parseInt(dateSplit[0]);
+		month = Integer.parseInt(dateSplit[1]);
+		day = Integer.parseInt(dateSplit[2]);
+		// valid days/months/year
+		if (day < 1 || day > 31 || month < 1 || month > 12 || year < 0) return false;
+		return true;
+	}
+
 	public static void main(String[] args) throws SQLException {
 	}
 }
