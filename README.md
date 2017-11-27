@@ -2,7 +2,7 @@
 
 ## System Requirements to run the program
   * [Oracle Java 8 JRE](http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html)
-  * A good internet connection (10 Mbps download / 2 Mbps upload recommended)
+  * A good internet connection (10 Mbps download / 2 Mbps upload) is recommended. You can check your internet speed [here](http://beta.speedtest.net/)
   
 ### Run the standalone.jar
 1. Download a .jar file from the "executables" folder
@@ -10,14 +10,16 @@
 3. Double click the .jar to open it.
 
 ### Run the program from Eclipse
-(requires Eclipse)
+(requires [Eclipse](https://www.eclipse.org/downloads/))
 1. Download directory ProjectMain/ and all subdirectories and files
 2. Open Eclipse and go to File -> Open Projects from File System
 3. The value for "Import source" should be the ProjectMain folder. Click Finish.
-4. Right click and go to Properties.
+4. Right click the ProjectMain folder and go to Properties.
 5. Go to Java Build Path -> Libraries and click "Add JARS"
 6. Navigate to the "lib" folder and add the mysql connector.
-7. Navigate to ProjectMain/src/gui and run IntroScreen.java
+7. Repeat steps 5-6 and add "mxparser.jar"
+8. Click "Apply and Close"
+9. Navigate to ProjectMain/src/gui and run IntroScreen.java
 
 ## System Requirements to build the .jar
   * [Java 8 JDK](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
@@ -27,15 +29,16 @@
 1. Download directory ProjectMain/ and all subdirectories and files
 2. Open a Eclipse and go to File -> Open Projects from File System
 3. The value for "Import source" should be the ProjectMain folder. Click Finish.
-4. Right click and go to Properties.
+4. In Package Explorer, Right click "ProjectMain" and go to Properties.
 5. Go to Java Build Path -> Libraries and click "Add JARS"
 6. Navigate to the "lib" folder and add the mysql connector.
-7. Right click the ProjectMain folder and click 'Export'
-8. Select Java > 'Runnable JAR file' and click Next
-9. Set Launch configuration to 'IntroScreen - ProjectMain'
-10. Choose an appropriate Export destination and file name
-11. In Libary handling select 'Extract required libaries into generated JAR
-12. Click Finish
+7. Repeat steps 5-6 and add "mxparser.jar"
+8. Right click the ProjectMain folder and click 'Export'
+9. Select Java > 'Runnable JAR file' and click Next
+10. Set Launch configuration to 'IntroScreen - ProjectMain'
+11. Choose an appropriate Export destination and file name
+12. In Libary handling select 'Extract required libaries into generated JAR
+13. Click Finish
 
 ## Repository Contents
 deliverables
