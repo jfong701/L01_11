@@ -60,6 +60,11 @@ deliverables
   * Sprint 5 Backlog.pdf
   * Validation Testing v1.pdf
   * Code Review.pdf
+* Deliverable 6 (UnitTests in ProjectMain folder)
+  * NotFastJustFurious-2017.11.27.jar
+  * Product Backlog v5.pdf
+  * Sprint 6 Backlog.pdf
+  * Validation Testing v2.pdf
 
 executables
 * NotFastJustFurious-2017.11.17.jar
@@ -121,6 +126,7 @@ Product Backlog
   * Product Backlog v2.pdf
   * Product Backlog v3.pdf
   * Product Backlog v4.pdf
+  * Product Backlog v5.pdf
 
 SampleFiles
   * ENGA01WordProblems.csv
@@ -142,5 +148,6 @@ Sprint Backlog
   * Sprint 3 Backlog.pdf
   * Sprint 4 Backlog.pdf
   * Sprint 5 Backlog.pdf
+  * Sprint 6 Backlog.pdf
 
 README.md
