@@ -31,9 +31,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 
-import student.Professor;
 import jdbc.DOA;
-import student.Student;
+import user.Professor;
+import user.Student;
 import validator.Validators;
 
 public class ProfessorAddProfessors {

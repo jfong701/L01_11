@@ -22,7 +22,7 @@ import javafx.scene.layout.*;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import jdbc.DOA;
-import student.Student;
+import user.Student;
 import validator.Validators;
 
 public class ProfessorViewStudents {

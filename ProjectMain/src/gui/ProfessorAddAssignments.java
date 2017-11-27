@@ -34,7 +34,7 @@ import java.util.Random;
 import assignment.Assignment;
 import assignment.SingleAnswerQuestion;
 import jdbc.DOA;
-import student.Student;
+import user.Student;
 import validator.Validators;
 
 public class ProfessorAddAssignments {

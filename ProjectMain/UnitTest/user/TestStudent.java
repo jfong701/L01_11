@@ -1,8 +1,10 @@
-package student;
+package user;
 
 import static org.junit.Assert.*;
 
 import org.junit.Test;
+
+import user.Student;
 
 public class TestStudent {
 

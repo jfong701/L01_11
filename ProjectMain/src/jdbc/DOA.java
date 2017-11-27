@@ -16,8 +16,8 @@ import java.io.IOException;
 import java.sql.ResultSet;
 
 import jdbc.OldMySQLAccess;
-import student.Professor;
-import student.Student;
+import user.Professor;
+import user.Student;
 
 public class DOA {
 
