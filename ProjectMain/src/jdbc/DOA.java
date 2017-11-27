@@ -578,7 +578,7 @@ public class DOA {
 			//PreparedStatement cmd = a.getConn().prepareStatement("SELECT mark FROM STUDENT_ASSIGNMENTS "
 			//		+ "WHERE course_id='" + cID + "' AND assignment_id=" + aID + " AND student_id='" + sID + "';");
 			String query = "SELECT mark FROM STUDENT_ASSIGNMENTS WHERE course_id ='"+cID + 
-							"' AND assignment_id=" + aID + " AND student_id ='"+sID+"';";
+							"' AND assignment_id=" + String.valueOf(aID) + " AND student_id ='"+sID+"';";
 			ResultSet curr_result = db.execute(query);
 			if (curr_result.first()) {
 				mark = curr_result.getInt(1);
