@@ -301,6 +301,7 @@ public class DOA {
 				innerArray = new ArrayList<String>();
 				innerArray.add(rs.getString("question"));
 				innerArray.add(rs.getString("answer_function"));
+
 				array.add(innerArray);
 			}
 		} catch (SQLException e) {
@@ -438,7 +439,10 @@ public class DOA {
 		int asmtID = rs.getInt("assignment_id");
 		String ques = rs.getString("question");
 		String ans = rs.getString("answer_function");
-		question = new SingleAnswerQuestion(courseID, asmtID, ques, ans);
+		int lowR = rs.getInt("lower_range");
+		int uppR = rs.getInt("upper_range");
+		int dec = rs.getInt("decimal_places");
+		question = new SingleAnswerQuestion(courseID, asmtID, ques, ans, lowR, uppR, dec);
 		
 		return question;
 	}

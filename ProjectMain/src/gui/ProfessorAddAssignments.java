@@ -193,11 +193,11 @@ public class ProfessorAddAssignments {
 		TableColumn<Assignment, Date> deadline = new TableColumn<>("Deadline");
 		deadline.setCellValueFactory(new PropertyValueFactory<>("deadline"));
 		
-		courseID.prefWidthProperty().bind(assignments.widthProperty().divide(3)); // w * 1/4
-		assignmentID.prefWidthProperty().bind(assignments.widthProperty().divide(3)); // w * 1/2
-		numQuestions.prefWidthProperty().bind(assignments.widthProperty().divide(3)); // w * 1/4
-		assignmentName.prefWidthProperty().bind(assignments.widthProperty().divide(3)); // w * 1/4
-		deadline.prefWidthProperty().bind(assignments.widthProperty().divide(3)); // w * 1/4
+		courseID.prefWidthProperty().bind(assignments.widthProperty().divide(5));
+		assignmentID.prefWidthProperty().bind(assignments.widthProperty().divide(5));
+		numQuestions.prefWidthProperty().bind(assignments.widthProperty().divide(5));
+		assignmentName.prefWidthProperty().bind(assignments.widthProperty().divide(5));
+		deadline.prefWidthProperty().bind(assignments.widthProperty().divide(5));
 
 		
 		assignments.getColumns().addAll(courseID, assignmentID, numQuestions, assignmentName, deadline);

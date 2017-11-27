@@ -156,10 +156,10 @@ public class ProfessorViewStudents {
 		TableColumn<Student, String> studentLastName = new TableColumn<>("Last Name");
 		studentLastName.setCellValueFactory(new PropertyValueFactory<>("studentLastName"));
 		
-		studentNumber.prefWidthProperty().bind(students.widthProperty().divide(3)); // w * 1/4
-		studentUTOR.prefWidthProperty().bind(students.widthProperty().divide(3)); // w * 1/4
-		studentFirstName.prefWidthProperty().bind(students.widthProperty().divide(3)); // w * 1/2
-		studentLastName.prefWidthProperty().bind(students.widthProperty().divide(3)); // w * 1/4
+		studentNumber.prefWidthProperty().bind(students.widthProperty().divide(4));
+		studentUTOR.prefWidthProperty().bind(students.widthProperty().divide(4));
+		studentFirstName.prefWidthProperty().bind(students.widthProperty().divide(4));
+		studentLastName.prefWidthProperty().bind(students.widthProperty().divide(4));
 
 		
 		students.getColumns().addAll(studentNumber, studentUTOR, studentFirstName, studentLastName);

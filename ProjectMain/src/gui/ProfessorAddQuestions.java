@@ -211,10 +211,10 @@ public class ProfessorAddQuestions {
 		TableColumn<SingleAnswerQuestion, String> answerFunction = new TableColumn<>("Answer Function");
 		answerFunction.setCellValueFactory(new PropertyValueFactory<>("answerFunction"));
 		
-		courseID.prefWidthProperty().bind(questions.widthProperty().divide(3)); // w * 1/4
-		assignmentID.prefWidthProperty().bind(questions.widthProperty().divide(3)); // w * 1/2
-		question.prefWidthProperty().bind(questions.widthProperty().divide(3)); // w * 1/4
-		answerFunction.prefWidthProperty().bind(questions.widthProperty().divide(3)); // w * 1/4
+		courseID.prefWidthProperty().bind(questions.widthProperty().divide(4));
+		assignmentID.prefWidthProperty().bind(questions.widthProperty().divide(4));
+		question.prefWidthProperty().bind(questions.widthProperty().divide(4));
+		answerFunction.prefWidthProperty().bind(questions.widthProperty().divide(4));
 
 		
 		questions.getColumns().addAll(courseID, assignmentID, question, answerFunction);

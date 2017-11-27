@@ -1,0 +1,5 @@
+MATA01,2,If you have x apples and y oranges. How many fruit do you have in total?;x=5;y=3;,x+y,2,2,0
+MATA01,2,x+y-z;x=6;y=3;z=1,x+y-z,1,3,0
+MATA01,2,If you have x candy and you eat y. How many do you have left?,x-y,0,4,0
+MATA01,2,x*y;x=1;y=5,x*y,3,1,0
+MATA01,2,((x*y)-(z/2w))^2;x=2;y=3;z=4;w=2;,((x*y)-(z/2w))^2,1,1,1
