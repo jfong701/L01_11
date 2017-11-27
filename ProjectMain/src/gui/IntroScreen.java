@@ -27,8 +27,7 @@ public class IntroScreen extends Application {
 
 	}
 	
-	@Override
-	public void start(Stage primaryStage) throws Exception, SQLException {
+	public static void startProgram(Stage primaryStage) {
 		primaryStage.setTitle("Intro Screen");
 		
 		// Create and setup grid layout
@@ -72,5 +71,10 @@ public class IntroScreen extends Application {
 		loginScene.getStylesheets().add("gui/style/css/intro-screen.css");
 		primaryStage.setScene(loginScene);
 		primaryStage.show();
+	}
+	
+	@Override
+	public void start(Stage primaryStage) throws Exception, SQLException {
+		startProgram(primaryStage);
 	}
 }

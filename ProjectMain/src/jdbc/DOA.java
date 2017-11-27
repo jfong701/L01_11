@@ -284,6 +284,7 @@ public class DOA {
 				innerArray = new ArrayList<String>();
 				innerArray.add(rs.getString("question"));
 				innerArray.add(rs.getString("answer_function"));
+
 				array.add(innerArray);
 			}
 		} catch (SQLException e) {
@@ -417,7 +418,10 @@ public class DOA {
 		int asmtID = rs.getInt("assignment_id");
 		String ques = rs.getString("question");
 		String ans = rs.getString("answer_function");
-		question = new SingleAnswerQuestion(courseID, asmtID, ques, ans);
+		int lowR = rs.getInt("lower_range");
+		int uppR = rs.getInt("upper_range");
+		int dec = rs.getInt("decimal_places");
+		question = new SingleAnswerQuestion(courseID, asmtID, ques, ans, lowR, uppR, dec);
 		return question;
 	}
 
@@ -576,7 +580,7 @@ public class DOA {
 			//PreparedStatement cmd = a.getConn().prepareStatement("SELECT mark FROM STUDENT_ASSIGNMENTS "
 			//		+ "WHERE course_id='" + cID + "' AND assignment_id=" + aID + " AND student_id='" + sID + "';");
 			String query = "SELECT mark FROM STUDENT_ASSIGNMENTS WHERE course_id ='"+cID + 
-							"' AND assignment_id=" + aID + " AND student_id ='"+sID+"';";
+							"' AND assignment_id=" + String.valueOf(aID) + " AND student_id ='"+sID+"';";
 			ResultSet curr_result = db.execute(query);
 			if (curr_result.first()) {
 				mark = curr_result.getInt(1);

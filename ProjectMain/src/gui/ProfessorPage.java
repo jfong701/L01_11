@@ -18,10 +18,19 @@ public class ProfessorPage {
 		welcomeLabel.setFont(Font.font("Verdana", 20));
 		welcomeLabel.setId("headerLabel");
 		
+		StackPane logoutStack = new StackPane();
+		Button logoutBtn = new Button("Logout");
+		logoutBtn.setOnAction(e -> IntroScreen.startProgram(primaryStage));
+		logoutStack.getChildren().addAll(logoutBtn);
+		logoutStack.setAlignment(Pos.CENTER_RIGHT);
+		StackPane.setMargin(logoutBtn, new Insets(0, 10, 0, 0));
+		
 		HBox topBorder = new HBox(50);
 		topBorder.setAlignment(Pos.CENTER_LEFT);
 		topBorder.getChildren().add(welcomeLabel);
+		topBorder.getChildren().add(logoutStack);
 		topBorder.getStyleClass().add("hbox");
+		HBox.setHgrow(logoutStack, Priority.ALWAYS);
 
 		Button addProfessors = new Button("Add Professors");
 		addProfessors.setOnAction(e -> ProfessorAddProfessors.addProfessors(primaryStage, user, pass));		
@@ -46,5 +55,6 @@ public class ProfessorPage {
 		Scene professorScene = new Scene(border, 500, 250);
 		professorScene.getStylesheets().add("gui/style/css/professor-style.css");
 		primaryStage.setScene(professorScene);
+		addProfessors.requestFocus();
 	}
 }

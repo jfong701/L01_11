@@ -1,11 +1,14 @@
 package gui;
 
 import assignment.Assignment;
+import assignment.SingleAnswerQuestion;
 import jdbc.DOA;
 import org.mariuszgromada.math.mxparser.*;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.regex.Pattern;
+import java.util.concurrent.ThreadLocalRandom;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -21,6 +24,8 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
+
+
 
 public class StudentAssignmentPage {
 
@@ -55,30 +60,62 @@ public class StudentAssignmentPage {
 			e1.printStackTrace();
 		}
 
-		int numQuestions = curAssgn.getNumQuestions();
+		int numQ = curAssgn.getNumQuestions();
+		
 		String assignmentName = curAssgn.getAssignmentName();
 
 		// Extract question and answers from database, and process it to an easily
 		// usable form.
-		ArrayList<ArrayList<String>> questionAndAnswerList = DOA.getQuestions(courseName, assignmentNumStr);
+		ArrayList<SingleAnswerQuestion> questionAndAnswerList = null;
+		try {
+			questionAndAnswerList = DOA.getAllAssignmentQuestions(courseName, assignmentNumStr);
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		int maxNumQuestions = questionAndAnswerList.size();
+		if (numQ > maxNumQuestions) {
+		    numQ = maxNumQuestions;
+		}
 
+		final int numQuestions = numQ;
+		
 		String[] questions = new String[numQuestions];
-		String[] answers = new String[numQuestions];
+		Expression[] answers = new Expression[numQuestions];
 		int[] questionIds = null;
 
-		int maxNumQuestions = questionAndAnswerList.size();
+
 
 		// iterate through our given IDs, and extract the question and answers we need
 		// (in random order)
 		if (numQuestions <= maxNumQuestions) {
 			questionIds = Assignment.questSet(numQuestions, maxNumQuestions);
 			for (int i = 0; i < numQuestions; i++) {
-				ArrayList<String> qaPair = questionAndAnswerList.get(questionIds[i] - 1);
-				questions[i] = qaPair.get(0);
-				answers[i] = qaPair.get(1);
+				SingleAnswerQuestion qaPair = questionAndAnswerList.get(questionIds[i] - 1);
+				
+				String[] question = qaPair.getQuestion().split(Pattern.quote(";"));
+				if (question.length == 1) {
+					questions[i] = qaPair.getQuestion();
+					answers[i] = new Expression(qaPair.getAnswerFunction());
+				} else {
+					answers[i] = new Expression(qaPair.getAnswerFunction());
+					String newQuestion = question[0] + ";\n";
+					for (int j = 1; j < question.length; j++) {
+						String[] variable = question[j].split(Pattern.quote("="));
+						int original = Integer.parseInt(variable[1]);
+						int min = original - qaPair.getLowerRange();
+						int max = original + qaPair.getUpperRange();
+						int newValue = ThreadLocalRandom.current().nextInt(min, max);
+						Argument x = new Argument(variable[0], newValue);
+						answers[i].addArguments(x);
+						newQuestion = newQuestion.concat(variable[0] + "=" + newValue + "; ");
+					}
+					questions[i] = newQuestion;
+				}
 			}
 		}
-
+		
 		// LAYOUT
 
 		// window title
@@ -138,6 +175,7 @@ public class StudentAssignmentPage {
 
 		Button backButton = new Button("Back");
 		Button submitButton = new Button("Submit");
+		submitButton.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
 
 		grid.add(backButton, 0, currentRow, 1, 1);
 		grid.add(submitButton, 1, currentRow, 1, 1);
@@ -206,22 +244,23 @@ public class StudentAssignmentPage {
 	 * @return A grade (percentage) of questions that the student got correct on the
 	 *         assignment.
 	 */
-	private static int calculateGrade(int numQuestions, String[] actualAnswers, String[] userGuess) {
+	private static int calculateGrade(int numQuestions, Expression[] actualAnswers, String[] userGuess) {
 
 		int answeredCorrectly = 0;
 		for (int i = 0; i < numQuestions; i++) {
-
-			Expression dbAnswer = new Expression(actualAnswers[i]);
-			System.out.println(actualAnswers[i] + "  " + userGuess[i]);
-
+			
+			Expression dbAnswer = actualAnswers[i];
+			System.out.println(actualAnswers[i].getExpressionString() + " " + actualAnswers[i].calculate() + "  " + userGuess[i] + "\n");
+			System.out.println(actualAnswers[i].toString());
 			// check the answer's numeric value. Use string checking as a fall back.
 			try {
 				if (dbAnswer.calculate() == Double.parseDouble(userGuess[i])) {
 					answeredCorrectly++;
 				}
 			} catch (NumberFormatException e3) {
-				if (actualAnswers[i].equals(userGuess[i])) {
+				if (dbAnswer.getExpressionString().equals(userGuess[i])) {
 					answeredCorrectly++;
+
 				}
 			}
 		}
