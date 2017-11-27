@@ -13,11 +13,11 @@ import java.util.Date;
 import java.util.List;
 
 import jdbc.DOA;
-import student.Professor;
+import user.Professor;
 
 public class Validators {
 	
-	private static boolean isAllDigits(String value) {
+	public static boolean isAllDigits(String value) {
 		int i = 0;
 		// loop to check for all digits 
 		while (i < value.length()) {

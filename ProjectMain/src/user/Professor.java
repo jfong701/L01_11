@@ -1,7 +1,7 @@
 /**
  * 
  */
-package student;
+package user;
 
 /**
  * @author Mathu
